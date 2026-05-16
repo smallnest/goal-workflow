@@ -10,6 +10,10 @@
 /prd  →  /goal  →  /review-it  →  /ship-it
 ```
 
+<p align="center">
+  <img src="docs/workflow.png" alt="Goal Workflow 信息图" width="800">
+</p>
+
 | 步骤 | 命令 | 说明 |
 |------|------|------|
 | 1. 规划 | `/prd` | 编写需求文档，拆解功能，生成 Issue 卡片 |

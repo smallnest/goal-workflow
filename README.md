@@ -10,6 +10,10 @@ An AI development workflow with `/prd`, `/goal`, `/review-it` and `/ship-it` —
 /prd  →  /goal  →  /review-it  →  /ship-it
 ```
 
+<p align="center">
+  <img src="docs/workflow.png" alt="Goal Workflow Infographic" width="800">
+</p>
+
 | Step | Command | What it does |
 |------|---------|-------------|
 | 1. Plan | `/prd` | Write a PRD, decompose into features, generate Issue cards |
