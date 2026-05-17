@@ -1072,13 +1072,35 @@
 <span class="cmd">生成UML图：</span><span class="value">生成类图和时序图</span></code></pre>
 
       <h3>支持的图表类型</h3>
+      <p>共支持 <strong>17 种</strong>图表类型，分为结构性图形和行为性图形两大类：</p>
+
+      <h3>结构性图形（静态）</h3>
       <table>
-        <tr><th>类型</th><th>说明</th><th>适用场景</th></tr>
-        <tr><td>UML 类图</td><td>展示类结构、继承关系、接口实现</td><td>面向对象设计文档</td></tr>
-        <tr><td>时序图</td><td>展示对象间的交互时序</td><td>API 调用流程、模块交互</td></tr>
-        <tr><td>架构图</td><td>展示系统整体架构和模块关系</td><td>系统设计文档、技术方案</td></tr>
-        <tr><td>流程图</td><td>展示业务逻辑和数据流转</td><td>业务流程、算法逻辑</td></tr>
+        <tr><th>编号</th><th>图表类型</th><th>关注点</th></tr>
+        <tr><td>1</td><td>系统架构图 ★</td><td>组件关系、全局视角（非UML，最常用）</td></tr>
+        <tr><td>2</td><td>类图</td><td>定义类、属性、操作及关系</td></tr>
+        <tr><td>3</td><td>对象图</td><td>特定时刻的对象实例及其关系</td></tr>
+        <tr><td>4</td><td>组件图</td><td>系统组件及其依赖关系</td></tr>
+        <tr><td>5</td><td>部署图</td><td>物理硬件、节点及软件部署</td></tr>
+        <tr><td>6</td><td>包图</td><td>将模型元素分组组织</td></tr>
+        <tr><td>7</td><td>复合结构图</td><td>类的内部结构</td></tr>
+        <tr><td>8</td><td>剖面图</td><td>扩展UML元模型、自定义构造型</td></tr>
       </table>
+
+      <h3>行为性图形（动态）</h3>
+      <table>
+        <tr><th>编号</th><th>图表类型</th><th>关注点</th></tr>
+        <tr><td>9</td><td>流程图 ★</td><td>主流程与分支（非UML，最常用）</td></tr>
+        <tr><td>10</td><td>用例图</td><td>从用户角度展示系统功能</td></tr>
+        <tr><td>11</td><td>活动图</td><td>过程的流程或步骤</td></tr>
+        <tr><td>12</td><td>状态机图</td><td>对象生命周期的状态变迁</td></tr>
+        <tr><td>13</td><td>序列图</td><td>按时间顺序展示对象间交互</td></tr>
+        <tr><td>14</td><td>通信图</td><td>侧重于对象间的组织关系</td></tr>
+        <tr><td>15</td><td>定时图</td><td>侧重于状态变化的时间约束</td></tr>
+        <tr><td>16</td><td>交互概览图</td><td>结合活动图和时序图</td></tr>
+        <tr><td>17</td><td>泳道图</td><td>跨组件/角色职责流程（活动图变体）</td></tr>
+      </table>
+      <p style="font-size:0.6875rem;color:#8B8680;margin-top:0.25rem;">★ 标注为最常用的图表类型。默认推荐组合：架构图 + 序列图 + 流程图。</p>
 
       <h3>工作流程</h3>
       <ul class="step-list">
@@ -1160,8 +1182,8 @@
       <h3>Q: /listenhub-tts 支持哪些语言？</h3>
       <p>ListenHub 支持中文（zh）和英文（en）等多种语言的音色。调用音色列表 API 时可通过 <code class="inline-code">?language=zh</code> 参数筛选。</p>
 
-      <h3>Q: /insight-diagram 支持哪些项目类型？</h3>
-      <p><code class="inline-code">/insight-diagram</code> 适用于任何软件项目。它会自动分析代码库结构，识别关键组件、模块依赖和调用关系。支持生成 UML 类图、时序图、架构图和流程图，输出为 HTML+SVG 格式，保存到 <code class="inline-code">docs/</code> 目录。</p>
+      <h3>Q: /insight-diagram 支持哪些图表类型？</h3>
+      <p><code class="inline-code">/insight-diagram</code> 支持 17 种图表类型，包括系统架构图、14 种 UML 图（类图、对象图、组件图、部署图、包图、复合结构图、剖面图、用例图、活动图、状态机图、序列图、通信图、定时图、交互概览图）、流程图和泳道图。输出为 HTML+SVG 格式，保存到 <code class="inline-code">docs/</code> 目录。适用于任何软件项目。</p>
     </div>
 
     <!-- Footer -->

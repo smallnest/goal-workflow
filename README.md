@@ -101,7 +101,7 @@ Convert text to speech using the ListenHub API. Supports three synthesis modes: 
 Generate UML diagrams, architecture diagrams, and flowcharts for any project. Analyzes the codebase, lets you choose diagram types, renders as HTML+SVG, and saves to the `docs/` directory.
 
 - Analyzes project codebase structure and identifies key components
-- Supports multiple diagram types: UML class diagrams, sequence diagrams, architecture diagrams, flowcharts
+- Supports 17 diagram types: architecture + 14 UML diagrams (class, object, component, deployment, package, composite-structure, profile, usecase, activity, state-machine, sequence, communication, timing, interaction-overview) + flowchart + swimlane
 - User selects desired diagram type from interactive options
 - Renders diagrams using the `architecture-diagram` skill as HTML+SVG
 - Saves output to `docs/` directory for project documentation visualization
