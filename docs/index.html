@@ -124,6 +124,8 @@
     .section-dot.slate { background: #6B7280; }
     .section-dot.plum { background: #8B6F8A; }
     .section-dot.rose { background: #C96464; }
+    .section-dot.amber { background: #D4A843; }
+    .section-dot.teal { background: #2D9CDB; }
 
     .section-title h3 {
       margin: 0;
@@ -217,6 +219,18 @@
       border: 1px solid #4A6FA5;
     }
 
+    .badge-humanize {
+      background: #FDF8F0;
+      color: #D4A843;
+      border: 1px solid #D4A843;
+    }
+
+    .badge-tts {
+      background: #F0F7FD;
+      color: #2D9CDB;
+      border: 1px solid #2D9CDB;
+    }
+
     .cards {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -250,6 +264,8 @@
     .card-dot.slate { background: #6B7280; }
     .card-dot.plum { background: #8B6F8A; }
     .card-dot.blue { background: #4A6FA5; }
+    .card-dot.amber { background: #D4A843; }
+    .card-dot.teal { background: #2D9CDB; }
 
     .card h4 {
       font-size: 0.8125rem;
@@ -394,6 +410,8 @@
     .flow-step .step-num.n2 { background: #5B8A72; }
     .flow-step .step-num.n3 { background: #8B6F8A; }
     .flow-step .step-num.n4 { background: #4A6FA5; }
+    .flow-step .step-num.n5 { background: #D4A843; }
+    .flow-step .step-num.n6 { background: #2D9CDB; }
 
     .flow-connector {
       color: #C5C0BA;
@@ -447,8 +465,10 @@
         <li><a href="#step-goal">5. Step 2: /goal — 功能实现</a></li>
         <li><a href="#step-review">6. Step 3: /review-it — 代码审查</a></li>
         <li><a href="#step-ship">7. Step 4: /ship-it — 提交交付</a></li>
-        <li><a href="#platforms">8. 支持的平台</a></li>
-        <li><a href="#faq">9. FAQ</a></li>
+        <li><a href="#step-humanize">8. Bonus: /humanize-it — 去 AI 味改写</a></li>
+        <li><a href="#step-tts">9. Bonus: /listenhub-tts — 文本转语音</a></li>
+        <li><a href="#platforms">10. 支持的平台</a></li>
+        <li><a href="#faq">11. FAQ</a></li>
       </ul>
     </div>
 
@@ -513,6 +533,30 @@
             <li>添加实现总结并关闭卡片</li>
           </ul>
         </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot amber"></div>
+            <h4>/humanize-it</h4>
+          </div>
+          <p>迭代式去 AI 味改写</p>
+          <ul>
+            <li>自动选择最佳人性化策略</li>
+            <li>三路 skill 迭代直到达标</li>
+            <li>最多 42 轮智能切换</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot teal"></div>
+            <h4>/listenhub-tts</h4>
+          </div>
+          <p>ListenHub 文本转语音</p>
+          <ul>
+            <li>快速合成 / 多角色 / 长文本</li>
+            <li>音色列表供选择，默认晓曼</li>
+            <li>支持 AI 润色长文本</li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -530,6 +574,8 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">prd</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">review-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">ship-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">humanize-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">listenhub-tts</span>
 
 <span class="comment"># 全局安装（所有项目可用）</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
@@ -546,7 +592,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code> 即可直接调用对应技能。
+        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/listenhub-tts</code> 即可直接调用对应技能。
       </div>
     </div>
 
@@ -582,10 +628,20 @@
           <span class="step-num n4">4</span>
           /ship-it
         </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n5">+</span>
+          /humanize-it
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n6">+</span>
+          /listenhub-tts
+        </div>
       </div>
 
       <div class="diagram-box">
-        <svg viewBox="0 0 800 220" style="min-width: 700px;">
+        <svg viewBox="0 0 960 220" style="min-width: 850px;">
           <defs>
             <pattern id="dots-flow" width="24" height="24" patternUnits="userSpaceOnUse">
               <circle cx="2" cy="2" r="0.6" fill="#E0DCD6"/>
@@ -597,49 +653,61 @@
           <rect width="100%" height="100%" fill="url(#dots-flow)" />
 
           <!-- Step 1 -->
-          <rect x="20" y="40" width="160" height="140" rx="10" fill="#FFF5F0" stroke="#D97757" stroke-width="1.5"/>
-          <text x="100" y="68" fill="#D97757" font-size="11" font-weight="700" text-anchor="middle">Step 1: /prd</text>
-          <text x="100" y="90" fill="#4A4540" font-size="9" text-anchor="middle">描述功能想法</text>
-          <text x="100" y="108" fill="#4A4540" font-size="9" text-anchor="middle">澄清问题 (3-5个)</text>
-          <text x="100" y="126" fill="#4A4540" font-size="9" text-anchor="middle">生成结构化 PRD</text>
-          <text x="100" y="144" fill="#4A4540" font-size="9" text-anchor="middle">拆解为 Issue 卡片</text>
-          <text x="100" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: PRD + Issues</text>
+          <rect x="10" y="40" width="155" height="140" rx="10" fill="#FFF5F0" stroke="#D97757" stroke-width="1.5"/>
+          <text x="87" y="68" fill="#D97757" font-size="11" font-weight="700" text-anchor="middle">Step 1: /prd</text>
+          <text x="87" y="90" fill="#4A4540" font-size="9" text-anchor="middle">描述功能想法</text>
+          <text x="87" y="108" fill="#4A4540" font-size="9" text-anchor="middle">澄清问题 (3-5个)</text>
+          <text x="87" y="126" fill="#4A4540" font-size="9" text-anchor="middle">生成结构化 PRD</text>
+          <text x="87" y="144" fill="#4A4540" font-size="9" text-anchor="middle">拆解为 Issue 卡片</text>
+          <text x="87" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: PRD + Issues</text>
 
           <!-- Arrow 1-2 -->
-          <line x1="185" y1="110" x2="220" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <line x1="170" y1="110" x2="200" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
           <!-- Step 2 -->
-          <rect x="225" y="40" width="160" height="140" rx="10" fill="#F5F8F6" stroke="#5B8A72" stroke-width="1.5"/>
-          <text x="305" y="68" fill="#5B8A72" font-size="11" font-weight="700" text-anchor="middle">Step 2: /goal</text>
-          <text x="305" y="90" fill="#4A4540" font-size="9" text-anchor="middle">选择一个 Issue</text>
-          <text x="305" y="108" fill="#4A4540" font-size="9" text-anchor="middle">理解验收标准</text>
-          <text x="305" y="126" fill="#4A4540" font-size="9" text-anchor="middle">端到端实现代码</text>
-          <text x="305" y="144" fill="#4A4540" font-size="9" text-anchor="middle">运行测试验证</text>
-          <text x="305" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: Working code</text>
+          <rect x="205" y="40" width="155" height="140" rx="10" fill="#F5F8F6" stroke="#5B8A72" stroke-width="1.5"/>
+          <text x="282" y="68" fill="#5B8A72" font-size="11" font-weight="700" text-anchor="middle">Step 2: /goal</text>
+          <text x="282" y="90" fill="#4A4540" font-size="9" text-anchor="middle">选择一个 Issue</text>
+          <text x="282" y="108" fill="#4A4540" font-size="9" text-anchor="middle">理解验收标准</text>
+          <text x="282" y="126" fill="#4A4540" font-size="9" text-anchor="middle">端到端实现代码</text>
+          <text x="282" y="144" fill="#4A4540" font-size="9" text-anchor="middle">运行测试验证</text>
+          <text x="282" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: Working code</text>
 
           <!-- Arrow 2-3 -->
-          <line x1="390" y1="110" x2="425" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <line x1="365" y1="110" x2="395" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
           <!-- Step 3 -->
-          <rect x="430" y="40" width="160" height="140" rx="10" fill="#F5F3F8" stroke="#8B6F8A" stroke-width="1.5"/>
-          <text x="510" y="68" fill="#8B6F8A" font-size="11" font-weight="700" text-anchor="middle">Step 3: /review-it</text>
-          <text x="510" y="90" fill="#4A4540" font-size="9" text-anchor="middle">自动代码审查</text>
-          <text x="510" y="108" fill="#4A4540" font-size="9" text-anchor="middle">验证每个发现</text>
-          <text x="510" y="126" fill="#4A4540" font-size="9" text-anchor="middle">修复问题</text>
-          <text x="510" y="144" fill="#4A4540" font-size="9" text-anchor="middle">重审直到通过</text>
-          <text x="510" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: Clean review</text>
+          <rect x="400" y="40" width="155" height="140" rx="10" fill="#F5F3F8" stroke="#8B6F8A" stroke-width="1.5"/>
+          <text x="477" y="68" fill="#8B6F8A" font-size="11" font-weight="700" text-anchor="middle">Step 3: /review-it</text>
+          <text x="477" y="90" fill="#4A4540" font-size="9" text-anchor="middle">自动代码审查</text>
+          <text x="477" y="108" fill="#4A4540" font-size="9" text-anchor="middle">验证每个发现</text>
+          <text x="477" y="126" fill="#4A4540" font-size="9" text-anchor="middle">修复问题</text>
+          <text x="477" y="144" fill="#4A4540" font-size="9" text-anchor="middle">重审直到通过</text>
+          <text x="477" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: Clean review</text>
 
           <!-- Arrow 3-4 -->
-          <line x1="595" y1="110" x2="630" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+          <line x1="560" y1="110" x2="590" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
 
           <!-- Step 4 -->
-          <rect x="635" y="40" width="150" height="140" rx="10" fill="#F0F4F8" stroke="#4A6FA5" stroke-width="1.5"/>
-          <text x="710" y="68" fill="#4A6FA5" font-size="11" font-weight="700" text-anchor="middle">Step 4: /ship-it</text>
-          <text x="710" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Commit (关联 Issue)</text>
-          <text x="710" y="108" fill="#4A4540" font-size="9" text-anchor="middle">Push branch</text>
-          <text x="710" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Create PR &amp; Merge</text>
-          <text x="710" y="144" fill="#4A4540" font-size="9" text-anchor="middle">添加总结 &amp; 关闭 Issue</text>
-          <text x="710" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: Merged &amp; Closed</text>
+          <rect x="595" y="40" width="155" height="140" rx="10" fill="#F0F4F8" stroke="#4A6FA5" stroke-width="1.5"/>
+          <text x="672" y="68" fill="#4A6FA5" font-size="11" font-weight="700" text-anchor="middle">Step 4: /ship-it</text>
+          <text x="672" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Commit (关联 Issue)</text>
+          <text x="672" y="108" fill="#4A4540" font-size="9" text-anchor="middle">Push branch</text>
+          <text x="672" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Create PR &amp; Merge</text>
+          <text x="672" y="144" fill="#4A4540" font-size="9" text-anchor="middle">添加总结 &amp; 关闭 Issue</text>
+          <text x="672" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: Merged &amp; Closed</text>
+
+          <!-- Arrow 4-5 -->
+          <line x1="755" y1="110" x2="785" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 5 (Bonus) -->
+          <rect x="790" y="40" width="155" height="140" rx="10" fill="#FDF8F0" stroke="#D4A843" stroke-width="1.5"/>
+          <text x="867" y="68" fill="#D4A843" font-size="10" font-weight="700" text-anchor="middle">Bonus: /humanize-it</text>
+          <text x="867" y="90" fill="#4A4540" font-size="9" text-anchor="middle">检测文档类型</text>
+          <text x="867" y="108" fill="#4A4540" font-size="9" text-anchor="middle">选择人性化策略</text>
+          <text x="867" y="126" fill="#4A4540" font-size="9" text-anchor="middle">迭代改写 (≤42次)</text>
+          <text x="867" y="144" fill="#4A4540" font-size="9" text-anchor="middle">质量评分验证</text>
+          <text x="867" y="168" fill="#8B8680" font-size="8" text-anchor="middle">Output: Humanized doc</text>
         </svg>
       </div>
 
@@ -668,6 +736,18 @@
           <td><code class="inline-code">/ship-it</code></td>
           <td>已审查的代码</td>
           <td>已合入的 PR + 已关闭的 Issue</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-humanize">附加</span></td>
+          <td><code class="inline-code">/humanize-it</code></td>
+          <td>含 AI 痕迹的文档</td>
+          <td>人性化改写后的文档</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-tts">附加</span></td>
+          <td><code class="inline-code">/listenhub-tts</code></td>
+          <td>文本内容</td>
+          <td>语音音频文件</td>
         </tr>
       </table>
     </div>
@@ -843,20 +923,116 @@
       </div>
     </div>
 
-    <!-- Section 8: Platforms -->
+    <!-- Section 8: /humanize-it -->
+    <div class="section" id="step-humanize">
+      <div class="section-title">
+        <div class="section-dot amber"></div>
+        <h3>8. Bonus: /humanize-it — 去 AI 味改写</h3>
+      </div>
+      <p>
+        <code class="inline-code">/humanize-it</code> 对指定文档进行去 AI 味的改写。根据文档类型自动选择最合适的人性化策略，迭代改写直到效果达标。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/humanize-it</span> <span class="value">docs/architecture.md</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">去AI味：</span><span class="value">把这篇文档改成人话</span>
+<span class="cmd">降AIGC：</span><span class="value">humanize docs/blog-draft.md</span></code></pre>
+
+      <h3>子 Skill 能力矩阵</h3>
+      <table>
+        <tr><th>Skill</th><th>适用场景</th><th>改写风格</th></tr>
+        <tr><td><code class="inline-code">humanizer-zh</code></td><td>通用文本、博客、文案</td><td>自然、有温度、带观点</td></tr>
+        <tr><td><code class="inline-code">humanize-chinese</code></td><td>通用 + 学术 + 长文本</td><td>多风格（知乎/小红书/学术/文学等）</td></tr>
+        <tr><td><code class="inline-code">technical-writing</code></td><td>技术文档、架构说明、评审稿</td><td>平实、严谨、可论证</td></tr>
+      </table>
+
+      <h3>自动策略选择</h3>
+      <table>
+        <tr><th>文档类型</th><th>优先策略顺序</th></tr>
+        <tr><td>技术文档</td><td><code class="inline-code">technical-writing</code> &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">humanize-chinese</code></td></tr>
+        <tr><td>学术论文</td><td><code class="inline-code">humanize-chinese</code> (academic) &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+        <tr><td>通用文本</td><td><code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">humanize-chinese</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+        <tr><td>长文本 (≥1500字)</td><td><code class="inline-code">humanize-chinese</code> (longform) &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+      </table>
+
+      <h3>迭代机制</h3>
+      <ul class="step-list">
+        <li>自动检测文档类型，选择第一个改写 skill</li>
+        <li>改写后按 5 个维度评分（AI 痕迹去除 / 自然度 / 信息完整 / 风格一致 / 可读性）</li>
+        <li>评分 ≥ 80 分则通过，输出结果</li>
+        <li>不达标则切换到下一个 skill，在上次改写基础上继续优化</li>
+        <li>同一 skill 连续 3 次无提升则自动切换</li>
+        <li>所有 skill 用完一轮后从头开始新一轮组合</li>
+        <li>最多迭代 42 轮，输出当前最佳结果</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip：</strong>你可以在触发时指定偏好，如"保持学术风格"、"要更口语化"、"技术文档不要太随意"，改写时会优先选择对应的策略。
+      </div>
+    </div>
+
+    <!-- Section 9: /listenhub-tts -->
+    <div class="section" id="step-tts">
+      <div class="section-title">
+        <div class="section-dot teal"></div>
+        <h3>9. Bonus: /listenhub-tts — 文本转语音</h3>
+      </div>
+      <p>
+        <code class="inline-code">/listenhub-tts</code> 使用 ListenHub API 将文本转换为语音。支持三种合成模式，覆盖从短文本到长文本的全场景。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/listenhub-tts</span> <span class="value">把这段文字转成语音</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">语音合成：</span><span class="value">将 README.md 朗读出来</span>
+<span class="cmd">生成音频：</span><span class="value">用晓曼的声音读这篇文章</span></code></pre>
+
+      <h3>三种合成模式</h3>
+      <table>
+        <tr><th>模式</th><th>接口</th><th>适用场景</th><th>特点</th></tr>
+        <tr><td>快速合成</td><td><code class="inline-code">/v1/tts</code></td><td>短文本（&lt; 1000 字），单音色</td><td>低延迟，返回 MP3 二进制流</td></tr>
+        <tr><td>多角色脚本</td><td><code class="inline-code">/v1/speech</code></td><td>多角色对话、播客</td><td>不同音色交替朗读</td></tr>
+        <tr><td>长文本流式</td><td><code class="inline-code">/v1/flow-speech/episodes</code></td><td>长文本（&gt; 1000 字）</td><td>异步合成，支持 AI 润色</td></tr>
+      </table>
+
+      <h3>音色选择</h3>
+      <table>
+        <tr><th>场景</th><th>行为</th></tr>
+        <tr><td>用户已指定音色</td><td>直接使用指定的 speakerId</td></tr>
+        <tr><td>用户未指定音色</td><td>调用 API 获取音色列表，展示供用户选择</td></tr>
+        <tr><td>默认音色</td><td><code class="inline-code">chat-girl-105-cn</code>（晓曼 dxqqq）</td></tr>
+      </table>
+
+      <h3>前置要求</h3>
+      <table>
+        <tr><th>配置</th><th>说明</th></tr>
+        <tr><td><code class="inline-code">LISTENHUB_API_KEY</code></td><td>ListenHub API 密钥，设置为环境变量</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip：</strong>长文本模式支持 AI 润色（<code class="inline-code">aiPolish</code>），可在合成前自动优化文本的口语化程度，让朗读效果更自然。
+      </div>
+    </div>
+
+    <!-- Section 10: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>8. 支持的平台</h3>
+        <h3>10. 支持的平台</h3>
       </div>
       <p>Goal Workflow 的技能可在多个 AI Coding Agent 中使用：</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/goal</th><th>/review-it</th><th>/ship-it</th></tr>
-        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>Codex</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>OpenCode</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/goal</th><th>/review-it</th><th>/ship-it</th><th>/humanize-it</th><th>/listenhub-tts</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
       </table>
 
       <h3>Issue 创建平台</h3>
@@ -868,11 +1044,11 @@
       </table>
     </div>
 
-    <!-- Section 9: FAQ -->
+    <!-- Section 10: FAQ -->
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>9. FAQ</h3>
+        <h3>11. FAQ</h3>
       </div>
 
       <h3>Q: 必须按顺序使用四个步骤吗？</h3>
@@ -892,6 +1068,18 @@
 
       <h3>Q: 如何在 Codex 中使用？</h3>
       <p>通过 <code class="inline-code">npx skills add</code> 安装时选择 <code class="inline-code">-a codex</code>。在 Codex 中使用 <code class="inline-code">codex --goal "..."</code> 替代 <code class="inline-code">/goal</code>，<code class="inline-code">/review-it</code> 在各 Agent 中通用。</p>
+
+      <h3>Q: /humanize-it 的 42 次迭代上限是怎么来的？</h3>
+      <p>42 是一个趣味性的上限值。实际使用中，大多数文档在 3-5 轮迭代后就能达标。迭代的核心是智能切换策略——当一种改写方式效果停滞时，自动换用另一种，三种策略组合使用可以互补覆盖不同类型的 AI 痕迹。</p>
+
+      <h3>Q: /humanize-it 支持英文文档吗？</h3>
+      <p>目前 <code class="inline-code">/humanize-it</code> 的三个子 skill 主要针对中文文本优化。<code class="inline-code">humanizer-zh</code> 的模式检测规则对英文也部分适用，但改写效果以中文为最佳。</p>
+
+      <h3>Q: /listenhub-tts 如何获取 API Key？</h3>
+      <p>前往 <a href="https://listenhub.ai" style="color: #2D9CDB; text-decoration: none;">listenhub.ai</a> 注册并获取 API Key，然后设置为环境变量：<code class="inline-code">export LISTENHUB_API_KEY=your_key</code>。</p>
+
+      <h3>Q: /listenhub-tts 支持哪些语言？</h3>
+      <p>ListenHub 支持中文（zh）和英文（en）等多种语言的音色。调用音色列表 API 时可通过 <code class="inline-code">?language=zh</code> 参数筛选。</p>
     </div>
 
     <!-- Footer -->
@@ -915,7 +1103,7 @@
   const ctx = canvas.getContext('2d');
   let particles = [];
   const PARTICLE_COUNT = 60;
-  const colors = ['#D97757', '#5B8A72', '#8B6F8A', '#4A6FA5', '#C96464'];
+  const colors = ['#D97757', '#5B8A72', '#8B6F8A', '#4A6FA5', '#C96464', '#2D9CDB'];
 
   function resizeCanvas() {
     canvas.width = window.innerWidth;

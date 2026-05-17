@@ -2,7 +2,7 @@
 
 English | [简体中文](./README_CN.md)
 
-An AI development workflow with `/prd`, `/goal`, `/review-it` and `/ship-it` — from requirements to shipping code, all within Claude Code.
+An AI development workflow with `/prd`, `/goal`, `/review-it`, `/ship-it`, `/humanize-it` and `/listenhub-tts` — from requirements to shipping code, all within Claude Code.
 
 ## Development Workflow
 
@@ -28,6 +28,8 @@ An AI development workflow with `/prd`, `/goal`, `/review-it` and `/ship-it` —
 **Step 3 — Review:** Run `/review-it` to perform automated code review. It verifies each finding against real code and iterates until the review is clean. Works across Claude Code, Codex, OpenCode, and DeepSeek TUI.
 
 **Step 4 — Ship:** Run `/ship-it` to commit code with Issue reference, push branch, create PR, merge via squash, add implementation summary, and close the Issue.
+
+**Bonus — Humanize:** Run `/humanize-it` to remove AI-generated traces from documents. It automatically selects the best humanization strategy (`humanizer-zh` / `humanize-chinese` / `technical-writing`) based on document type and iterates until the result passes quality checks (up to 42 iterations).
 
 ## Skills
 
@@ -68,6 +70,32 @@ Standard post-implementation workflow: commit code → push branch → create PR
 
 **Triggers:** `提交代码`, `commit and merge`, `创建PR`, `合入`, `关闭issue`, `ship-it`
 
+### /humanize-it — Iterative AI Trace Removal
+
+Remove AI-generated traces from documents by automatically selecting and iterating across multiple humanization strategies.
+
+- Auto-detects document type (technical / academic / general / long-form) and selects the optimal skill
+- Iterates across `humanizer-zh` → `humanize-chinese` → `technical-writing` until quality threshold is met
+- Scores each iteration on 5 dimensions: AI trace removal, naturalness, information retention, style consistency, readability
+- Up to 42 iterations with smart skill-switching (auto-switches when progress stalls)
+
+**Triggers:** `humanize this`, `去AI味`, `降AIGC`, `人性化改写`, `改成人话`, `去除AI痕迹`, `humanize document`
+
+> Combines [humanizer-zh](https://github.com/anthropics/claude-code), [humanize-chinese](https://github.com/anthropics/claude-code), and [technical-writing](https://github.com/anthropics/claude-code) skills
+
+### /listenhub-tts — Text to Speech via ListenHub
+
+Convert text to speech using the ListenHub API. Supports three synthesis modes: quick TTS, multi-speaker scripts, and long-form async synthesis.
+
+- Auto-selects the best synthesis mode based on text length and use case
+- Presents speaker list for selection when voice is not specified, defaulting to `chat-girl-105-cn` (Xiaoman)
+- Supports quick synthesis (`/v1/tts`), multi-speaker scripts (`/v1/speech`), and long-form async (`/v1/flow-speech/episodes`)
+- AI polish mode for long-form text to improve naturalness
+
+**Triggers:** `tts`, `text to speech`, `语音合成`, `文字转语音`, `朗读`, `生成语音`, `生成音频`, `转音频`
+
+> Powered by [ListenHub OpenAPI](https://listenhub.ai/docs/zh/openapi/api-reference/flowspeech)
+
 ## Installation
 
 Install skills via [`npx skills`](https://www.npmjs.com/package/skills):
@@ -80,6 +108,8 @@ npx skills add smallnest/goal-workflow
 npx skills add smallnest/goal-workflow --skill prd
 npx skills add smallnest/goal-workflow --skill review-it
 npx skills add smallnest/goal-workflow --skill ship-it
+npx skills add smallnest/goal-workflow --skill humanize-it
+npx skills add smallnest/goal-workflow --skill listenhub-tts
 
 # Install globally (available across all projects)
 npx skills add smallnest/goal-workflow -g

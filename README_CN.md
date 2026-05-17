@@ -2,7 +2,7 @@
 
 [English](./README.md) | 简体中文
 
-一套 AI 驱动的研发工作流，包含 `/prd`、`/goal`、`/review-it` 和 `/ship-it` —— 从需求到代码交付，全程在 Claude Code 中完成。
+一套 AI 驱动的研发工作流，包含 `/prd`、`/goal`、`/review-it`、`/ship-it`、`/humanize-it` 和 `/listenhub-tts` —— 从需求到代码交付，全程在 Claude Code 中完成。
 
 ## 开发流程
 
@@ -28,6 +28,8 @@
 **第三步 — 审查：** 运行 `/review-it` 进行自动化代码审查。对每个发现进行真实代码验证，持续迭代直到审查通过。支持 Claude Code、Codex、OpenCode 和 DeepSeek TUI。
 
 **第四步 — 交付：** 运行 `/ship-it` 提交代码（关联 Issue 编号）、推送分支、创建 PR、squash 合入、添加实现总结，并关闭 Issue。
+
+**附加 — 去AI味：** 运行 `/humanize-it` 对文档进行去 AI 味改写。根据文档类型自动选择最佳人性化策略（`humanizer-zh` / `humanize-chinese` / `technical-writing`），迭代改写直到效果达标（最多 42 轮迭代）。
 
 ## Skills
 
@@ -68,6 +70,32 @@
 
 **触发词：** `提交代码`、`commit and merge`、`创建PR`、`合入`、`关闭issue`、`ship-it`
 
+### /humanize-it — 迭代式去 AI 味改写
+
+自动选择并组合多个去 AI 味策略，对文档进行迭代式人性化改写。
+
+- 自动检测文档类型（技术文档 / 学术论文 / 通用文本 / 长文本），选择最优 skill
+- 在 `humanizer-zh` → `humanize-chinese` → `technical-writing` 之间迭代，直到质量达标
+- 每次迭代从 AI 痕迹去除、自然度、信息完整、风格一致、可读性五个维度评分
+- 最多 42 轮迭代，智能切换策略（进度停滞时自动换 skill）
+
+**触发词：** `humanize this`、`去AI味`、`降AIGC`、`人性化改写`、`改成人话`、`去除AI痕迹`、`humanize document`
+
+> 组合使用 [humanizer-zh](https://github.com/anthropics/claude-code)、[humanize-chinese](https://github.com/anthropics/claude-code) 和 [technical-writing](https://github.com/anthropics/claude-code) 三个 skill
+
+### /listenhub-tts — ListenHub 文本转语音
+
+使用 ListenHub API 将文本转换为语音。支持三种合成模式：快速合成、多角色脚本和长文本异步合成。
+
+- 根据文本长度和使用场景自动选择最佳合成模式
+- 音色未指定时展示音色列表供选择，默认使用 `chat-girl-105-cn`（晓曼）
+- 支持快速合成（`/v1/tts`）、多角色脚本（`/v1/speech`）和长文本异步合成（`/v1/flow-speech/episodes`）
+- 长文本支持 AI 润色模式，提升语音自然度
+
+**触发词：** `tts`、`语音合成`、`文字转语音`、`朗读`、`生成语音`、`生成音频`、`转音频`、`text to speech`
+
+> 基于 [ListenHub OpenAPI](https://listenhub.ai/docs/zh/openapi/api-reference/flowspeech)
+
 ## 安装
 
 通过 [`npx skills`](https://www.npmjs.com/package/skills) 安装：
@@ -80,6 +108,8 @@ npx skills add smallnest/goal-workflow
 npx skills add smallnest/goal-workflow --skill prd
 npx skills add smallnest/goal-workflow --skill review-it
 npx skills add smallnest/goal-workflow --skill ship-it
+npx skills add smallnest/goal-workflow --skill humanize-it
+npx skills add smallnest/goal-workflow --skill listenhub-tts
 
 # 全局安装（所有项目可用）
 npx skills add smallnest/goal-workflow -g
