@@ -482,7 +482,7 @@
         <li><a href="#step-diagram">10. Bonus: /insight-diagram — UML 与架构图</a></li>
         <li><a href="#step-refactor">11. Bonus: /refactor — 专家级代码重构</a></li>
         <li><a href="#step-modern-go">12. Bonus: /modern-go — Go 代码现代化改造</a></li>
-        <li><a href="#step-notes">13. Bonus: /notes — 实现笔记记录</a></li>
+        <li><a href="#step-note-it">13. Bonus: /note-it — 实现笔记记录</a></li>
         <li><a href="#platforms">14. 支持的平台</a></li>
         <li><a href="#faq">15. FAQ</a></li>
       </ul>
@@ -612,7 +612,7 @@
         <div class="card">
           <div class="card-header">
             <div class="card-dot slate"></div>
-            <h4>/notes</h4>
+            <h4>/note-it</h4>
           </div>
           <p>实现笔记记录</p>
           <ul>
@@ -643,7 +643,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">insight-diagram</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">refactor</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">modern-go</span>
-<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">notes</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">note-it</span>
 
 <span class="comment"># 全局安装（所有项目可用）</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
@@ -660,7 +660,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/notes</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/listenhub-tts</code>、<code class="inline-code">/insight-diagram</code> 即可直接调用对应技能。
+        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/listenhub-tts</code>、<code class="inline-code">/insight-diagram</code> 即可直接调用对应技能。
       </div>
     </div>
 
@@ -1262,18 +1262,18 @@
     </div>
 
     <!-- Section 13: Notes -->
-    <div class="section" id="step-notes">
+    <div class="section" id="step-note-it">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>13. Bonus: /notes — 实现笔记记录</h3>
+        <h3>13. Bonus: /note-it — 实现笔记记录</h3>
       </div>
       <p>
-        <code class="inline-code">/notes</code> 在代码实现和审查完成后，为当前 Issue 生成一份结构化实现笔记，记录设计决策、偏离、权衡和待确认问题，输出为 HTML 格式保存到 <code class="inline-code">docs/</code> 目录。
+        <code class="inline-code">/note-it</code> 在代码实现和审查完成后，为当前 Issue 生成一份结构化实现笔记，记录设计决策、偏离、权衡和待确认问题，输出为 HTML 格式保存到 <code class="inline-code">docs/</code> 目录。
       </p>
 
       <h3>触发方式</h3>
       <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
-<span class="cmd">/notes</span>
+<span class="cmd">/note-it</span>
 
 <span class="comment"># 或使用触发词</span>
 <span class="cmd">记录笔记：</span><span class="value">为 Issue #42 生成实现笔记</span>
@@ -1298,7 +1298,7 @@
 
       <h3>定位</h3>
       <p>
-        <code class="inline-code">/notes</code> 位于工作流中 <code class="inline-code">/review-it</code> 和 <code class="inline-code">/ship-it</code> 之间，作为提交前最终检查点——确保实现意图被完整记录，方便后续维护者理解代码背后的决策逻辑。
+        <code class="inline-code">/note-it</code> 位于工作流中 <code class="inline-code">/review-it</code> 和 <code class="inline-code">/ship-it</code> 之间，作为提交前最终检查点——确保实现意图被完整记录，方便后续维护者理解代码背后的决策逻辑。
       </p>
 
       <div class="tip">
@@ -1315,7 +1315,7 @@
       <p>Goal Workflow 的技能可在多个 AI Coding Agent 中使用：</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/goal</th><th>/review-it</th><th>/notes</th><th>/ship-it</th><th>/refactor</th><th>/modern-go</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/refactor</th><th>/modern-go</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
         <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
         <tr><td>Codex</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
         <tr><td>OpenCode</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
