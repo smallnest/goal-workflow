@@ -23,7 +23,7 @@ Transform a Product Requirements Document (PRD) into a detailed technical SPEC t
 ## The Job
 
 1. **Locate PRD** — find or receive the PRD document
-2. **Analyze context** — scan the existing codebase to understand current architecture, patterns, and constraints
+2. **Analyze context (optional)** — if a codebase exists, scan it to understand current architecture, patterns, and constraints
 3. **Ask clarifying questions** — resolve technical ambiguities (max 3-5 questions)
 4. **Generate SPEC** — produce a structured technical specification
 5. **Review** — present to user for feedback and iteration
@@ -56,9 +56,11 @@ Which PRD should I convert? [1/2]
 
 ---
 
-## Step 2: Analyze Context
+## Step 2: Analyze Context (Optional)
 
-Before generating the SPEC, scan the codebase to understand:
+**Skip this step if no codebase exists yet** (greenfield project). In that case, the SPEC will propose architecture from scratch based on the PRD requirements and clarifying questions.
+
+If a codebase exists, scan it to understand:
 
 - **Existing architecture** — how the current system is structured
 - **Tech stack** — languages, frameworks, libraries already in use
@@ -374,7 +376,7 @@ A good SPEC should pass these checks:
 | PRD is vague or incomplete | Generate SPEC with best-effort choices, mark assumptions in Section 11.3 |
 | PRD conflicts with existing code | Flag conflicts explicitly, propose resolution in Section 11.1 |
 | Feature is too large for one SPEC | Split into multiple SPECs (one per service boundary), link them |
-| No existing codebase (greenfield) | Skip "Analyze Context" step, focus on proposing architecture from scratch |
+| No existing codebase (greenfield) | Skip Step 2, propose architecture from scratch based on PRD + clarifying questions |
 | PRD has no User Stories (just bullet points) | Infer structure, map bullets to SPEC sections, note in Summary |
 | User wants SPEC without reading codebase | Skip Step 2, note that assumptions about existing code are unverified |
 | Multiple PRDs need one SPEC | Merge PRD inputs, deduplicate requirements, note source for each |
