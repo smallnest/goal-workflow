@@ -30,7 +30,7 @@ npx skills add smallnest/goal-workflow
 | `/humanize-it` | 文档去 AI 味改写 |
 | `/listenhub-tts` | ListenHub 文本转语音 |
 | `/insight-diagram` | UML 与架构图生成 |
-| `/to-spec` | 逆向生成项目规格文档 |
+| `/code-to-spec` | 逆向生成项目规格文档 |
 | `/refactor` | 专家级代码重构（Fowler 目录） |
 | `/modern-go` | Go 代码现代化改造（35+ 条规则） |
 

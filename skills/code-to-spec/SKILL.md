@@ -1,6 +1,6 @@
 ---
-name: to-spec
-description: "Reverse-engineer a SPEC document from an existing project. Analyzes code, config, tests, and structure to produce a comprehensive specification. Triggers on: to-spec, reverse spec, generate spec, 逆向规格, 生成规格文档, 生成设计文档, 生成设计方案, extract spec, document this project, what does this project do."
+name: code-to-spec
+description: "Reverse-engineer a SPEC document from an existing project. Analyzes code, config, tests, and structure to produce a comprehensive specification. Triggers on: code-to-spec, reverse spec, generate spec, 逆向规格, 生成规格文档, 生成设计文档, 生成设计方案, extract spec, document this project, what does this project do."
 user-invocable: true
 ---
 

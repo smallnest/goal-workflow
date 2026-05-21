@@ -30,7 +30,7 @@ npx skills add smallnest/goal-workflow
 | `/humanize-it` | Remove AI traces from documents |
 | `/listenhub-tts` | Text-to-speech via ListenHub |
 | `/insight-diagram` | Generate UML and architecture diagrams |
-| `/to-spec` | Reverse-engineer SPEC from existing projects |
+| `/code-to-spec` | Reverse-engineer SPEC from existing projects |
 | `/refactor` | Expert code refactoring (Fowler catalog) |
 | `/modern-go` | Modernize Go code (35+ gofix-style rules) |
 

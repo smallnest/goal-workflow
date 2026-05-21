@@ -483,7 +483,7 @@
         <li><a href="#step-refactor">11. Bonus: /refactor — 专家级代码重构</a></li>
         <li><a href="#step-modern-go">12. Bonus: /modern-go — Go 代码现代化改造</a></li>
         <li><a href="#step-note-it">13. Bonus: /note-it — 实现笔记记录</a></li>
-        <li><a href="#step-to-spec">14. Bonus: /to-spec — 逆向生成规格文档</a></li>
+        <li><a href="#step-code-to-spec">14. Bonus: /code-to-spec — 逆向生成规格文档</a></li>
         <li><a href="#platforms">15. 支持的平台</a></li>
         <li><a href="#faq">16. FAQ</a></li>
       </ul>
@@ -625,7 +625,7 @@
         <div class="card">
           <div class="card-header">
             <div class="card-dot sage"></div>
-            <h4>/to-spec</h4>
+            <h4>/code-to-spec</h4>
           </div>
           <p>逆向生成项目规格文档</p>
           <ul>
@@ -657,7 +657,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">refactor</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">modern-go</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">note-it</span>
-<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-spec</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">code-to-spec</span>
 
 <span class="comment"># 全局安装（所有项目可用）</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
@@ -674,7 +674,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/listenhub-tts</code>、<code class="inline-code">/insight-diagram</code> 即可直接调用对应技能。
+        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/listenhub-tts</code>、<code class="inline-code">/insight-diagram</code> 即可直接调用对应技能。
       </div>
     </div>
 
@@ -1320,19 +1320,19 @@
       </div>
     </div>
 
-    <!-- Section 14: /to-spec -->
-    <div class="section" id="step-to-spec">
+    <!-- Section 14: /code-to-spec -->
+    <div class="section" id="step-code-to-spec">
       <div class="section-title">
         <div class="section-dot sage"></div>
-        <h3>14. Bonus: /to-spec — 逆向生成规格文档</h3>
+        <h3>14. Bonus: /code-to-spec — 逆向生成规格文档</h3>
       </div>
       <p>
-        <code class="inline-code">/to-spec</code> 分析一个既有项目的代码、配置、测试和结构，反向生成一份完整的 SPEC（规格）文档。输出可用于重建项目、新人入职或对比实际实现与预期设计。
+        <code class="inline-code">/code-to-spec</code> 分析一个既有项目的代码、配置、测试和结构，反向生成一份完整的 SPEC（规格）文档。输出可用于重建项目、新人入职或对比实际实现与预期设计。
       </p>
 
       <h3>触发方式</h3>
       <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
-<span class="cmd">/to-spec</span>
+<span class="cmd">/code-to-spec</span>
 
 <span class="comment"># 或使用触发词</span>
 <span class="cmd">生成设计文档：</span><span class="value">分析当前项目并生成 SPEC</span>
@@ -1388,7 +1388,7 @@
       <p>Goal Workflow 的技能可在多个 AI Coding Agent 中使用：</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/refactor</th><th>/modern-go</th><th>/to-spec</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
         <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
         <tr><td>Codex</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
         <tr><td>OpenCode</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
