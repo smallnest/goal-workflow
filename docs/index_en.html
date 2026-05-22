@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goal Workflow Usage Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #FAF9F6;
+      min-height: 100vh;
+      padding: 2.5rem 2rem;
+      color: #1a1a1a;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 2.5rem;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.375rem;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background: #D97757;
+      border-radius: 50%;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.9); }
+    }
+
+    h1 {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+
+    .subtitle {
+      color: #8B8680;
+      font-size: 0.8125rem;
+      margin-left: 1.625rem;
+      letter-spacing: 0.01em;
+    }
+
+    .diagram-desc {
+      color: #B0AAA4;
+      font-size: 0.6875rem;
+      margin-top: 0.5rem;
+      margin-left: 1.625rem;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #E8E4DE;
+    }
+
+    h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      color: #4A4540;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+
+    .section {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid #E8E4DE;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .section-dot.terracotta { background: #D97757; }
+    .section-dot.sage { background: #5B8A72; }
+    .section-dot.slate { background: #6B7280; }
+    .section-dot.plum { background: #8B6F8A; }
+    .section-dot.rose { background: #C96464; }
+    .section-dot.amber { background: #D4A843; }
+    .section-dot.teal { background: #2D9CDB; }
+    .section-dot.violet { background: #7C5CBF; }
+.coral, .section-dot.coral { background: #E8624F; }
+
+    .section-title h3 {
+      margin: 0;
+      font-size: 0.875rem;
+    }
+
+    pre {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+      color: #E8E4DE;
+    }
+
+    .inline-code {
+      background: #F5F3F0;
+      border: 1px solid #E8E4DE;
+      border-radius: 4px;
+      padding: 0.125rem 0.375rem;
+      font-size: 0.75rem;
+      color: #D97757;
+    }
+
+    .comment { color: #6B7280; }
+    .flag { color: #D97757; }
+    .value { color: #5B8A72; }
+    .cmd { color: #E8E4DE; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      margin: 0.75rem 0;
+    }
+
+    th {
+      background: #F7F6F4;
+      font-weight: 600;
+      text-align: left;
+      padding: 0.625rem 0.75rem;
+      color: #4A4540;
+      border-bottom: 1px solid #E8E4DE;
+    }
+
+    td {
+      padding: 0.5rem 0.75rem;
+      color: #4A4540;
+      border-bottom: 1px solid #F0EDE8;
+    }
+
+    tr:hover td {
+      background: #FDFCFB;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.6875rem;
+      font-weight: 500;
+    }
+
+    .badge-plan {
+      background: #FFF5F0;
+      color: #D97757;
+      border: 1px solid #D97757;
+    }
+
+    .badge-impl {
+      background: #F5F8F6;
+      color: #5B8A72;
+      border: 1px solid #5B8A72;
+    }
+
+    .badge-review {
+      background: #F5F3F8;
+      color: #8B6F8A;
+      border: 1px solid #8B6F8A;
+    }
+
+    .badge-ship {
+      background: #F0F4F8;
+      color: #4A6FA5;
+      border: 1px solid #4A6FA5;
+    }
+
+    .badge-humanize {
+      background: #FDF8F0;
+      color: #D4A843;
+      border: 1px solid #D4A843;
+    }
+
+    .badge-tts {
+      background: #F0F7FD;
+      color: #2D9CDB;
+      border: 1px solid #2D9CDB;
+    }
+
+    .badge-note {
+      background: #F5F3F0;
+      color: #6B7280;
+      border: 1px solid #6B7280;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border-radius: 10px;
+      border: 1px solid #E8E4DE;
+      padding: 1.125rem 1.25rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .card-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .card-dot.terracotta { background: #D97757; }
+    .card-dot.sage { background: #5B8A72; }
+    .card-dot.slate { background: #6B7280; }
+    .card-dot.plum { background: #8B6F8A; }
+    .card-dot.blue { background: #4A6FA5; }
+    .card-dot.amber { background: #D4A843; }
+    .card-dot.teal { background: #2D9CDB; }
+    .card-dot.violet { background: #7C5CBF; }
+.card-dot.coral { background: #E8624F; }
+
+    .card h4 {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .card p {
+      font-size: 0.75rem;
+      color: #6B6560;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .card ul {
+      list-style: none;
+      color: #6B6560;
+      font-size: 0.75rem;
+      line-height: 1.7;
+    }
+
+    .card li {
+      margin-bottom: 0.25rem;
+    }
+
+    .diagram-box {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid #E8E4DE;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow-x: auto;
+    }
+
+    .note {
+      background: #FFF5F0;
+      border-left: 3px solid #D97757;
+      border-radius: 0 8px 8px 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      color: #6B6560;
+      margin: 0.75rem 0;
+    }
+
+    .note strong {
+      color: #D97757;
+    }
+
+    .tip {
+      background: #F5F8F6;
+      border-left: 3px solid #5B8A72;
+      border-radius: 0 8px 8px 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      color: #6B6560;
+      margin: 0.75rem 0;
+    }
+
+    .tip strong {
+      color: #5B8A72;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #B0AAA4;
+      font-size: 0.6875rem;
+      letter-spacing: 0.02em;
+    }
+
+    .toc {
+      background: #FDFCFB;
+      border: 1px solid #E8E4DE;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .toc h3 {
+      font-size: 0.8125rem;
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      color: #8B8680;
+    }
+
+    .toc ul {
+      list-style: none;
+      font-size: 0.75rem;
+    }
+
+    .toc li {
+      margin-bottom: 0.375rem;
+    }
+
+    .toc a {
+      color: #5B8A72;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .toc a:hover {
+      color: #D97757;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #FFFFFF;
+      border: 1px solid #E8E4DE;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .flow-step .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .flow-step .step-num.n1 { background: #D97757; }
+    .flow-step .step-num.n2 { background: #5B8A72; }
+    .flow-step .step-num.n3 { background: #8B6F8A; }
+    .flow-step .step-num.n4 { background: #4A6FA5; }
+    .flow-step .step-num.n5 { background: #D4A843; }
+    .flow-step .step-num.n6 { background: #2D9CDB; }
+    .flow-step .step-num.n7 { background: #E8624F; }
+    .flow-step .step-num.n8 { background: #6B7280; }
+
+    .flow-connector {
+      color: #C5C0BA;
+      font-size: 1.25rem;
+    }
+
+    .step-list {
+      list-style: none;
+      padding-left: 0;
+      color: #4A4540;
+      font-size: 0.8125rem;
+      line-height: 1.8;
+    }
+
+    .step-list li {
+      margin-bottom: 0.25rem;
+      padding-left: 1.25rem;
+      position: relative;
+    }
+
+    .step-list li::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      color: #5B8A72;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>Goal Workflow Usage Guide</h1>
+      </div>
+      <p class="subtitle">AI-driven development workflow — from PRD to shipped code</p>
+      <p class="subtitle" style="margin-top: 0.25rem;"><a href="https://github.com/smallnest/goal-workflow" style="color: #D97757; text-decoration: none;">github.com/smallnest/goal-workflow</a></p>
+      <p class="diagram-desc"><b>Usage Guide</b> — Six-step closed-loop development workflow: Plan, Design, Break Down, Implement, Review, Ship.</p>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <h3>Contents</h3>
+      <ul>
+        <li><a href="#overview">1. Overview</a></li>
+        <li><a href="#install">2. Installation</a></li>
+        <li><a href="#workflow">3. Workflow Overview</a></li>
+        <li><a href="#step-prd">4. Step 1: /prd — Requirements Planning</a></li>
+        <li><a href="#step-prd-to-spec">5. Step 1.5: /prd-to-spec — PRD to Technical SPEC</a></li>
+        <li><a href="#step-to-issues">6. Step 1.6: /to-issues — Break Down into Issues</a></li>
+        <li><a href="#step-goal">7. Step 2: /goal — Feature Implementation</a></li>
+        <li><a href="#step-review">8. Step 3: /review-it — Code Review</a></li>
+        <li><a href="#step-ship">9. Step 4: /ship-it — Commit and Ship</a></li>
+        <li><a href="#step-humanize">10. Bonus: /humanize-it — De-AI Text Rewriting</a></li>
+        <li><a href="#step-tts">11. Bonus: /listenhub-tts — Text to Speech</a></li>
+        <li><a href="#step-diagram">12. Bonus: /insight-diagram — UML and Architecture Diagrams</a></li>
+        <li><a href="#step-refactor">13. Bonus: /refactor — Expert-Level Code Refactoring</a></li>
+        <li><a href="#step-modern-go">14. Bonus: /modern-go — Go Code Modernization</a></li>
+        <li><a href="#step-note-it">15. Bonus: /note-it — Implementation Notes</a></li>
+        <li><a href="#step-code-to-spec">16. Bonus: /code-to-spec — Reverse-Generate SPEC</a></li>
+        <li><a href="#platforms">17. Supported Platforms</a></li>
+        <li><a href="#faq">18. FAQ</a></li>
+      </ul>
+    </div>
+
+    <!-- Section 1: Overview -->
+    <div class="section" id="overview">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>1. Overview</h3>
+      </div>
+      <p>
+        <strong>Goal Workflow</strong> is a collection of AI-driven development workflow skills built for Claude Code / Codex. It breaks down the complete software development lifecycle into standardized steps, each driven by a dedicated Skill.
+      </p>
+      <p>
+        It enables AI agents to act like experienced engineers — from understanding requirements, breaking down tasks, writing code, reviewing quality, to final submission and merge — autonomously completing the entire process. You just describe the feature idea, and the workflow handles the rest.
+      </p>
+      <div class="cards">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot terracotta"></div>
+            <h4>/prd</h4>
+          </div>
+          <p>Requirements document generation + Issue breakdown</p>
+          <ul>
+            <li>Clarifying questions → structured PRD</li>
+            <li>Decomposed into independently implementable Issues</li>
+            <li>Supports GitHub / Local / iCafe</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot terracotta"></div>
+            <h4>/prd-to-spec</h4>
+          </div>
+          <p>PRD to technical design SPEC</p>
+          <ul>
+            <li>PRD requirements → architecture + API + data model</li>
+            <li>Error handling + security + performance strategies</li>
+            <li>Issue mapping + implementation plan</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot coral"></div>
+            <h4>/to-issues</h4>
+          </div>
+          <p>Break PRD/SPEC into Issue cards</p>
+          <ul>
+            <li>User Stories → implementable Issues</li>
+            <li>Supports GitHub / Local / iCafe</li>
+            <li>Standalone — does not depend on /prd</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot sage"></div>
+            <h4>/goal</h4>
+          </div>
+          <p>Pick a card for end-to-end implementation</p>
+          <ul>
+            <li>Pick an Issue, implement it</li>
+            <li>Complete one feature per session</li>
+            <li>Claude Code or Codex</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot plum"></div>
+            <h4>/review-it</h4>
+          </div>
+          <p>Automated code review and repair</p>
+          <ul>
+            <li>Detect uncommitted changes or branch diff</li>
+            <li>Findings → iterative fixes</li>
+            <li>Until review passes</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot blue"></div>
+            <h4>/ship-it</h4>
+          </div>
+          <p>Commit → PR → Merge → Close</p>
+          <ul>
+            <li>Commit linked to Issue number</li>
+            <li>Squash merge + delete branch</li>
+            <li>Add implementation summary and close card</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot amber"></div>
+            <h4>/humanize-it</h4>
+          </div>
+          <p>Iterative de-AI text rewriting</p>
+          <ul>
+            <li>Auto-select best humanization strategy</li>
+            <li>Three-path skill iteration until target met</li>
+            <li>Up to 42 rounds of intelligent switching</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot teal"></div>
+            <h4>/listenhub-tts</h4>
+          </div>
+          <p>ListenHub text-to-speech</p>
+          <ul>
+            <li>Quick synthesis / multi-voice / long text</li>
+            <li>Voice list to choose from, default Xiaoman</li>
+            <li>Supports AI polishing for long text</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot violet"></div>
+            <h4>/insight-diagram</h4>
+          </div>
+          <p>UML and architecture diagram generator</p>
+          <ul>
+            <li>Analyze codebase structure</li>
+            <li>UML / architecture diagrams / flowcharts</li>
+            <li>Rendered as HTML+SVG</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot coral"></div>
+            <h4>/refactor</h4>
+          </div>
+          <p>Expert-level code refactoring</p>
+          <ul>
+            <li>22 code smell detections</li>
+            <li>40+ refactoring techniques (Fowler catalog)</li>
+            <li>Five-phase safety protocol</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot teal"></div>
+            <h4>/modern-go</h4>
+          </div>
+          <p>Go code modernization</p>
+          <ul>
+            <li>35+ gofix-style transformation rules</li>
+            <li>Full coverage Go 1.0 to 1.26+</li>
+            <li>Auto-detect version + safety guard</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot slate"></div>
+            <h4>/note-it</h4>
+          </div>
+          <p>Implementation notes</p>
+          <ul>
+            <li>Design decisions / deviations / tradeoffs</li>
+            <li>Tracking open questions</li>
+            <li>Saved as HTML in docs/</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot sage"></div>
+            <h4>/code-to-spec</h4>
+          </div>
+          <p>Reverse-generate project SPEC</p>
+          <ul>
+            <li>Analyze code, config, tests, structure</li>
+            <li>Generate 12-chapter complete SPEC</li>
+            <li>Supports multi-level deep analysis</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Install -->
+    <div class="section" id="install">
+      <div class="section-title">
+        <div class="section-dot sage"></div>
+        <h3>2. Installation</h3>
+      </div>
+      <p>Install all skills in one command via the <code class="inline-code">npx skills</code> CLI:</p>
+      <pre><code><span class="comment"># Install all skills from this repository</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span>
+
+<span class="comment"># Or install a specific skill</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">prd</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">prd-to-spec</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-issues</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">review-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">ship-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">humanize-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">listenhub-tts</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">insight-diagram</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">refactor</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">modern-go</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">note-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">code-to-spec</span>
+
+<span class="comment"># Global install (available for all projects)</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
+
+<span class="comment"># Install to a specific agent</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-a</span> <span class="value">claude-code</span></code></pre>
+
+      <h3>Prerequisites</h3>
+      <table>
+        <tr><th>Tool</th><th>Purpose</th><th>Install</th></tr>
+        <tr><td><code class="inline-code">gh</code></td><td>GitHub CLI (Issue/PR operations)</td><td><code class="inline-code">brew install gh && gh auth login</code></td></tr>
+        <tr><td><code class="inline-code">claude</code></td><td>Claude Code CLI</td><td><code class="inline-code">npm install -g @anthropic-ai/claude-code</code></td></tr>
+        <tr><td><code class="inline-code">npx</code></td><td>npm package runner</td><td>Bundled with Node.js</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/listenhub-tts</code>, <code class="inline-code">/insight-diagram</code> in Claude Code to directly invoke the corresponding skill.
+      </div>
+    </div>
+
+    <!-- Section 3: Workflow Overview -->
+    <div class="section" id="workflow">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>3. Workflow Overview</h3>
+      </div>
+      <p>Six-step closed loop, from requirements to delivery:</p>
+
+      <div style="text-align: center; margin: 1.5rem 0;">
+        <img src="workflow.png" alt="Goal Workflow Infographic" style="max-width: 100%; border-radius: 12px; border: 1px solid #E8E4DE; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+      </div>
+
+      <div class="flow-arrow">
+        <div class="flow-step">
+          <span class="step-num n1">1</span>
+          /prd
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n5">1.5</span>
+          /prd-to-spec
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n7">1.6</span>
+          /to-issues
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n2">2</span>
+          /goal
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n3">3</span>
+          /review-it
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n4">4</span>
+          /ship-it
+        </div>
+      </div>
+
+      <div class="diagram-box">
+        <svg viewBox="0 0 1140 220" style="min-width: 1030px;">
+          <defs>
+            <pattern id="dots-flow" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="0.6" fill="#E0DCD6"/>
+            </pattern>
+            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="none" stroke="#C5C0BA" stroke-width="1.2"/>
+            </marker>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots-flow)" />
+
+          <!-- Step 1: /prd -->
+          <rect x="10" y="40" width="130" height="140" rx="10" fill="#FFF5F0" stroke="#D97757" stroke-width="1.5"/>
+          <text x="75" y="68" fill="#D97757" font-size="11" font-weight="700" text-anchor="middle">Step 1: /prd</text>
+          <text x="75" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Describe feature idea</text>
+          <text x="75" y="108" fill="#4A4540" font-size="9" text-anchor="middle">Clarify questions</text>
+          <text x="75" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Generate PRD</text>
+          <text x="75" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: PRD</text>
+
+          <!-- Arrow 1→1.5 -->
+          <line x1="140" y1="110" x2="170" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 1.5: /prd-to-spec -->
+          <rect x="170" y="40" width="130" height="140" rx="10" fill="#FFF5F0" stroke="#D4A843" stroke-width="1.5" stroke-dasharray="4 2"/>
+          <text x="235" y="68" fill="#D4A843" font-size="11" font-weight="700" text-anchor="middle">1.5: /prd-to-spec</text>
+          <text x="235" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Read PRD</text>
+          <text x="235" y="108" fill="#4A4540" font-size="9" text-anchor="middle">Technical clarification</text>
+          <text x="235" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Generate SPEC</text>
+          <text x="235" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: SPEC (opt)</text>
+
+          <!-- Arrow 1.5→1.6 -->
+          <line x1="300" y1="110" x2="330" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 1.6: /to-issues -->
+          <rect x="330" y="40" width="130" height="140" rx="10" fill="#FFF5F0" stroke="#E8624F" stroke-width="1.5"/>
+          <text x="395" y="68" fill="#E8624F" font-size="11" font-weight="700" text-anchor="middle">1.6: /to-issues</text>
+          <text x="395" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Read PRD/SPEC</text>
+          <text x="395" y="108" fill="#4A4540" font-size="9" text-anchor="middle">Break into Issues</text>
+          <text x="395" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Create cards</text>
+          <text x="395" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: Issues</text>
+
+          <!-- Arrow 1.6→2 -->
+          <line x1="460" y1="110" x2="490" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 2: /goal -->
+          <rect x="490" y="40" width="130" height="140" rx="10" fill="#F5F8F6" stroke="#5B8A72" stroke-width="1.5"/>
+          <text x="555" y="68" fill="#5B8A72" font-size="11" font-weight="700" text-anchor="middle">Step 2: /goal</text>
+          <text x="555" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Select Issue</text>
+          <text x="555" y="108" fill="#4A4540" font-size="9" text-anchor="middle">End-to-end implementation</text>
+          <text x="555" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Run tests</text>
+          <text x="555" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: Code</text>
+
+          <!-- Arrow 2→3 -->
+          <line x1="620" y1="110" x2="650" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 3: /review-it -->
+          <rect x="650" y="40" width="130" height="140" rx="10" fill="#F5F3F8" stroke="#8B6F8A" stroke-width="1.5"/>
+          <text x="715" y="68" fill="#8B6F8A" font-size="11" font-weight="700" text-anchor="middle">Step 3: /review-it</text>
+          <text x="715" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Auto review</text>
+          <text x="715" y="108" fill="#4A4540" font-size="9" text-anchor="middle">Verify findings</text>
+          <text x="715" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Iterative fixes</text>
+          <text x="715" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: ✓ Review</text>
+
+          <!-- Arrow 3→4 -->
+          <line x1="780" y1="110" x2="810" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 4: /ship-it -->
+          <rect x="810" y="40" width="130" height="140" rx="10" fill="#F0F4F8" stroke="#4A6FA5" stroke-width="1.5"/>
+          <text x="875" y="68" fill="#4A6FA5" font-size="11" font-weight="700" text-anchor="middle">Step 4: /ship-it</text>
+          <text x="875" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Commit + Push</text>
+          <text x="875" y="108" fill="#4A4540" font-size="9" text-anchor="middle">Create PR</text>
+          <text x="875" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Merge + Close</text>
+          <text x="875" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: Shipped</text>
+        </svg>
+      </div>
+
+      <table>
+        <tr><th>Step</th><th>Command</th><th>Input</th><th>Output</th></tr>
+        <tr>
+          <td><span class="badge badge-plan">1. Plan</span></td>
+          <td><code class="inline-code">/prd</code></td>
+          <td>Feature description / product idea</td>
+          <td>PRD document + Issue cards</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-plan">1.5 Design</span></td>
+          <td><code class="inline-code">/prd-to-spec</code></td>
+          <td>PRD document</td>
+          <td>Technical SPEC (optional)</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-plan">1.6 Break Down</span></td>
+          <td><code class="inline-code">/to-issues</code></td>
+          <td>PRD / SPEC document</td>
+          <td>Issue cards</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-impl">2. Implement</span></td>
+          <td><code class="inline-code">/goal</code></td>
+          <td>An Issue card</td>
+          <td>Runnable code implementation</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-review">3. Review</span></td>
+          <td><code class="inline-code">/review-it</code></td>
+          <td>Code changes (dirty / branch)</td>
+          <td>Clean code that passes review</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-ship">4. Ship</span></td>
+          <td><code class="inline-code">/ship-it</code></td>
+          <td>Reviewed code</td>
+          <td>Merged PR + Closed Issue</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Section 4: /prd -->
+    <div class="section" id="step-prd">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>4. Step 1: /prd — Requirements Planning</h3>
+      </div>
+      <p>
+        <code class="inline-code">/prd</code> transforms a vague feature idea into a structured product requirements document and breaks it down into independently implementable Issue cards.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/prd</span> <span class="value">Add a priority feature to our task management system</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Write PRD for: </span><span class="value">User registration with email and phone support</span>
+<span class="cmd">Requirements analysis: </span><span class="value">Add rate limiting capability to the API</span></code></pre>
+
+      <h3>Workflow</h3>
+      <ul class="step-list">
+        <li>Agent asks 3-5 clarifying questions (with letter options, reply quickly with "1A, 2C, 3B")</li>
+        <li>Generates structured PRD based on answers (User Stories, Functional Requirements, Non-Goals, Acceptance Criteria)</li>
+        <li>Presents PRD for review; confirm or adjust</li>
+        <li>Saves PRD to <code class="inline-code">tasks/prd-[feature-name].md</code></li>
+        <li>Breaks down PRD into Issue list; presents for confirmation</li>
+        <li>Selects creation mode (GitHub / Local / Baidu iCafe) and creates Issues</li>
+      </ul>
+
+      <h3>Output Example</h3>
+      <pre><code><span class="comment"># Generated Issue list</span>
+<span class="value">📋 Generated 4 Issues from PRD:</span>
+
+<span class="cmd">#1: Add priority field to database</span> <span class="flag">(backend, high)</span>
+<span class="cmd">#2: Display priority indicator</span> <span class="flag">(frontend, high)</span> <span class="comment">— depends on #1</span>
+<span class="cmd">#3: Add priority selector</span> <span class="flag">(frontend, medium)</span> <span class="comment">— depends on #1</span>
+<span class="cmd">#4: Filter tasks by priority</span> <span class="flag">(frontend, medium)</span> <span class="comment">— depends on #1, #2</span></code></pre>
+
+      <div class="tip">
+        <strong>Tip:</strong> Each Issue should be sized for an agent to complete within a single session. If a User Story is too large (5+ acceptance criteria or cross full-stack), it will be automatically split.
+      </div>
+    </div>
+
+    <!-- Section 5: /prd-to-spec -->
+    <div class="section" id="step-prd-to-spec">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>5. Step 1.5: /prd-to-spec — PRD to Technical SPEC</h3>
+      </div>
+      <p>
+        <code class="inline-code">/prd-to-spec</code> transforms a product requirements document (PRD) into an implementable technical design SPEC. PRD says "what to build"; SPEC says "how to build it".
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/prd-to-spec</span> <span class="value">tasks/prd-priority-system.md</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">PRD to design: </span><span class="value">Convert priority PRD to technical plan</span>
+<span class="cmd">Technical spec: </span><span class="value">Generate SPEC based on prd-user-auth.md</span></code></pre>
+
+      <h3>PRD → SPEC Mapping</h3>
+      <table>
+        <tr><th>PRD Element</th><th>SPEC Chapter</th><th>Transformation</th></tr>
+        <tr><td>User Stories</td><td>Business Logic + Test Mapping</td><td>Stories → algorithms + test cases</td></tr>
+        <tr><td>Functional Requirements</td><td>API Design + Business Logic</td><td>FR → endpoints + implementation logic</td></tr>
+        <tr><td>Acceptance Criteria</td><td>Testing Strategy</td><td>Criteria → concrete test scenarios</td></tr>
+        <tr><td>Non-Goals</td><td>Open Questions</td><td>Explicitly scoped exclusions</td></tr>
+        <tr><td>Technical Considerations</td><td>Architecture + Performance</td><td>Constraints → design decisions</td></tr>
+      </table>
+
+      <h3>SPEC Output Structure (11 Chapters)</h3>
+      <table>
+        <tr><th>#</th><th>Chapter</th><th>Content</th></tr>
+        <tr><td>1</td><td>Summary</td><td>Scope, PRD reference, design decision summary</td></tr>
+        <tr><td>2</td><td>Architecture</td><td>System context, component design, file structure</td></tr>
+        <tr><td>3</td><td>Data Model</td><td>Schema changes, entity definitions, migration plan</td></tr>
+        <tr><td>4</td><td>API Design</td><td>Endpoint table, request/response schema, error responses</td></tr>
+        <tr><td>5</td><td>Business Logic</td><td>Core algorithms, validation rules, state machines, edge cases</td></tr>
+        <tr><td>6</td><td>Error Handling</td><td>Error classification, retry strategies, degradation plan</td></tr>
+        <tr><td>7</td><td>Security</td><td>Authentication/authorization, input validation, data protection</td></tr>
+        <tr><td>8</td><td>Performance</td><td>Expected load, optimization strategies, database considerations</td></tr>
+        <tr><td>9</td><td>Testing Strategy</td><td>Unit/integration/E2E tests + acceptance criteria mapping</td></tr>
+        <tr><td>10</td><td>Implementation Plan</td><td>Implementation phases, Issue mapping, incremental delivery</td></tr>
+        <tr><td>11</td><td>Open Questions & Risks</td><td>Unresolved questions, technical risks, assumptions</td></tr>
+      </table>
+
+      <h3>Workflow</h3>
+      <ul class="step-list">
+        <li>Locate PRD file (auto-scan tasks/ or manually specified)</li>
+        <li>(Optional) Analyze existing codebase: architecture, tech stack, patterns, conventions (skip if no codebase — propose architecture from scratch)</li>
+        <li>Ask 3-5 technical clarification questions (with options)</li>
+        <li>Generate complete SPEC document</li>
+        <li>Present for review; confirm or iterate</li>
+        <li>Save to <code class="inline-code">tasks/spec-[feature-name].md</code></li>
+      </ul>
+
+      <div class="note">
+        <strong>Note:</strong> <code class="inline-code">/prd-to-spec</code> is an <strong>optional step</strong>. For most small to medium features, the Functional Requirements and Acceptance Criteria in the PRD are sufficient for the AI agent to make autonomous technical decisions during the <code class="inline-code">/goal</code> phase — the agent automatically analyzes the codebase, understands the architecture, and chooses the right implementation path without needing a pre-written SPEC. Consider running <code class="inline-code">/prd-to-spec</code> only in the following scenarios:
+        <ul class="step-list" style="margin-top: 0.5rem;">
+          <li>Multiple people or agents developing in parallel, needing shared technical conventions</li>
+          <li>Large changes spanning multiple services/modules, where architecture decisions have broad impact</li>
+          <li>Team has compliance or review process requiring design documents</li>
+          <li>PRD is vague and needs upfront technical detail to reduce interpretation variance</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 6: /to-issues -->
+    <div class="section" id="step-to-issues">
+      <div class="section-title">
+        <div class="section-dot coral"></div>
+        <h3>6. Step 1.6: /to-issues — Break Down into Issues</h3>
+      </div>
+      <p>
+        <code class="inline-code">/to-issues</code> breaks down a PRD and/or SPEC into independently implementable Issues and creates them on your chosen platform. It can be used standalone — no need to run <code class="inline-code">/prd</code> first.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/to-issues</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Create issues for: </span><span class="value">Create Issues from prd-user-auth.md</span>
+<span class="cmd">Break down issues: </span><span class="value">Break down implementable cards from SPEC</span>
+<span class="cmd">Generate cards: </span><span class="value">Break PRD and SPEC together into Issues</span></code></pre>
+
+      <h3>Input Sources</h3>
+      <table>
+        <tr><th>Option</th><th>Description</th></tr>
+        <tr><td>Auto-detect</td><td>Scan <code class="inline-code">tasks/</code> directory, list available PRDs and SPECs</td></tr>
+        <tr><td>Specify PRD</td><td>Break down based only on PRD's User Stories</td></tr>
+        <tr><td>Specify SPEC</td><td>Use SPEC's Issue Mapping chapter as primary guidance</td></tr>
+        <tr><td>PRD + SPEC</td><td>(Recommended) PRD provides requirements, SPEC provides technical conventions — most complete Issues</td></tr>
+      </table>
+
+      <h3>Creation Platforms</h3>
+      <table>
+        <tr><th>Platform</th><th>Tool</th><th>Description</th></tr>
+        <tr><td>GitHub</td><td><code class="inline-code">gh issue create</code></td><td>Requires gh CLI authentication</td></tr>
+        <tr><td>Local</td><td>Markdown files</td><td>Saved to <code class="inline-code">.autoresearch/issues/</code> or custom directory</td></tr>
+        <tr><td>Baidu iCafe</td><td><code class="inline-code">icafe-cli</code></td><td>Requires iCafe space parameters</td></tr>
+      </table>
+
+      <h3>Workflow</h3>
+      <ul class="step-list">
+        <li>Locate input files (auto-detect or manually specify PRD/SPEC)</li>
+        <li>Break down into Issue list; present for user review (can add, remove, edit, merge)</li>
+        <li>Select creation platform (GitHub / Local / Baidu iCafe)</li>
+        <li>Create one by one and output summary report</li>
+      </ul>
+
+      <div class="note">
+        <strong>Note:</strong> <code class="inline-code">/to-issues</code> is the key bridge from requirements to implementation. It can be used independently — even if you didn't use <code class="inline-code">/prd</code> to generate a PRD, as long as you have a requirements document (or even pasted text), you can break it down into Issues.
+      </div>
+    </div>
+
+    <!-- Section 7: /goal -->
+    <div class="section" id="step-goal">
+      <div class="section-title">
+        <div class="section-dot sage"></div>
+        <h3>7. Step 2: /goal — Feature Implementation</h3>
+      </div>
+      <p>
+        <code class="inline-code">/goal</code> is Claude Code's built-in goal-driven development mode. Pick an Issue card and the agent understands the acceptance criteria and implements end-to-end.
+      </p>
+
+      <h3>Usage</h3>
+      <pre><code><span class="comment"># Claude Code: specify GitHub Issue number</span>
+<span class="cmd">/goal</span> <span class="value">#42</span>
+
+<span class="comment"># Claude Code: specify local Issue file</span>
+<span class="cmd">/goal</span> <span class="value">tasks/issues/issue-001-add-priority-field.md</span>
+
+<span class="comment"># Codex: use --goal flag</span>
+<span class="cmd">codex</span> <span class="flag">--goal</span> <span class="value">"Implement issue #42: Add priority field to database"</span></code></pre>
+
+      <h3>Agent Behavior</h3>
+      <ul class="step-list">
+        <li>Read Issue description and acceptance criteria</li>
+        <li>Analyze codebase structure, understand context</li>
+        <li>Write implementation code</li>
+        <li>Run tests and type checks</li>
+        <li>Verify UI changes in browser</li>
+        <li>Confirm each acceptance criterion is met</li>
+      </ul>
+
+      <div class="note">
+        <strong>Note:</strong> <code class="inline-code">/goal</code> is a built-in feature of Claude Code and is not included in this skill package. It naturally integrates with this workflow — the Issue format generated by <code class="inline-code">/prd</code> is exactly what <code class="inline-code">/goal</code> expects as input.
+      </div>
+    </div>
+
+    <!-- Section 7: /review-it -->
+    <div class="section" id="step-review">
+      <div class="section-title">
+        <div class="section-dot plum"></div>
+        <h3>8. Step 3: /review-it — Code Review</h3>
+      </div>
+      <p>
+        <code class="inline-code">/review-it</code> performs automated review before committing, discovering potential issues and iteratively fixing them until the review passes.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Review uncommitted changes (default mode)</span>
+<span class="cmd">/review-it</span>
+
+<span class="comment"># Review entire branch vs main</span>
+<span class="cmd">/review-it</span> <span class="value">--mode branch</span>
+
+<span class="comment"># Review + tests in parallel</span>
+<span class="cmd">/review-it</span> <span class="value">--parallel-tests "npm test"</span></code></pre>
+
+      <h3>Review Principles</h3>
+      <table>
+        <tr><th>Principle</th><th>Description</th></tr>
+        <tr><td>Advisory</td><td>Review results are suggestions, not blindly applied</td></tr>
+        <tr><td>Verify</td><td>Every finding is verified by reading real code paths</td></tr>
+        <tr><td>Reject noise</td><td>Reject impractical edge cases, speculative risks, excessive refactoring</td></tr>
+        <tr><td>Iterate</td><td>Re-review after fixes until no actionable findings remain</td></tr>
+        <tr><td>Minimal</td><td>Prefer small fixes; avoid unnecessary large refactors</td></tr>
+      </table>
+
+      <h3>Review Modes</h3>
+      <table>
+        <tr><th>Working Tree State</th><th>Mode</th><th>Action</th></tr>
+        <tr><td>Uncommitted changes</td><td>local</td><td>Direct <code class="inline-code">/review</code></td></tr>
+        <tr><td>Committed not pushed</td><td>branch</td><td><code class="inline-code">git diff origin/main...HEAD</code> + review</td></tr>
+        <tr><td>Pushed / PR</td><td>branch</td><td>Same as above, auto-detect PR base</td></tr>
+        <tr><td>Clean working tree</td><td>skip</td><td>No review needed</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip:</strong> <code class="inline-code">/review-it</code> supports Claude Code, Codex, OpenCode, and DeepSeek TUI, automatically adapting to each agent's review commands.
+      </div>
+    </div>
+
+    <!-- Section 8: /ship-it -->
+    <div class="section" id="step-ship">
+      <div class="section-title">
+        <div class="section-dot blue"></div>
+        <h3>9. Step 4: /ship-it — Commit and Ship</h3>
+      </div>
+      <p>
+        <code class="inline-code">/ship-it</code> is the standard closing workflow after implementation is complete: commit code, create PR, merge, add implementation summary, close Issue.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Invoke in Claude Code</span>
+<span class="cmd">/ship-it</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Submit code</span>
+<span class="cmd">Create PR and merge</span></code></pre>
+
+      <h3>Complete Flow</h3>
+      <pre><code><span class="comment"># Step 1: Commit code (link Issue)</span>
+<span class="cmd">git add</span> <span class="value">&lt;related files&gt;</span>
+<span class="cmd">git commit -m</span> <span class="value">"Add priority field to database (#42)"</span>
+
+<span class="comment"># Step 2: Push branch</span>
+<span class="cmd">git push -u origin</span> <span class="value">feat/issue-42-priority-field</span>
+
+<span class="comment"># Step 3: Create PR (body includes Closes #42)</span>
+<span class="cmd">gh pr create</span> <span class="flag">--title</span> <span class="value">"Add priority field"</span> \
+  <span class="flag">--body</span> <span class="value">"Closes #42 ..."</span>
+
+<span class="comment"># Step 4: Merge</span>
+<span class="cmd">gh pr merge</span> <span class="flag">--squash</span> <span class="flag">--delete-branch</span>
+
+<span class="comment"># Step 5: Close Issue (if not auto-closed)</span>
+<span class="cmd">gh issue close</span> <span class="value">42</span> <span class="flag">--reason</span> <span class="value">completed</span></code></pre>
+
+      <h3>Error Handling</h3>
+      <table>
+        <tr><th>Scenario</th><th>Handling</th></tr>
+        <tr><td>CI checks failed</td><td>Check failure reason, fix and append commit then push</td></tr>
+        <tr><td>Merge conflict</td><td>Rebase origin/main, resolve conflicts then force push</td></tr>
+        <tr><td>Branch protection</td><td>Confirm required reviews are satisfied</td></tr>
+        <tr><td>Issue not auto-closed</td><td>Confirm PR body contains <code class="inline-code">Closes #N</code>, or close manually</td></tr>
+      </table>
+
+      <div class="note">
+        <strong>Note:</strong> <code class="inline-code">/ship-it</code> depends on the <code class="inline-code">gh</code> CLI. Make sure you've authenticated with <code class="inline-code">gh auth login</code>.
+      </div>
+    </div>
+
+    <!-- Section 9: /humanize-it -->
+    <div class="section" id="step-humanize">
+      <div class="section-title">
+        <div class="section-dot amber"></div>
+        <h3>10. Bonus: /humanize-it — De-AI Text Rewriting</h3>
+      </div>
+      <p>
+        <code class="inline-code">/humanize-it</code> rewrites specified documents to remove AI-generated feel. It automatically selects the most appropriate humanization strategy based on document type, iterating until the result meets quality standards.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/humanize-it</span> <span class="value">docs/architecture.md</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">De-AI: </span><span class="value">Rewrite this document in natural language</span>
+<span class="cmd">Reduce AIGC: </span><span class="value">humanize docs/blog-draft.md</span></code></pre>
+
+      <h3>Sub-Skill Capability Matrix</h3>
+      <table>
+        <tr><th>Skill</th><th>Best For</th><th>Style</th></tr>
+        <tr><td><a href="https://github.com/op7418/Humanizer-zh" style="color: #D4A843; text-decoration: none;"><code class="inline-code">humanizer-zh</code></a></td><td>General text, blogs, copywriting</td><td>Natural, warm, opinionated</td></tr>
+        <tr><td><a href="https://github.com/sickn33/antigravity-awesome-skills/blob/main/plugins/antigravity-awesome-skills-claude/skills/humanize-chinese/SKILL.md" style="color: #D4A843; text-decoration: none;"><code class="inline-code">humanize-chinese</code></a></td><td>General + academic + long-form text</td><td>Multi-style (Zhihu/Xiaohongshu/academic/literary etc.)</td></tr>
+        <tr><td><a href="https://github.com/luoling8192/technical-writing" style="color: #D4A843; text-decoration: none;"><code class="inline-code">technical-writing</code></a></td><td>Technical docs, architecture docs, review drafts</td><td>Plain, rigorous, defensible</td></tr>
+      </table>
+
+      <h3>Automatic Strategy Selection</h3>
+      <table>
+        <tr><th>Document Type</th><th>Priority Strategy Order</th></tr>
+        <tr><td>Technical documentation</td><td><code class="inline-code">technical-writing</code> &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">humanize-chinese</code></td></tr>
+        <tr><td>Academic paper</td><td><code class="inline-code">humanize-chinese</code> (academic) &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+        <tr><td>General text</td><td><code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">humanize-chinese</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+        <tr><td>Long-form text (≥1500 chars)</td><td><code class="inline-code">humanize-chinese</code> (longform) &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+      </table>
+
+      <h3>Iteration Mechanism</h3>
+      <ul class="step-list">
+        <li>Auto-detect document type, select first rewriting skill</li>
+        <li>After rewriting, score on 5 dimensions (AI trace removal / naturalness / information completeness / style consistency / readability)</li>
+        <li>Score ≥ 80 passes; output result</li>
+        <li>If not meeting target, switch to next skill, continuing to optimize on top of previous rewrite</li>
+        <li>Auto-switch if same skill shows no improvement for 3 consecutive rounds</li>
+        <li>After all skills used once, start a new round from the beginning with new combinations</li>
+        <li>Maximum 42 iterations; output current best result</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> You can specify preferences when invoking, such as "keep academic style", "make it more conversational", "don't make technical docs too casual" — rewriting will prioritize corresponding strategies.
+      </div>
+    </div>
+
+    <!-- Section 10: /listenhub-tts -->
+    <div class="section" id="step-tts">
+      <div class="section-title">
+        <div class="section-dot teal"></div>
+        <h3>11. Bonus: /listenhub-tts — Text to Speech</h3>
+      </div>
+      <p>
+        <code class="inline-code">/listenhub-tts</code> converts text to speech using the ListenHub API. Supports three synthesis modes, covering everything from short text to long-form content.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/listenhub-tts</span> <span class="value">Convert this text to speech</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Speech synthesis: </span><span class="value">Read README.md aloud</span>
+<span class="cmd">Generate audio: </span><span class="value">Read this article in Xiaoman's voice</span></code></pre>
+
+      <h3>Three Synthesis Modes</h3>
+      <table>
+        <tr><th>Mode</th><th>API</th><th>Best For</th><th>Characteristics</th></tr>
+        <tr><td>Quick Synthesis</td><td><code class="inline-code">/v1/tts</code></td><td>Short text (&lt; 1000 chars), single voice</td><td>Low latency, returns MP3 binary stream</td></tr>
+        <tr><td>Multi-Voice Script</td><td><code class="inline-code">/v1/speech</code></td><td>Multi-voice dialogue, podcasts</td><td>Different voices alternating narration</td></tr>
+        <tr><td>Long-Form Streaming</td><td><code class="inline-code">/v1/flow-speech/episodes</code></td><td>Long text (&gt; 1000 chars)</td><td>Async synthesis, supports AI polishing</td></tr>
+      </table>
+
+      <h3>Voice Selection</h3>
+      <table>
+        <tr><th>Scenario</th><th>Behavior</th></tr>
+        <tr><td>User specified voice</td><td>Use the specified speakerId directly</td></tr>
+        <tr><td>User did not specify voice</td><td>Call API to get voice list, present for user selection</td></tr>
+        <tr><td>Default voice</td><td><code class="inline-code">chat-girl-105-cn</code> (Xiaoman dxqqq)</td></tr>
+      </table>
+
+      <h3>Prerequisites</h3>
+      <table>
+        <tr><th>Config</th><th>Description</th></tr>
+        <tr><td><code class="inline-code">LISTENHUB_API_KEY</code></td><td>ListenHub API key, set as environment variable</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip:</strong> Long-form mode supports AI polishing (<code class="inline-code">aiPolish</code>), which can automatically optimize text for spoken delivery before synthesis, making the narration more natural.
+      </div>
+    </div>
+
+    <!-- Section 11: /insight-diagram -->
+    <div class="section" id="step-diagram">
+      <div class="section-title">
+        <div class="section-dot violet"></div>
+        <h3>12. Bonus: /insight-diagram — UML and Architecture Diagrams</h3>
+      </div>
+      <p>
+        <code class="inline-code">/insight-diagram</code> generates UML diagrams, architecture diagrams, and flowcharts for any project. After analyzing the codebase, it lets users choose which diagram types to generate, renders them as HTML+SVG, and saves to the <code class="inline-code">docs/</code> directory.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/insight-diagram</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Generate architecture diagram: </span><span class="value">Analyze project structure and generate architecture diagram</span>
+<span class="cmd">Draw flowchart: </span><span class="value">Draw call flow diagram for this module</span>
+<span class="cmd">Generate UML: </span><span class="value">Generate class diagram and sequence diagram</span></code></pre>
+
+      <h3>Supported Diagram Types</h3>
+      <p>A total of <strong>17</strong> diagram types, divided into structural and behavioral categories:</p>
+
+      <h3>Structural Diagrams (Static)</h3>
+      <table>
+        <tr><th>#</th><th>Diagram Type</th><th>Focus</th></tr>
+        <tr><td>1</td><td>System Architecture Diagram ★</td><td>Component relationships, global perspective (non-UML, most common)</td></tr>
+        <tr><td>2</td><td>Class Diagram</td><td>Defining classes, attributes, operations, and relationships</td></tr>
+        <tr><td>3</td><td>Object Diagram</td><td>Object instances and their relationships at a specific moment</td></tr>
+        <tr><td>4</td><td>Component Diagram</td><td>System components and their dependencies</td></tr>
+        <tr><td>5</td><td>Deployment Diagram</td><td>Physical hardware, nodes, and software deployment</td></tr>
+        <tr><td>6</td><td>Package Diagram</td><td>Grouping model elements for organization</td></tr>
+        <tr><td>7</td><td>Composite Structure Diagram</td><td>Internal structure of a class</td></tr>
+        <tr><td>8</td><td>Profile Diagram</td><td>Extending UML metamodel, custom stereotypes</td></tr>
+      </table>
+
+      <h3>Behavioral Diagrams (Dynamic)</h3>
+      <table>
+        <tr><th>#</th><th>Diagram Type</th><th>Focus</th></tr>
+        <tr><td>9</td><td>Flowchart ★</td><td>Main flow and branches (non-UML, most common)</td></tr>
+        <tr><td>10</td><td>Use Case Diagram</td><td>System functionality from user perspective</td></tr>
+        <tr><td>11</td><td>Activity Diagram</td><td>Process flow or steps</td></tr>
+        <tr><td>12</td><td>State Machine Diagram</td><td>State transitions over an object's lifecycle</td></tr>
+        <tr><td>13</td><td>Sequence Diagram</td><td>Object interactions over time</td></tr>
+        <tr><td>14</td><td>Communication Diagram</td><td>Focus on organizational relationships between objects</td></tr>
+        <tr><td>15</td><td>Timing Diagram</td><td>Focus on timing constraints of state changes</td></tr>
+        <tr><td>16</td><td>Interaction Overview Diagram</td><td>Combines activity and sequence diagrams</td></tr>
+        <tr><td>17</td><td>Swimlane Diagram</td><td>Cross-component/role responsibility flow (activity diagram variant)</td></tr>
+      </table>
+      <p style="font-size:0.6875rem;color:#8B8680;margin-top:0.25rem;">★ Indicates most commonly used diagram types. Default recommended combination: Architecture Diagram + Sequence Diagram + Flowchart.</p>
+
+      <h3>Workflow</h3>
+      <ul class="step-list">
+        <li>Analyze project codebase, identify key components and dependencies</li>
+        <li>Present list of available diagram types; user selects which to generate</li>
+        <li>Use <a href="https://github.com/Cocoon-AI/architecture-diagram-generator" style="color: #7C5CBF; text-decoration: none;">architecture-diagram</a> skill to render as HTML+SVG</li>
+        <li>Save output to <code class="inline-code">docs/</code> directory</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> You can specify a focus area when invoking, such as "only look at <code class="inline-code">src/services/</code> directory" or "focus on the database layer", to generate more targeted results.
+      </div>
+    </div>
+
+    <!-- Section 12: Refactor -->
+    <div class="section" id="step-refactor">
+      <div class="section-title">
+        <div class="section-dot coral"></div>
+        <h3>13. Bonus: /refactor — Expert-Level Code Refactoring</h3>
+      </div>
+      <p>
+        <code class="inline-code">/refactor</code> provides expert-level code refactoring based on Martin Fowler's complete catalog from <em>Refactoring</em> 2nd Edition. By identifying code smells and applying proven refactoring techniques, it improves code maintainability, readability, and structure without changing external behavior.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/refactor</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Refactor: </span><span class="value">Refactor UserManager class, it's too large</span>
+<span class="cmd">Code smell: </span><span class="value">This function has Feature Envy, fix it</span>
+<span class="cmd">Extract method: </span><span class="value">Break this long method into smaller functions</span></code></pre>
+
+      <h3>Code Smell Catalog</h3>
+      <p>Identifies <strong>22</strong> code smells, organized into five categories:</p>
+
+      <table>
+        <tr><th>Category</th><th>Smells</th><th>Primary Refactoring</th></tr>
+        <tr><td rowspan="5"><strong>Bloaters</strong></td><td>Long Method</td><td>Extract Method, Replace Temp with Query</td></tr>
+        <tr><td>Large Class</td><td>Extract Class, Extract Subclass</td></tr>
+        <tr><td>Primitive Obsession</td><td>Replace Data Value with Object</td></tr>
+        <tr><td>Long Parameter List</td><td>Introduce Parameter Object</td></tr>
+        <tr><td>Data Clumps</td><td>Extract Class</td></tr>
+        <tr><td rowspan="4"><strong>OO Abusers</strong></td><td>Switch Statements</td><td>Replace Conditional with Polymorphism</td></tr>
+        <tr><td>Temporary Field</td><td>Extract Class, Introduce Null Object</td></tr>
+        <tr><td>Refused Bequest</td><td>Replace Inheritance with Delegation</td></tr>
+        <tr><td>Alternative Classes with Different Interfaces</td><td>Rename Method, Extract Superclass</td></tr>
+        <tr><td rowspan="3"><strong>Change Preventers</strong></td><td>Divergent Change</td><td>Extract Class</td></tr>
+        <tr><td>Shotgun Surgery</td><td>Move Method, Move Field</td></tr>
+        <tr><td>Parallel Inheritance Hierarchies</td><td>Move Method, Move Field</td></tr>
+        <tr><td rowspan="6"><strong>Dispensables</strong></td><td>Comments (code self-explanatory)</td><td>Extract Method, Rename Variable</td></tr>
+        <tr><td>Duplicate Code</td><td>Extract Method, Pull Up Method</td></tr>
+        <tr><td>Lazy Class</td><td>Inline Class, Collapse Hierarchy</td></tr>
+        <tr><td>Data Class</td><td>Move Method, Encapsulate Field</td></tr>
+        <tr><td>Dead Code</td><td>Delete (Git history has record)</td></tr>
+        <tr><td>Speculative Generality</td><td>Inline Class, Remove Parameter</td></tr>
+        <tr><td rowspan="5"><strong>Couplers</strong></td><td>Feature Envy</td><td>Move Method</td></tr>
+        <tr><td>Inappropriate Intimacy</td><td>Move Method, Move Field</td></tr>
+        <tr><td>Message Chains</td><td>Hide Delegate</td></tr>
+        <tr><td>Middle Man</td><td>Remove Middle Man</td></tr>
+        <tr><td>Incomplete Library Class</td><td>Introduce Foreign Method</td></tr>
+      </table>
+
+      <h3>Refactoring Techniques Catalog</h3>
+      <p><strong>40+</strong> refactoring techniques in 6 categories, each with mechanical steps and comparison examples:</p>
+
+      <table>
+        <tr><th>Category</th><th>Count</th><th>Representative Techniques</th></tr>
+        <tr><td>Composing Methods</td><td>9</td><td>Extract Method, Inline Method, Extract Variable, Replace Temp with Query, Substitute Algorithm</td></tr>
+        <tr><td>Moving Features</td><td>7</td><td>Move Method, Move Field, Extract Class, Inline Class, Hide Delegate</td></tr>
+        <tr><td>Organizing Data</td><td>13</td><td>Replace Data Value with Object, Encapsulate Field, Replace Type Code with Subclasses, Replace Magic Number</td></tr>
+        <tr><td>Simplifying Conditionals</td><td>8</td><td>Decompose Conditional, Guard Clauses, Replace Conditional with Polymorphism, Introduce Null Object</td></tr>
+        <tr><td>Method Calls</td><td>13</td><td>Rename Method, Separate Query from Modifier, Introduce Parameter Object, Replace Error Code with Exception</td></tr>
+        <tr><td>Generalization</td><td>9</td><td>Pull Up Method, Push Down Method, Extract Interface, Form Template Method, Replace Inheritance with Delegation</td></tr>
+      </table>
+
+      <h3>Safety Protocol</h3>
+      <ul class="step-list">
+        <li><strong>Preparation Phase:</strong> Write characterization tests → commit current state → create refactoring branch</li>
+        <li><strong>Each Step:</strong> One change at a time → compile passes → all tests pass → commit</li>
+        <li><strong>Verification Phase:</strong> All tests pass → manual smoke test → self-review diff → final commit</li>
+        <li><strong>Iron Rule:</strong> Don't change external behavior, don't mix with feature changes, every step backed by tests</li>
+      </ul>
+
+      <h3>Language-Specific Guides</h3>
+      <table>
+        <tr><th>Language</th><th>Key Recommendations</th></tr>
+        <tr><td>Java</td><td>final locals, IDE auto-refactor, Records, Sealed Classes</td></tr>
+        <tr><td>TypeScript</td><td>Destructuring reduces params, prefer const, Union Types replace type codes, ?. eliminates null checks</td></tr>
+        <tr><td>Python</td><td>Type Hints, dataclasses, @property, Context Managers</td></tr>
+        <tr><td>Go</td><td>Small interfaces, named return values, table-driven tests, early returns eliminate nesting</td></tr>
+        <tr><td>Rust</td><td>Result/Option replace error codes and null, Pattern Matching, From trait, Derive macros</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip:</strong> For each refactoring, simply tell the AI "This class has this smell, please fix it with the corresponding refactoring technique" — AI will follow the safety protocol step by step, committing at each step.
+      </div>
+    </div>
+
+    <!-- Section 13: Modern-Go -->
+    <div class="section" id="step-modern-go">
+      <div class="section-title">
+        <div class="section-dot teal"></div>
+        <h3>14. Bonus: /modern-go — Go Code Modernization</h3>
+      </div>
+      <p>
+        <code class="inline-code">/modern-go</code> automatically upgrades Go code to modern idioms and APIs, similar to <code class="inline-code">go fix</code>. It scans <code class="inline-code">go.mod</code> to detect the Go version, then batch-applies version-appropriate transformation rules to Go source files, covering 35+ rules from Go 1.0 through 1.26+.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/modern-go</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Modernize: </span><span class="value">Modernize this project's Go code</span>
+<span class="cmd">Upgrade Go code: </span><span class="value">Update to Go 1.22 idioms</span>
+<span class="cmd">Gofix: </span><span class="value">Scan pkg/ directory and apply transformations</span></code></pre>
+
+      <h3>Workflow</h3>
+      <ul class="step-list">
+        <li>Read <code class="inline-code">go.mod</code> to get Go version</li>
+        <li>Find <code class="inline-code">.go</code> files within target scope (specified file/directory/entire project)</li>
+        <li>Scan each file for "Before" patterns, apply all transformations for versions ≤ project version</li>
+        <li>Each transformation includes a concise comparison table and code examples (before/after)</li>
+        <li>After editing, run <code class="inline-code">goimports -w</code> to clean imports</li>
+        <li>Output transformation report: file count, transformations applied, rules skipped</li>
+      </ul>
+
+      <h3>Transformation Rule Catalog (by Go Version)</h3>
+      <table>
+        <tr><th>Version</th><th>Rules</th><th>Example (Before → After)</th></tr>
+        <tr><td>1.0+</td><td><code class="inline-code">time.Since</code></td><td><code class="inline-code">time.Now().Sub(start)</code> → <code class="inline-code">time.Since(start)</code></td></tr>
+        <tr><td>1.8+</td><td><code class="inline-code">time.Until</code></td><td><code class="inline-code">deadline.Sub(time.Now())</code> → <code class="inline-code">time.Until(deadline)</code></td></tr>
+        <tr><td>1.10+</td><td><code class="inline-code">strings.Builder</code></td><td>Loop <code class="inline-code">s += item</code> → <code class="inline-code">strings.Builder</code></td></tr>
+        <tr><td>1.13+</td><td><code class="inline-code">errors.Is</code></td><td><code class="inline-code">err == io.EOF</code> → <code class="inline-code">errors.Is(err, io.EOF)</code></td></tr>
+        <tr><td>1.18+</td><td><code class="inline-code">any</code>, <code class="inline-code">strings.Cut</code>, <code class="inline-code">bytes.Cut</code></td><td><code class="inline-code">interface{}</code> → <code class="inline-code">any</code>, Index+slice → Cut</td></tr>
+        <tr><td>1.19+</td><td><code class="inline-code">fmt.Appendf</code>, type-safe atomics</td><td><code class="inline-code">append(buf, fmt.Sprintf(...)...)</code> → <code class="inline-code">fmt.Appendf</code></td></tr>
+        <tr><td>1.20+</td><td><code class="inline-code">strings.Clone</code>, <code class="inline-code">CutPrefix/CutSuffix</code>, <code class="inline-code">errors.Join</code></td><td><code class="inline-code">string([]byte(s))</code> → <code class="inline-code">strings.Clone(s)</code></td></tr>
+        <tr><td>1.21+</td><td><code class="inline-code">min</code>/<code class="inline-code">max</code>, <code class="inline-code">clear</code>, <code class="inline-code">slices</code>/<code class="inline-code">maps</code> packages</td><td>Manual loops → <code class="inline-code">slices.Contains</code>, <code class="inline-code">maps.Clone</code> etc.</td></tr>
+        <tr><td>1.22+</td><td>range over int, <code class="inline-code">cmp.Or</code>, <code class="inline-code">reflect.TypeFor</code></td><td><code class="inline-code">for i:=0;i&lt;n;i++</code> → <code class="inline-code">for i:=range n</code></td></tr>
+        <tr><td>1.23+</td><td>Iterator helpers, <code class="inline-code">SplitSeq/FieldsSeq</code></td><td><code class="inline-code">for _,p:=range strings.Split(s,sep)</code> → <code class="inline-code">SplitSeq</code></td></tr>
+        <tr><td>1.24+</td><td><code class="inline-code">t.Context()</code>, <code class="inline-code">omitzero</code>, <code class="inline-code">b.Loop()</code></td><td>Test <code class="inline-code">context.Background()</code> → <code class="inline-code">t.Context()</code></td></tr>
+        <tr><td>1.25+</td><td><code class="inline-code">wg.Go()</code></td><td><code class="inline-code">wg.Add(1); go func(){defer wg.Done();fn()}()</code> → <code class="inline-code">wg.Go(fn)</code></td></tr>
+        <tr><td>1.26+</td><td><code class="inline-code">new(expr)</code>, <code class="inline-code">errors.AsType</code></td><td><code class="inline-code">v:=42; &amp;v</code> → <code class="inline-code">new(42)</code></td></tr>
+      </table>
+
+      <h3>Safety Rules</h3>
+      <ul class="step-list">
+        <li><code class="inline-code">omitzero</code> is suggested only, not auto-applied (may change JSON serialization behavior)</li>
+        <li><code class="inline-code">SplitSeq</code> is applied only when the loop body doesn't need index or full slice</li>
+        <li><code class="inline-code">strings.Builder</code> is applied only when concatenation happens inside a loop</li>
+        <li>Each transformation that needs a new import auto-adds it and runs <code class="inline-code">goimports</code> to clean up</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> You can specify scope when invoking, such as <code class="inline-code">/modern-go pkg/</code> to only transform the <code class="inline-code">pkg/</code> directory, or <code class="inline-code">/modern-go main.go</code> to only transform a single file.
+      </div>
+    </div>
+
+    <!-- Section 14: Notes -->
+    <div class="section" id="step-note-it">
+      <div class="section-title">
+        <div class="section-dot slate"></div>
+        <h3>15. Bonus: /note-it — Implementation Notes</h3>
+      </div>
+      <p>
+        <code class="inline-code">/note-it</code> generates a structured implementation note for the current Issue after code implementation and review, recording design decisions, deviations, tradeoffs, and open questions. Output is saved as HTML in the <code class="inline-code">docs/</code> directory.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/note-it</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Record notes: </span><span class="value">Generate implementation notes for Issue #42</span>
+<span class="cmd">Implementation notes: </span><span class="value">Record decisions and deviations from this implementation</span></code></pre>
+
+      <h3>Note Contents</h3>
+      <table>
+        <tr><th>Category</th><th>Focus</th><th>Example</th></tr>
+        <tr><td>Design Decisions</td><td>Choices made where spec was ambiguous and rationale</td><td>Why interface polymorphism instead of switch</td></tr>
+        <tr><td>Deviations</td><td>Intentional deviations from spec and reasons</td><td>Rationale for simplifying error handling strategy</td></tr>
+        <tr><td>Tradeoffs</td><td>Alternatives considered and tradeoff analysis</td><td>Inline vs. extract function choice</td></tr>
+        <tr><td>Open Questions</td><td>Items needing confirmation or modification</td><td>Whether performance assumptions need benchmark validation</td></tr>
+      </table>
+
+      <h3>Output</h3>
+      <ul class="step-list">
+        <li>Auto-detect Issue number (from branch name or /goal context)</li>
+        <li>Generate HTML format note file</li>
+        <li>Save to <code class="inline-code">docs/issue#XXXX.html</code></li>
+        <li>If notes already exist for this Issue, prompt to append or overwrite</li>
+      </ul>
+
+      <h3>Positioning</h3>
+      <p>
+        <code class="inline-code">/note-it</code> sits between <code class="inline-code">/review-it</code> and <code class="inline-code">/ship-it</code> in the workflow, serving as the final checkpoint before submission — ensuring implementation intent is fully documented for future maintainers to understand the decision logic behind the code.
+      </p>
+
+      <div class="tip">
+        <strong>Tip:</strong> Even without deviations from spec, recording design decisions and tradeoffs is valuable — when revisiting the code 6 months later, these notes explain "why it was done this way" better than code comments alone.
+      </div>
+    </div>
+
+    <!-- Section 15: /code-to-spec -->
+    <div class="section" id="step-code-to-spec">
+      <div class="section-title">
+        <div class="section-dot sage"></div>
+        <h3>16. Bonus: /code-to-spec — Reverse-Generate SPEC</h3>
+      </div>
+      <p>
+        <code class="inline-code">/code-to-spec</code> analyzes an existing project's code, configuration, tests, and structure, then reverse-generates a complete SPEC document. The output can be used for project reconstruction, onboarding new team members, or comparing actual implementation against intended design.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/code-to-spec</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Generate design doc: </span><span class="value">Analyze current project and generate SPEC</span>
+<span class="cmd">Reverse spec: </span><span class="value">Reverse engineer this project's specification</span>
+<span class="cmd">Generate SPEC document: </span><span class="value">Generate technical SPEC for src/ directory</span></code></pre>
+
+      <h3>Analysis Depth</h3>
+      <table>
+        <tr><th>Level</th><th>Content</th><th>Best For</th></tr>
+        <tr><td>Overview</td><td>Architecture + tech stack + core features</td><td>Quick project understanding, ~5 minutes</td></tr>
+        <tr><td>Standard (default)</td><td>+ API contracts + data model + config + dependencies</td><td>Comprehensive project understanding</td></tr>
+        <tr><td>Deep</td><td>+ Internal module interactions + error handling + test coverage</td><td>Preparing for refactoring or rewrite</td></tr>
+      </table>
+
+      <h3>SPEC Document Structure (12 Chapters)</h3>
+      <table>
+        <tr><th>#</th><th>Chapter</th><th>Content</th></tr>
+        <tr><td>1</td><td>Overview</td><td>Purpose, core features, architectural style</td></tr>
+        <tr><td>2</td><td>Tech Stack</td><td>Language, framework, database, build, test, deployment</td></tr>
+        <tr><td>3</td><td>Project Structure</td><td>Directory tree + responsibilities per directory</td></tr>
+        <tr><td>4</td><td>Data Model</td><td>Core entities, fields, relationships, state transitions</td></tr>
+        <tr><td>5</td><td>API Surface</td><td>Endpoint/command/function table + request/response schema</td></tr>
+        <tr><td>6</td><td>Configuration</td><td>Environment variables, config files, feature flags</td></tr>
+        <tr><td>7</td><td>External Dependencies</td><td>Third-party services, infrastructure, failure impact</td></tr>
+        <tr><td>8</td><td>Business Rules</td><td>Invariants, validation rules, business logic constraints</td></tr>
+        <tr><td>9</td><td>Non-Functional</td><td>Performance, security, error handling patterns</td></tr>
+        <tr><td>10</td><td>Testing Strategy</td><td>Test framework, coverage patterns</td></tr>
+        <tr><td>11</td><td>Known Gaps</td><td>Uncertainties, assumptions, untested areas</td></tr>
+        <tr><td>12</td><td>Appendix</td><td>Dependency graph, local environment setup steps</td></tr>
+      </table>
+
+      <h3>Workflow</h3>
+      <ul class="step-list">
+        <li>Confirm analysis scope (entire repo / specified directory / specific aspects) and depth level</li>
+        <li>Scan project: identify entry points, directory structure, dependency graph, API routes, data models</li>
+        <li>Extract business rules: derive from validation functions, guard clauses, test assertions</li>
+        <li>Synthesize and generate 12-chapter SPEC document</li>
+        <li>Present for review; iterate based on feedback</li>
+        <li>Save to <code class="inline-code">docs/SPEC.md</code> or user-specified location</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> For large projects (>500 files), it's recommended to first use Overview depth for a quick bird's-eye view, then use Deep depth on modules of interest.
+      </div>
+    </div>
+
+    <!-- Section 16: Platforms -->
+    <div class="section" id="platforms">
+      <div class="section-title">
+        <div class="section-dot slate"></div>
+        <h3>17. Supported Platforms</h3>
+      </div>
+      <p>Goal Workflow skills can be used across multiple AI Coding Agents:</p>
+
+      <table>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (Built-in)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+      </table>
+
+      <h3>Issue Creation Platforms</h3>
+      <table>
+        <tr><th>Platform</th><th>Tool</th><th>Description</th></tr>
+        <tr><td>GitHub</td><td><code class="inline-code">gh issue create</code></td><td>Requires gh CLI authentication</td></tr>
+        <tr><td>Local</td><td>Markdown files</td><td>Saved to local directory</td></tr>
+        <tr><td>Baidu iCafe</td><td><code class="inline-code">icafe-cli</code></td><td>Requires iCafe space parameters</td></tr>
+      </table>
+    </div>
+
+    <!-- Section 17: FAQ -->
+    <div class="section" id="faq">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>18. FAQ</h3>
+      </div>
+
+      <h3>Q: Do I have to use all steps in order?</h3>
+      <p>No. Each Skill is independent and can be used standalone. For example, if you already have Issues, you can start directly from <code class="inline-code">/goal</code>; if code is already written, you can use <code class="inline-code">/review-it</code> directly. But going through the full workflow yields the best results.</p>
+
+      <h3>Q: Where does /goal come from? Why isn't it in the skills directory?</h3>
+      <p><code class="inline-code">/goal</code> is a built-in feature of Claude Code and doesn't require separate installation. The Issue format generated by this workflow's <code class="inline-code">/prd</code> perfectly matches what <code class="inline-code">/goal</code> expects as input.</p>
+
+      <h3>Q: Can I use this in non-GitHub projects?</h3>
+      <p>Yes. <code class="inline-code">/prd</code> supports saving Issues as local Markdown files or creating them in Baidu iCafe. <code class="inline-code">/review-it</code> only needs a local git repository. <code class="inline-code">/ship-it</code> currently depends on GitHub (<code class="inline-code">gh</code> CLI).</p>
+
+      <h3>Q: How is /review-it different from manual code review?</h3>
+      <p><code class="inline-code">/review-it</code> is automated self-review, catching obvious issues before submission. It doesn't replace team code review, but rather improves code quality before PR creation, reducing the low-level issues reviewers need to point out.</p>
+
+      <h3>Q: How big should an Issue be?</h3>
+      <p>Each Issue should represent work an agent can complete in a single session — typically 1-3 files of changes with clear acceptance criteria. <code class="inline-code">/prd</code> automatically breaks down at this granularity, but you can adjust before confirming.</p>
+
+      <h3>Q: How do I use this with Codex?</h3>
+      <p>When installing via <code class="inline-code">npx skills add</code>, choose <code class="inline-code">-a codex</code>. In Codex, use <code class="inline-code">codex --goal "..."</code> instead of <code class="inline-code">/goal</code>. <code class="inline-code">/review-it</code> works universally across agents.</p>
+
+      <h3>Q: Is /prd-to-spec required? When can I skip it?</h3>
+      <p>Not required. <code class="inline-code">/prd-to-spec</code> is an optional step. PRD says "what to do"; SPEC says "how to do it". The distinction: an AI agent executing <code class="inline-code">/goal</code> inherently possesses the "how" capability — it automatically analyzes the codebase, understands existing architecture and conventions, and makes reasonable technical decisions during implementation. In other words, <strong>the AI agent is a living SPEC engine</strong> — it doesn't need it drawn on paper first.</p>
+      <p>Most small to medium features work perfectly fine with just PRD → /goal. The following scenarios justify the extra step of /prd-to-spec:</p>
+      <ul class="step-list">
+        <li><strong>Multi-person/multi-agent parallel development</strong> — need shared technical conventions to avoid divergent implementations</li>
+        <li><strong>Changes spanning multiple services/modules</strong> — architecture decisions have broad impact and rework costs are high</li>
+        <li><strong>Need maintained documentation</strong> — a formal technical reference for the team to consult later</li>
+        <li><strong>Compliance/review requirements</strong> — organizational process mandates design documents</li>
+        <li><strong>PRD is too vague</strong> — SPEC can supplement with technical details to reduce agent interpretation variance</li>
+      </ul>
+      <p>If your project is single-developer, feature boundaries are clear, and the agent already reliably understands the project structure, skipping /prd-to-spec is entirely reasonable — and often more efficient. Treat it as an <strong>optional tool</strong> in your toolkit — bring it out only when needed.</p>
+
+      <h3>Q: Where does the 42 iteration limit in /humanize-it come from?</h3>
+      <p>The number 42 isn't due to any special iteration requirement, but a geek culture tribute to the classic sci-fi novel <em>The Hitchhiker's Guide to the Galaxy</em>. In the book, a supercomputer computes for 7.5 million years and arrives at "the Answer to the Ultimate Question of Life, the Universe, and Everything" — which is 42. In programming circles, this number is popular for two reasons:</p>
+      <ul class="step-list">
+        <li><strong>Sci-fi tribute:</strong> A well-known Easter egg among programmers, representing the ultimate answer.</li>
+        <li><strong>ASCII coincidence:</strong> In ASCII encoding, 42 corresponds to the asterisk <code class="inline-code">*</code>. In computer science, <code class="inline-code">*</code> is commonly used as a wildcard meaning "anything" or "everything is possible." So "the ultimate answer is 42 (*)" perfectly aligns with the philosophical joke that it's "whatever answer you want."</li>
+      </ul>
+      <p>In practice, most documents reach quality standards within 3-5 iterations. The core of iteration is intelligent strategy switching — when one rewriting approach plateaus, it automatically switches to another. The three strategies complement each other to cover different types of AI traces.</p>
+
+      <h3>Q: Does /humanize-it support English documents?</h3>
+      <p>Currently, the three sub-skills of <code class="inline-code">/humanize-it</code> are primarily optimized for Chinese text. <code class="inline-code">humanizer-zh</code>'s pattern detection rules partially work for English as well, but rewriting effects are best for Chinese.</p>
+
+      <h3>Q: How do I get an API Key for /listenhub-tts?</h3>
+      <p>Go to <a href="https://listenhub.ai" style="color: #2D9CDB; text-decoration: none;">listenhub.ai</a> to register and get an API Key, then set it as an environment variable: <code class="inline-code">export LISTENHUB_API_KEY=your_key</code>.</p>
+
+      <h3>Q: What languages does /listenhub-tts support?</h3>
+      <p>ListenHub supports voices for multiple languages including Chinese (zh) and English (en). When calling the voice list API, you can filter with the <code class="inline-code">?language=zh</code> parameter.</p>
+
+      <h3>Q: What diagram types does /insight-diagram support?</h3>
+      <p><code class="inline-code">/insight-diagram</code> supports 17 diagram types, including system architecture diagrams, 14 UML diagrams (class, object, component, deployment, package, composite structure, profile, use case, activity, state machine, sequence, communication, timing, interaction overview), flowcharts, and swimlane diagrams. Output is in HTML+SVG format, saved to the <code class="inline-code">docs/</code> directory. Applicable to any software project.</p>
+    </div>
+
+    <!-- Footer -->
+    <p class="footer">
+      goal-workflow · AI-driven development workflow · github.com/smallnest/goal-workflow
+    </p>
+  </div>
+
+  <!-- Particles Background Canvas -->
+  <canvas id="particles-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+
+  <script type="module">
+  import { animate, stagger } from 'https://cdn.jsdmirror.com/npm/animejs/+esm';
+
+  // Set container above particles
+  document.querySelector('.container').style.position = 'relative';
+  document.querySelector('.container').style.zIndex = '1';
+
+  // ===== 1. PARTICLE BACKGROUND =====
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const PARTICLE_COUNT = 60;
+  const colors = ['#D97757', '#5B8A72', '#8B6F8A', '#4A6FA5', '#C96464', '#2D9CDB', '#7C5CBF'];
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3 + 1,
+      speedX: (Math.random() - 0.5) * 0.5,
+      speedY: (Math.random() - 0.5) * 0.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      opacity: Math.random() * 0.3 + 0.1
+    };
+  }
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push(createParticle());
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.opacity;
+      ctx.fill();
+      p.x += p.speedX;
+      p.y += p.speedY;
+      if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+    });
+
+    // Draw connection lines
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = particles[i].color;
+          ctx.globalAlpha = (1 - dist / 120) * 0.08;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // ===== 2. INITIAL PAGE LOAD ANIMATION =====
+
+  // Only hide container-level sections for load animation
+  // Inner elements are handled by scroll observer
+  document.querySelectorAll('.toc, .header, .footer').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+  });
+
+  // Header entrance
+  animate('.header', {
+    opacity: [0, 1],
+    translateY: [40, 0],
+    duration: 900,
+    ease: 'easeOutExpo'
+  });
+
+  // Pulse dot special animation
+  animate('.pulse-dot', {
+    scale: [0, 1],
+    duration: 600,
+    ease: 'easeOutElastic(1, .6)',
+    onComplete: function() {
+      document.querySelector('.pulse-dot').style.animation = 'pulse 2.5s ease-in-out infinite';
+    }
+  });
+
+  // Title text reveal
+  animate('h1', {
+    opacity: [0, 1],
+    translateX: [-30, 0],
+    duration: 800,
+    delay: 200,
+    ease: 'easeOutExpo'
+  });
+
+  // Subtitle fade in
+  animate('.subtitle, .diagram-desc', {
+    opacity: [0, 1],
+    translateY: [15, 0],
+    duration: 700,
+    delay: stagger(150, {start: 400}),
+    ease: 'easeOutCubic'
+  });
+
+  // TOC slide in
+  animate('.toc', {
+    opacity: [0, 1],
+    translateY: [30, 0],
+    duration: 800,
+    delay: 600,
+    ease: 'easeOutCubic',
+    onComplete: function() {
+      animate('.toc li', {
+        opacity: [0, 1],
+        translateX: [-20, 0],
+        delay: stagger(60),
+        duration: 400,
+        ease: 'easeOutCubic'
+      });
+    }
+  });
+
+  // Sections are NOT animated on load — they use scroll observer instead
+
+  // Footer
+  animate('.footer', {
+    opacity: [0, 1],
+    translateY: [20, 0],
+    duration: 600,
+    delay: 1800,
+    ease: 'easeOutCubic'
+  });
+
+  // ===== 3. SECTION DOT — handled by scroll observer via .section-title =====
+
+  // ===== 4. CARD ENTRANCE — handled by scroll observer =====
+
+  // ===== 5. FLOW STEPS — handled by scroll observer =====
+
+  // ===== 6. SVG DIAGRAM — handled by scroll observer =====
+
+  // ===== 7. BADGE — handled by scroll observer =====
+
+  // ===== 8. CODE BLOCK SHIMMER — shimmer runs when code block scrolls in =====
+
+  // ===== 9. SCROLL-TRIGGERED ANIMATIONS =====
+
+  // Hide scroll-reveal elements initially
+  const scrollRevealTargets = '.section .section-title, .section p, .section pre, .section table, .section .cards, .section .note, .section .tip, .step-list li, .section .diagram-box, .section .flow-step, .section .flow-connector, .section .diagram-desc, .section img';
+  document.querySelectorAll(scrollRevealTargets).forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'none';
+    el.dataset.scrollReveal = 'true';
+  });
+
+  // Also hide tables and note/tip at top level
+  document.querySelectorAll('table, .note, .tip').forEach(el => {
+    if (!el.dataset.scrollReveal) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.dataset.scrollReveal = 'true';
+    }
+  });
+
+  const scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+
+        // Step list items
+        if (el.classList.contains('step-list')) {
+          animate(el.querySelectorAll('li'), {
+            opacity: [0, 1],
+            translateX: [-20, 0],
+            delay: stagger(80),
+            duration: 500,
+            ease: 'easeOutCubic'
+          });
+          scrollObserver.unobserve(el);
+          return;
+        }
+
+        // Individual scroll-reveal elements
+        if (el.dataset.scrollReveal === 'true') {
+          // Determine animation type based on element
+          if (el.tagName === 'PRE') {
+            // Code blocks: slide from left with shimmer
+            animate(el, {
+              opacity: [0, 1],
+              translateX: [-30, 0],
+              duration: 600,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.classList.contains('cards')) {
+            // Cards container: stagger children
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            el.querySelectorAll('.card').forEach((card, i) => {
+              card.style.opacity = '0';
+              card.style.transform = 'perspective(600px) rotateY(-15deg)';
+              animate(card, {
+                opacity: [0, 1],
+                rotateY: [-15, 0],
+                translateX: [-30, 0],
+                duration: 700,
+                delay: i * 120,
+                ease: 'easeOutExpo'
+              });
+            });
+          } else if (el.tagName === 'TABLE') {
+            // Tables: row-by-row
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            animate(el.querySelectorAll('tr'), {
+              opacity: [0, 1],
+              translateY: [10, 0],
+              delay: stagger(60),
+              duration: 400,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.classList.contains('note') || el.classList.contains('tip')) {
+            // Notes/tips: slide from left with border growing
+            animate(el, {
+              opacity: [0, 1],
+              translateX: [-25, 0],
+              borderLeftWidth: [0, 3],
+              duration: 600,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.classList.contains('diagram-box')) {
+            // Diagram box: scale up
+            animate(el, {
+              opacity: [0, 1],
+              scale: [0.95, 1],
+              duration: 700,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.classList.contains('flow-step')) {
+            const parent = el.closest('.flow-arrow');
+            const siblings = parent ? parent.querySelectorAll('.flow-step') : [el];
+            const idx = Array.from(siblings).indexOf(el);
+            animate(el, {
+              opacity: [0, 1],
+              scale: [0.5, 1],
+              duration: 500,
+              delay: idx * 150,
+              ease: 'easeOutBack'
+            });
+          } else if (el.classList.contains('flow-connector')) {
+            const parent = el.closest('.flow-arrow');
+            const siblings = parent ? parent.querySelectorAll('.flow-connector') : [el];
+            const idx = Array.from(siblings).indexOf(el);
+            animate(el, {
+              opacity: [0, 1],
+              translateX: [-10, 0],
+              duration: 300,
+              delay: idx * 150 + 80,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.tagName === 'IMG') {
+            // Images: clip reveal
+            animate(el, {
+              opacity: [0, 1],
+              clipPath: ['inset(0 100% 0 0)', 'inset(0 0% 0 0)'],
+              duration: 1000,
+              ease: 'easeInOutCubic'
+            });
+          } else if (el.classList.contains('section-title')) {
+            // Section title (dot + h3) as one unit
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            const dot = el.querySelector('.section-dot');
+            const h3 = el.querySelector('h3');
+            if (dot) {
+              animate(dot, {
+                scale: [0, 1],
+                duration: 500,
+                ease: 'easeOutElastic(1, .5)'
+              });
+            }
+            if (h3) {
+              animate(h3, {
+                opacity: [0, 1],
+                translateX: [-20, 0],
+                duration: 500,
+                delay: 150,
+                ease: 'easeOutCubic'
+              });
+            }
+          } else if (el.tagName === 'H3') {
+            // Headings: slide from left
+            animate(el, {
+              opacity: [0, 1],
+              translateX: [-20, 0],
+              duration: 500,
+              ease: 'easeOutCubic'
+            });
+          } else {
+            // Default: fade up
+            animate(el, {
+              opacity: [0, 1],
+              translateY: [20, 0],
+              duration: 500,
+              ease: 'easeOutCubic'
+            });
+          }
+          scrollObserver.unobserve(el);
+        }
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+  // Observe all scroll-reveal elements
+  document.querySelectorAll(scrollRevealTargets).forEach(el => {
+    scrollObserver.observe(el);
+  });
+  // Also observe standalone tables, notes, tips, step-lists
+  document.querySelectorAll('table, .note, .tip, .step-list').forEach(el => {
+    scrollObserver.observe(el);
+  });
+
+  // ===== 10. HOVER ANIMATIONS =====
+  document.querySelectorAll('.section').forEach(section => {
+    section.addEventListener('mouseenter', function() {
+      animate(this, {
+        translateY: -2,
+        boxShadow: '0 4px 16px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+    section.addEventListener('mouseleave', function() {
+      animate(this, {
+        translateY: 0,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      animate(this, {
+        scale: 1.03,
+        boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+    card.addEventListener('mouseleave', function() {
+      animate(this, {
+        scale: 1,
+        boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  document.querySelectorAll('.flow-step').forEach(step => {
+    step.addEventListener('mouseenter', function() {
+      animate(this.querySelector('.step-num'), {
+        scale: [1, 1.3],
+        rotate: '1turn',
+        duration: 400,
+        ease: 'easeOutBack'
+      });
+    });
+    step.addEventListener('mouseleave', function() {
+      animate(this.querySelector('.step-num'), {
+        scale: [1.3, 1],
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  document.querySelectorAll('.toc a').forEach(link => {
+    link.style.display = 'inline-block';
+    link.addEventListener('mouseenter', function() {
+      animate(this, {
+        translateX: 8,
+        color: '#D97757',
+        duration: 250,
+        ease: 'easeOutCubic'
+      });
+    });
+    link.addEventListener('mouseleave', function() {
+      animate(this, {
+        translateX: 0,
+        color: '#5B8A72',
+        duration: 250,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  // ===== 11. SVG STEP BOX HOVER GLOW =====
+  document.querySelectorAll('.diagram-box svg rect:not([width="100%"])').forEach(rect => {
+    const originalStroke = rect.getAttribute('stroke');
+    rect.style.cursor = 'pointer';
+    rect.addEventListener('mouseenter', function() {
+      animate(this, {
+        filter: 'drop-shadow(0 0 6px ' + originalStroke + ')',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+    rect.addEventListener('mouseleave', function() {
+      animate(this, {
+        filter: 'drop-shadow(0 0 0px transparent)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  // ===== 12. CONTINUOUS FLOATING ANIMATION FOR HEADER DOT =====
+  animate('.pulse-dot', {
+    translateY: [-3, 3],
+    duration: 2000,
+    direction: 'alternate',
+    ease: 'easeInOutSine',
+    loop: true
+  });
+
+  // ===== 13. INLINE CODE HOVER POP =====
+  document.querySelectorAll('.inline-code').forEach(code => {
+    code.addEventListener('mouseenter', function() {
+      animate(this, {
+        scale: 1.1,
+        backgroundColor: '#D97757',
+        color: '#ffffff',
+        duration: 200,
+        ease: 'easeOutCubic'
+      });
+    });
+    code.addEventListener('mouseleave', function() {
+      animate(this, {
+        scale: 1,
+        backgroundColor: '#F5F3F0',
+        color: '#D97757',
+        duration: 200,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  // ===== 14. IMAGE REVEAL — handled by scroll observer =====
+
+  </script>
+</body>
+</html>

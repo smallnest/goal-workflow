@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Goal Workflow 使用指南</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #FAF9F6;
+      min-height: 100vh;
+      padding: 2.5rem 2rem;
+      color: #1a1a1a;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .header {
+      margin-bottom: 2.5rem;
+    }
+
+    .header-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.375rem;
+    }
+
+    .pulse-dot {
+      width: 10px;
+      height: 10px;
+      background: #D97757;
+      border-radius: 50%;
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.9); }
+    }
+
+    h1 {
+      font-size: 1.375rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #1a1a1a;
+    }
+
+    .subtitle {
+      color: #8B8680;
+      font-size: 0.8125rem;
+      margin-left: 1.625rem;
+      letter-spacing: 0.01em;
+    }
+
+    .diagram-desc {
+      color: #B0AAA4;
+      font-size: 0.6875rem;
+      margin-top: 0.5rem;
+      margin-left: 1.625rem;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    h2 {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: #1a1a1a;
+      margin-top: 2.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #E8E4DE;
+    }
+
+    h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      color: #4A4540;
+      font-size: 0.8125rem;
+      line-height: 1.7;
+      margin-bottom: 0.75rem;
+    }
+
+    .section {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid #E8E4DE;
+      padding: 1.5rem 1.75rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .section-dot.terracotta { background: #D97757; }
+    .section-dot.sage { background: #5B8A72; }
+    .section-dot.slate { background: #6B7280; }
+    .section-dot.plum { background: #8B6F8A; }
+    .section-dot.rose { background: #C96464; }
+    .section-dot.amber { background: #D4A843; }
+    .section-dot.teal { background: #2D9CDB; }
+    .section-dot.violet { background: #7C5CBF; }
+.coral, .section-dot.coral { background: #E8624F; }
+
+    .section-title h3 {
+      margin: 0;
+      font-size: 0.875rem;
+    }
+
+    pre {
+      background: #1a1a1a;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      margin: 0.75rem 0;
+      font-size: 0.75rem;
+      line-height: 1.6;
+    }
+
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'JetBrains Mono', monospace;
+      color: #E8E4DE;
+    }
+
+    .inline-code {
+      background: #F5F3F0;
+      border: 1px solid #E8E4DE;
+      border-radius: 4px;
+      padding: 0.125rem 0.375rem;
+      font-size: 0.75rem;
+      color: #D97757;
+    }
+
+    .comment { color: #6B7280; }
+    .flag { color: #D97757; }
+    .value { color: #5B8A72; }
+    .cmd { color: #E8E4DE; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.75rem;
+      margin: 0.75rem 0;
+    }
+
+    th {
+      background: #F7F6F4;
+      font-weight: 600;
+      text-align: left;
+      padding: 0.625rem 0.75rem;
+      color: #4A4540;
+      border-bottom: 1px solid #E8E4DE;
+    }
+
+    td {
+      padding: 0.5rem 0.75rem;
+      color: #4A4540;
+      border-bottom: 1px solid #F0EDE8;
+    }
+
+    tr:hover td {
+      background: #FDFCFB;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.6875rem;
+      font-weight: 500;
+    }
+
+    .badge-plan {
+      background: #FFF5F0;
+      color: #D97757;
+      border: 1px solid #D97757;
+    }
+
+    .badge-impl {
+      background: #F5F8F6;
+      color: #5B8A72;
+      border: 1px solid #5B8A72;
+    }
+
+    .badge-review {
+      background: #F5F3F8;
+      color: #8B6F8A;
+      border: 1px solid #8B6F8A;
+    }
+
+    .badge-ship {
+      background: #F0F4F8;
+      color: #4A6FA5;
+      border: 1px solid #4A6FA5;
+    }
+
+    .badge-humanize {
+      background: #FDF8F0;
+      color: #D4A843;
+      border: 1px solid #D4A843;
+    }
+
+    .badge-tts {
+      background: #F0F7FD;
+      color: #2D9CDB;
+      border: 1px solid #2D9CDB;
+    }
+
+    .badge-note {
+      background: #F5F3F0;
+      color: #6B7280;
+      border: 1px solid #6B7280;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: #FFFFFF;
+      border-radius: 10px;
+      border: 1px solid #E8E4DE;
+      padding: 1.125rem 1.25rem;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.625rem;
+    }
+
+    .card-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+    }
+
+    .card-dot.terracotta { background: #D97757; }
+    .card-dot.sage { background: #5B8A72; }
+    .card-dot.slate { background: #6B7280; }
+    .card-dot.plum { background: #8B6F8A; }
+    .card-dot.blue { background: #4A6FA5; }
+    .card-dot.amber { background: #D4A843; }
+    .card-dot.teal { background: #2D9CDB; }
+    .card-dot.violet { background: #7C5CBF; }
+.card-dot.coral { background: #E8624F; }
+
+    .card h4 {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .card p {
+      font-size: 0.75rem;
+      color: #6B6560;
+      line-height: 1.6;
+      margin-bottom: 0.5rem;
+    }
+
+    .card ul {
+      list-style: none;
+      color: #6B6560;
+      font-size: 0.75rem;
+      line-height: 1.7;
+    }
+
+    .card li {
+      margin-bottom: 0.25rem;
+    }
+
+    .diagram-box {
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid #E8E4DE;
+      padding: 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow-x: auto;
+    }
+
+    .note {
+      background: #FFF5F0;
+      border-left: 3px solid #D97757;
+      border-radius: 0 8px 8px 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      color: #6B6560;
+      margin: 0.75rem 0;
+    }
+
+    .note strong {
+      color: #D97757;
+    }
+
+    .tip {
+      background: #F5F8F6;
+      border-left: 3px solid #5B8A72;
+      border-radius: 0 8px 8px 0;
+      padding: 0.75rem 1rem;
+      font-size: 0.75rem;
+      color: #6B6560;
+      margin: 0.75rem 0;
+    }
+
+    .tip strong {
+      color: #5B8A72;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #B0AAA4;
+      font-size: 0.6875rem;
+      letter-spacing: 0.02em;
+    }
+
+    .toc {
+      background: #FDFCFB;
+      border: 1px solid #E8E4DE;
+      border-radius: 10px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .toc h3 {
+      font-size: 0.8125rem;
+      margin-top: 0;
+      margin-bottom: 0.75rem;
+      color: #8B8680;
+    }
+
+    .toc ul {
+      list-style: none;
+      font-size: 0.75rem;
+    }
+
+    .toc li {
+      margin-bottom: 0.375rem;
+    }
+
+    .toc a {
+      color: #5B8A72;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .toc a:hover {
+      color: #D97757;
+    }
+
+    .flow-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+      flex-wrap: wrap;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #FFFFFF;
+      border: 1px solid #E8E4DE;
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .flow-step .step-num {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.625rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .flow-step .step-num.n1 { background: #D97757; }
+    .flow-step .step-num.n2 { background: #5B8A72; }
+    .flow-step .step-num.n3 { background: #8B6F8A; }
+    .flow-step .step-num.n4 { background: #4A6FA5; }
+    .flow-step .step-num.n5 { background: #D4A843; }
+    .flow-step .step-num.n6 { background: #2D9CDB; }
+    .flow-step .step-num.n7 { background: #E8624F; }
+    .flow-step .step-num.n8 { background: #6B7280; }
+
+    .flow-connector {
+      color: #C5C0BA;
+      font-size: 1.25rem;
+    }
+
+    .step-list {
+      list-style: none;
+      padding-left: 0;
+      color: #4A4540;
+      font-size: 0.8125rem;
+      line-height: 1.8;
+    }
+
+    .step-list li {
+      margin-bottom: 0.25rem;
+      padding-left: 1.25rem;
+      position: relative;
+    }
+
+    .step-list li::before {
+      content: ">";
+      position: absolute;
+      left: 0;
+      color: #5B8A72;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-row">
+        <div class="pulse-dot"></div>
+        <h1>Goal Workflow 使用指南</h1>
+      </div>
+      <p class="subtitle">AI-driven development workflow — from PRD to shipped code</p>
+      <p class="subtitle" style="margin-top: 0.25rem;"><a href="https://github.com/smallnest/goal-workflow" style="color: #D97757; text-decoration: none;">github.com/smallnest/goal-workflow</a></p>
+      <p class="diagram-desc"><b>Usage Guide</b> — 六步闭环研发工作流：规划、设计、拆解、实现、审查、交付。</p>
+    </div>
+
+    <!-- TOC -->
+    <div class="toc">
+      <h3>目录</h3>
+      <ul>
+        <li><a href="#overview">1. 概述</a></li>
+        <li><a href="#install">2. 安装</a></li>
+        <li><a href="#workflow">3. 工作流总览</a></li>
+        <li><a href="#step-prd">4. Step 1: /prd — 需求规划</a></li>
+        <li><a href="#step-prd-to-spec">5. Step 1.5: /prd-to-spec — PRD 转技术方案</a></li>
+        <li><a href="#step-to-issues">6. Step 1.6: /to-issues — 拆解 Issue 卡片</a></li>
+        <li><a href="#step-goal">7. Step 2: /goal — 功能实现</a></li>
+        <li><a href="#step-review">8. Step 3: /review-it — 代码审查</a></li>
+        <li><a href="#step-ship">9. Step 4: /ship-it — 提交交付</a></li>
+        <li><a href="#step-humanize">10. Bonus: /humanize-it — 去 AI 味改写</a></li>
+        <li><a href="#step-tts">11. Bonus: /listenhub-tts — 文本转语音</a></li>
+        <li><a href="#step-diagram">12. Bonus: /insight-diagram — UML 与架构图</a></li>
+        <li><a href="#step-refactor">13. Bonus: /refactor — 专家级代码重构</a></li>
+        <li><a href="#step-modern-go">14. Bonus: /modern-go — Go 代码现代化改造</a></li>
+        <li><a href="#step-note-it">15. Bonus: /note-it — 实现笔记记录</a></li>
+        <li><a href="#step-code-to-spec">16. Bonus: /code-to-spec — 逆向生成规格文档</a></li>
+        <li><a href="#platforms">17. 支持的平台</a></li>
+        <li><a href="#faq">18. FAQ</a></li>
+      </ul>
+    </div>
+
+    <!-- Section 1: Overview -->
+    <div class="section" id="overview">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>1. 概述</h3>
+      </div>
+      <p>
+        <strong>Goal Workflow</strong> 是一套基于 Claude Code / Codex 的 AI 研发工作流技能集，将软件开发的完整生命周期拆分为标准化步骤，每一步都由一个专属 Skill 驱动。
+      </p>
+      <p>
+        它让 AI Agent 能够像一个有经验的工程师一样——从理解需求、拆解任务、编写代码、审查质量，到最终提交合入——全流程自主完成。你只需描述功能想法，剩下的交给工作流。
+      </p>
+      <div class="cards">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot terracotta"></div>
+            <h4>/prd</h4>
+          </div>
+          <p>需求文档生成 + Issue 拆解</p>
+          <ul>
+            <li>澄清问题 → 结构化 PRD</li>
+            <li>拆解为独立可实施的 Issue</li>
+            <li>支持 GitHub / Local / iCafe</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot terracotta"></div>
+            <h4>/prd-to-spec</h4>
+          </div>
+          <p>PRD 转技术设计方案</p>
+          <ul>
+            <li>PRD 需求 → 架构 + API + 数据模型</li>
+            <li>错误处理 + 安全 + 性能策略</li>
+            <li>Issue 映射 + 实施计划</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot coral"></div>
+            <h4>/to-issues</h4>
+          </div>
+          <p>拆解 PRD/SPEC 为 Issue 卡片</p>
+          <ul>
+            <li>User Stories → 可实施的 Issue</li>
+            <li>支持 GitHub / Local / iCafe</li>
+            <li>可独立使用，不依赖 /prd</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot sage"></div>
+            <h4>/goal</h4>
+          </div>
+          <p>选择卡片进行端到端实现</p>
+          <ul>
+            <li>Pick an Issue, implement it</li>
+            <li>单次会话完成一个功能</li>
+            <li>Claude Code 或 Codex</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot plum"></div>
+            <h4>/review-it</h4>
+          </div>
+          <p>自动化代码审查与修复</p>
+          <ul>
+            <li>检测未提交变更或分支 diff</li>
+            <li>验证发现 → 迭代修复</li>
+            <li>直到审查通过为止</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot blue"></div>
+            <h4>/ship-it</h4>
+          </div>
+          <p>提交 → PR → 合入 → 关闭</p>
+          <ul>
+            <li>Commit 关联 Issue 编号</li>
+            <li>Squash merge + delete branch</li>
+            <li>添加实现总结并关闭卡片</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot amber"></div>
+            <h4>/humanize-it</h4>
+          </div>
+          <p>迭代式去 AI 味改写</p>
+          <ul>
+            <li>自动选择最佳人性化策略</li>
+            <li>三路 skill 迭代直到达标</li>
+            <li>最多 42 轮智能切换</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot teal"></div>
+            <h4>/listenhub-tts</h4>
+          </div>
+          <p>ListenHub 文本转语音</p>
+          <ul>
+            <li>快速合成 / 多角色 / 长文本</li>
+            <li>音色列表供选择，默认晓曼</li>
+            <li>支持 AI 润色长文本</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot violet"></div>
+            <h4>/insight-diagram</h4>
+          </div>
+          <p>UML 与架构图生成器</p>
+          <ul>
+            <li>分析代码库结构</li>
+            <li>UML / 架构图 / 流程图</li>
+            <li>渲染为 HTML+SVG</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot coral"></div>
+            <h4>/refactor</h4>
+          </div>
+          <p>专家级代码重构</p>
+          <ul>
+            <li>22 种代码坏味道识别</li>
+            <li>40+ 种重构手法 (Fowler 目录)</li>
+            <li>五阶段安全协议</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot teal"></div>
+            <h4>/modern-go</h4>
+          </div>
+          <p>Go 代码现代化改造</p>
+          <ul>
+            <li>35+ 条 gofix 风格转换规则</li>
+            <li>Go 1.0 到 1.26+ 全覆盖</li>
+            <li>自动检测版本 + 安全保护</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot slate"></div>
+            <h4>/note-it</h4>
+          </div>
+          <p>实现笔记记录</p>
+          <ul>
+            <li>设计决策 / 偏离 / 权衡</li>
+            <li>待确认问题追踪</li>
+            <li>HTML 格式保存到 docs/</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot sage"></div>
+            <h4>/code-to-spec</h4>
+          </div>
+          <p>逆向生成项目规格文档</p>
+          <ul>
+            <li>分析代码、配置、测试、结构</li>
+            <li>生成 12 章节完整 SPEC</li>
+            <li>支持多层深度分析</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Install -->
+    <div class="section" id="install">
+      <div class="section-title">
+        <div class="section-dot sage"></div>
+        <h3>2. 安装</h3>
+      </div>
+      <p>通过 <code class="inline-code">npx skills</code> CLI 一键安装所有技能：</p>
+      <pre><code><span class="comment"># 安装本仓库所有 skills</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span>
+
+<span class="comment"># 或安装指定 skill</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">prd</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">prd-to-spec</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-issues</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">review-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">ship-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">humanize-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">listenhub-tts</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">insight-diagram</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">refactor</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">modern-go</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">note-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">code-to-spec</span>
+
+<span class="comment"># 全局安装（所有项目可用）</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
+
+<span class="comment"># 安装到指定 agent</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-a</span> <span class="value">claude-code</span></code></pre>
+
+      <h3>前置要求</h3>
+      <table>
+        <tr><th>工具</th><th>用途</th><th>安装</th></tr>
+        <tr><td><code class="inline-code">gh</code></td><td>GitHub CLI (Issue/PR 操作)</td><td><code class="inline-code">brew install gh && gh auth login</code></td></tr>
+        <tr><td><code class="inline-code">claude</code></td><td>Claude Code CLI</td><td><code class="inline-code">npm install -g @anthropic-ai/claude-code</code></td></tr>
+        <tr><td><code class="inline-code">npx</code></td><td>npm package runner</td><td>Node.js 自带</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/listenhub-tts</code>、<code class="inline-code">/insight-diagram</code> 即可直接调用对应技能。
+      </div>
+    </div>
+
+    <!-- Section 3: Workflow Overview -->
+    <div class="section" id="workflow">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>3. 工作流总览</h3>
+      </div>
+      <p>六步闭环，从需求到交付：</p>
+
+      <div style="text-align: center; margin: 1.5rem 0;">
+        <img src="workflow.png" alt="Goal Workflow Infographic" style="max-width: 100%; border-radius: 12px; border: 1px solid #E8E4DE; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+      </div>
+
+      <div class="flow-arrow">
+        <div class="flow-step">
+          <span class="step-num n1">1</span>
+          /prd
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n5">1.5</span>
+          /prd-to-spec
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n7">1.6</span>
+          /to-issues
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n2">2</span>
+          /goal
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n3">3</span>
+          /review-it
+        </div>
+        <span class="flow-connector">&rarr;</span>
+        <div class="flow-step">
+          <span class="step-num n4">4</span>
+          /ship-it
+        </div>
+      </div>
+
+      <div class="diagram-box">
+        <svg viewBox="0 0 1140 220" style="min-width: 1030px;">
+          <defs>
+            <pattern id="dots-flow" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="0.6" fill="#E0DCD6"/>
+            </pattern>
+            <marker id="arrowhead" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+              <path d="M0,0 L8,3 L0,6" fill="none" stroke="#C5C0BA" stroke-width="1.2"/>
+            </marker>
+          </defs>
+          <rect width="100%" height="100%" fill="url(#dots-flow)" />
+
+          <!-- Step 1: /prd -->
+          <rect x="10" y="40" width="130" height="140" rx="10" fill="#FFF5F0" stroke="#D97757" stroke-width="1.5"/>
+          <text x="75" y="68" fill="#D97757" font-size="11" font-weight="700" text-anchor="middle">Step 1: /prd</text>
+          <text x="75" y="90" fill="#4A4540" font-size="9" text-anchor="middle">描述功能想法</text>
+          <text x="75" y="108" fill="#4A4540" font-size="9" text-anchor="middle">澄清问题</text>
+          <text x="75" y="126" fill="#4A4540" font-size="9" text-anchor="middle">生成 PRD</text>
+          <text x="75" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: PRD</text>
+
+          <!-- Arrow 1→1.5 -->
+          <line x1="140" y1="110" x2="170" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 1.5: /prd-to-spec -->
+          <rect x="170" y="40" width="130" height="140" rx="10" fill="#FFF5F0" stroke="#D4A843" stroke-width="1.5" stroke-dasharray="4 2"/>
+          <text x="235" y="68" fill="#D4A843" font-size="11" font-weight="700" text-anchor="middle">1.5: /prd-to-spec</text>
+          <text x="235" y="90" fill="#4A4540" font-size="9" text-anchor="middle">读取 PRD</text>
+          <text x="235" y="108" fill="#4A4540" font-size="9" text-anchor="middle">技术澄清</text>
+          <text x="235" y="126" fill="#4A4540" font-size="9" text-anchor="middle">生成 SPEC</text>
+          <text x="235" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: SPEC (opt)</text>
+
+          <!-- Arrow 1.5→1.6 -->
+          <line x1="300" y1="110" x2="330" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 1.6: /to-issues -->
+          <rect x="330" y="40" width="130" height="140" rx="10" fill="#FFF5F0" stroke="#E8624F" stroke-width="1.5"/>
+          <text x="395" y="68" fill="#E8624F" font-size="11" font-weight="700" text-anchor="middle">1.6: /to-issues</text>
+          <text x="395" y="90" fill="#4A4540" font-size="9" text-anchor="middle">读取 PRD/SPEC</text>
+          <text x="395" y="108" fill="#4A4540" font-size="9" text-anchor="middle">拆解 Issue</text>
+          <text x="395" y="126" fill="#4A4540" font-size="9" text-anchor="middle">创建卡片</text>
+          <text x="395" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: Issues</text>
+
+          <!-- Arrow 1.6→2 -->
+          <line x1="460" y1="110" x2="490" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 2: /goal -->
+          <rect x="490" y="40" width="130" height="140" rx="10" fill="#F5F8F6" stroke="#5B8A72" stroke-width="1.5"/>
+          <text x="555" y="68" fill="#5B8A72" font-size="11" font-weight="700" text-anchor="middle">Step 2: /goal</text>
+          <text x="555" y="90" fill="#4A4540" font-size="9" text-anchor="middle">选择 Issue</text>
+          <text x="555" y="108" fill="#4A4540" font-size="9" text-anchor="middle">端到端实现</text>
+          <text x="555" y="126" fill="#4A4540" font-size="9" text-anchor="middle">运行测试</text>
+          <text x="555" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: Code</text>
+
+          <!-- Arrow 2→3 -->
+          <line x1="620" y1="110" x2="650" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 3: /review-it -->
+          <rect x="650" y="40" width="130" height="140" rx="10" fill="#F5F3F8" stroke="#8B6F8A" stroke-width="1.5"/>
+          <text x="715" y="68" fill="#8B6F8A" font-size="11" font-weight="700" text-anchor="middle">Step 3: /review-it</text>
+          <text x="715" y="90" fill="#4A4540" font-size="9" text-anchor="middle">自动审查</text>
+          <text x="715" y="108" fill="#4A4540" font-size="9" text-anchor="middle">验证发现</text>
+          <text x="715" y="126" fill="#4A4540" font-size="9" text-anchor="middle">迭代修复</text>
+          <text x="715" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: ✓ Review</text>
+
+          <!-- Arrow 3→4 -->
+          <line x1="780" y1="110" x2="810" y2="110" stroke="#C5C0BA" stroke-width="1.5" marker-end="url(#arrowhead)"/>
+
+          <!-- Step 4: /ship-it -->
+          <rect x="810" y="40" width="130" height="140" rx="10" fill="#F0F4F8" stroke="#4A6FA5" stroke-width="1.5"/>
+          <text x="875" y="68" fill="#4A6FA5" font-size="11" font-weight="700" text-anchor="middle">Step 4: /ship-it</text>
+          <text x="875" y="90" fill="#4A4540" font-size="9" text-anchor="middle">Commit + Push</text>
+          <text x="875" y="108" fill="#4A4540" font-size="9" text-anchor="middle">Create PR</text>
+          <text x="875" y="126" fill="#4A4540" font-size="9" text-anchor="middle">Merge + Close</text>
+          <text x="875" y="150" fill="#8B8680" font-size="8" text-anchor="middle">Output: Shipped</text>
+        </svg>
+      </div>
+
+      <table>
+        <tr><th>步骤</th><th>命令</th><th>输入</th><th>输出</th></tr>
+        <tr>
+          <td><span class="badge badge-plan">1. 规划</span></td>
+          <td><code class="inline-code">/prd</code></td>
+          <td>功能描述 / 产品想法</td>
+          <td>PRD 文档 + Issue 卡片</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-plan">1.5 设计</span></td>
+          <td><code class="inline-code">/prd-to-spec</code></td>
+          <td>PRD 文档</td>
+          <td>技术 SPEC（可选）</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-plan">1.6 拆解</span></td>
+          <td><code class="inline-code">/to-issues</code></td>
+          <td>PRD / SPEC 文档</td>
+          <td>Issue 卡片</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-impl">2. 实现</span></td>
+          <td><code class="inline-code">/goal</code></td>
+          <td>一个 Issue 卡片</td>
+          <td>可运行的代码实现</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-review">3. 审查</span></td>
+          <td><code class="inline-code">/review-it</code></td>
+          <td>代码变更 (dirty / branch)</td>
+          <td>通过审查的干净代码</td>
+        </tr>
+        <tr>
+          <td><span class="badge badge-ship">4. 交付</span></td>
+          <td><code class="inline-code">/ship-it</code></td>
+          <td>已审查的代码</td>
+          <td>已合入的 PR + 已关闭的 Issue</td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Section 4: /prd -->
+    <div class="section" id="step-prd">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>4. Step 1: /prd — 需求规划</h3>
+      </div>
+      <p>
+        <code class="inline-code">/prd</code> 将一个模糊的功能想法转化为结构化的产品需求文档，并拆解为可独立实施的 Issue 卡片。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/prd</span> <span class="value">给我们的任务管理系统加一个优先级功能</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">写PRD：</span><span class="value">用户注册功能，支持邮箱和手机号</span>
+<span class="cmd">需求分析：</span><span class="value">为 API 增加限流能力</span></code></pre>
+
+      <h3>工作流程</h3>
+      <ul class="step-list">
+        <li>Agent 提出 3-5 个澄清问题（带字母选项，可快速回复 "1A, 2C, 3B"）</li>
+        <li>根据回答生成结构化 PRD（用户故事、功能需求、非目标、验收标准）</li>
+        <li>展示 PRD 供审阅，确认或调整</li>
+        <li>保存 PRD 到 <code class="inline-code">tasks/prd-[feature-name].md</code></li>
+        <li>拆解 PRD 为 Issue 列表，展示供确认</li>
+        <li>选择创建模式（GitHub / Local / Baidu iCafe）并创建 Issue</li>
+      </ul>
+
+      <h3>输出示例</h3>
+      <pre><code><span class="comment"># 生成的 Issue 列表</span>
+<span class="value">📋 Generated 4 Issues from PRD:</span>
+
+<span class="cmd">#1: Add priority field to database</span> <span class="flag">(backend, high)</span>
+<span class="cmd">#2: Display priority indicator</span> <span class="flag">(frontend, high)</span> <span class="comment">— depends on #1</span>
+<span class="cmd">#3: Add priority selector</span> <span class="flag">(frontend, medium)</span> <span class="comment">— depends on #1</span>
+<span class="cmd">#4: Filter tasks by priority</span> <span class="flag">(frontend, medium)</span> <span class="comment">— depends on #1, #2</span></code></pre>
+
+      <div class="tip">
+        <strong>Tip：</strong>每个 Issue 的粒度应该是一个 Agent 在单次会话中可以完成的工作量。如果一个 User Story 太大（5+ 验收标准或跨前后端），会自动拆分。
+      </div>
+    </div>
+
+    <!-- Section 5: /prd-to-spec -->
+    <div class="section" id="step-prd-to-spec">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>5. Step 1.5: /prd-to-spec — PRD 转技术方案</h3>
+      </div>
+      <p>
+        <code class="inline-code">/prd-to-spec</code> 将产品需求文档（PRD）转化为可实施的技术设计方案（SPEC）。PRD 说明"做什么"，SPEC 说明"怎么做"。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/prd-to-spec</span> <span class="value">tasks/prd-priority-system.md</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">需求转设计：</span><span class="value">将优先级 PRD 转为技术方案</span>
+<span class="cmd">技术方案：</span><span class="value">基于 prd-user-auth.md 生成 SPEC</span></code></pre>
+
+      <h3>PRD → SPEC 映射</h3>
+      <table>
+        <tr><th>PRD 元素</th><th>SPEC 章节</th><th>转化方式</th></tr>
+        <tr><td>User Stories</td><td>业务逻辑 + 测试映射</td><td>故事 → 算法 + 测试用例</td></tr>
+        <tr><td>Functional Requirements</td><td>API 设计 + 业务逻辑</td><td>FR → 端点 + 实现逻辑</td></tr>
+        <tr><td>Acceptance Criteria</td><td>测试策略</td><td>标准 → 具体测试场景</td></tr>
+        <tr><td>Non-Goals</td><td>开放问题</td><td>明确排除范围</td></tr>
+        <tr><td>Technical Considerations</td><td>架构 + 性能</td><td>约束 → 设计决策</td></tr>
+      </table>
+
+      <h3>SPEC 输出结构（11 章节）</h3>
+      <table>
+        <tr><th>#</th><th>章节</th><th>内容</th></tr>
+        <tr><td>1</td><td>Summary</td><td>覆盖范围、PRD 引用、设计决策摘要</td></tr>
+        <tr><td>2</td><td>Architecture</td><td>系统上下文、组件设计、文件结构</td></tr>
+        <tr><td>3</td><td>Data Model</td><td>Schema 变更、实体定义、迁移计划</td></tr>
+        <tr><td>4</td><td>API Design</td><td>端点表、请求响应 Schema、错误响应</td></tr>
+        <tr><td>5</td><td>Business Logic</td><td>核心算法、校验规则、状态机、边界情况</td></tr>
+        <tr><td>6</td><td>Error Handling</td><td>错误分类、重试策略、降级方案</td></tr>
+        <tr><td>7</td><td>Security</td><td>认证授权、输入校验、数据保护</td></tr>
+        <tr><td>8</td><td>Performance</td><td>预期负载、优化策略、数据库考量</td></tr>
+        <tr><td>9</td><td>Testing Strategy</td><td>单元/集成/E2E 测试 + 验收标准映射</td></tr>
+        <tr><td>10</td><td>Implementation Plan</td><td>实施阶段、Issue 映射、渐进交付</td></tr>
+        <tr><td>11</td><td>Open Questions & Risks</td><td>未决问题、技术风险、假设前提</td></tr>
+      </table>
+
+      <h3>工作流程</h3>
+      <ul class="step-list">
+        <li>定位 PRD 文件（自动扫描 tasks/ 或手动指定）</li>
+        <li>（可选）分析现有代码库：架构、技术栈、模式、约定（无代码库时跳过，从零提出架构）</li>
+        <li>提出 3-5 个技术澄清问题（带选项）</li>
+        <li>生成完整 SPEC 文档</li>
+        <li>展示供审阅，确认或迭代</li>
+        <li>保存到 <code class="inline-code">tasks/spec-[feature-name].md</code></li>
+      </ul>
+
+      <div class="note">
+        <strong>Note：</strong><code class="inline-code">/prd-to-spec</code> 是一个<strong>可选步骤</strong>。对于大多数中小型功能，PRD 中的 Functional Requirements 和 Acceptance Criteria 已经足够让 AI agent 在 <code class="inline-code">/goal</code> 阶段自主做出技术决策——agent 会自动分析代码库、理解架构、选择合适的实现路径，不需要一份预先写好的 SPEC。仅在以下场景才建议先跑 <code class="inline-code">/prd-to-spec</code>：
+        <ul class="step-list" style="margin-top: 0.5rem;">
+          <li>多人或多 agent 并行开发，需要共享技术约定</li>
+          <li>跨多个服务/模块的大型改动，架构决策影响面大</li>
+          <li>团队有合规或评审流程要求设计文档</li>
+          <li>PRD 写得较模糊，需要提前补足技术细节降低理解偏差</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Section 6: /to-issues -->
+    <div class="section" id="step-to-issues">
+      <div class="section-title">
+        <div class="section-dot coral"></div>
+        <h3>6. Step 1.6: /to-issues — 拆解 Issue 卡片</h3>
+      </div>
+      <p>
+        <code class="inline-code">/to-issues</code> 将 PRD 和/或 SPEC 拆解为可独立实施的 Issue，并创建到你选择的平台。可独立使用，不需要先运行 <code class="inline-code">/prd</code>。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/to-issues</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">创建issue：</span><span class="value">基于 prd-user-auth.md 创建 Issue</span>
+<span class="cmd">拆解issue：</span><span class="value">从 SPEC 拆解可实施的卡片</span>
+<span class="cmd">生成卡片：</span><span class="value">将 PRD 和 SPEC 一起拆成 Issue</span></code></pre>
+
+      <h3>输入来源</h3>
+      <table>
+        <tr><th>选项</th><th>说明</th></tr>
+        <tr><td>自动检测</td><td>扫描 <code class="inline-code">tasks/</code> 目录，列出可用的 PRD 和 SPEC</td></tr>
+        <tr><td>指定 PRD</td><td>只基于 PRD 的 User Stories 拆解</td></tr>
+        <tr><td>指定 SPEC</td><td>使用 SPEC 的 Issue Mapping 章节作为主指导</td></tr>
+        <tr><td>PRD + SPEC</td><td>（推荐）PRD 提供需求，SPEC 提供技术约定，Issue 最完整</td></tr>
+      </table>
+
+      <h3>创建平台</h3>
+      <table>
+        <tr><th>平台</th><th>工具</th><th>说明</th></tr>
+        <tr><td>GitHub</td><td><code class="inline-code">gh issue create</code></td><td>需要 gh CLI 认证</td></tr>
+        <tr><td>Local</td><td>Markdown 文件</td><td>保存到 <code class="inline-code">.autoresearch/issues/</code> 或自定义目录</td></tr>
+        <tr><td>Baidu iCafe</td><td><code class="inline-code">icafe-cli</code></td><td>需要 iCafe 空间参数</td></tr>
+      </table>
+
+      <h3>工作流程</h3>
+      <ul class="step-list">
+        <li>定位输入文件（自动检测或手动指定 PRD/SPEC）</li>
+        <li>拆解为 Issue 列表，展示供用户审阅（可增删改合并）</li>
+        <li>选择创建平台（GitHub / Local / Baidu iCafe）</li>
+        <li>逐条创建并输出汇总报告</li>
+      </ul>
+
+      <div class="note">
+        <strong>Note：</strong><code class="inline-code">/to-issues</code> 是从需求到实现的关键桥梁。它可以独立使用——即使你没有用 <code class="inline-code">/prd</code> 生成 PRD，只要有一个需求文档（甚至直接粘贴），就能拆出 Issue。
+      </div>
+    </div>
+
+    <!-- Section 7: /goal -->
+    <div class="section" id="step-goal">
+      <div class="section-title">
+        <div class="section-dot sage"></div>
+        <h3>7. Step 2: /goal — 功能实现</h3>
+      </div>
+      <p>
+        <code class="inline-code">/goal</code> 是 Claude Code 内置的目标驱动开发模式。选择一个 Issue 卡片，Agent 会理解验收标准并端到端实现。
+      </p>
+
+      <h3>使用方式</h3>
+      <pre><code><span class="comment"># Claude Code: 指定 GitHub Issue 编号</span>
+<span class="cmd">/goal</span> <span class="value">#42</span>
+
+<span class="comment"># Claude Code: 指定本地 Issue 文件</span>
+<span class="cmd">/goal</span> <span class="value">tasks/issues/issue-001-add-priority-field.md</span>
+
+<span class="comment"># Codex: 使用 --goal 参数</span>
+<span class="cmd">codex</span> <span class="flag">--goal</span> <span class="value">"Implement issue #42: Add priority field to database"</span></code></pre>
+
+      <h3>Agent 行为</h3>
+      <ul class="step-list">
+        <li>读取 Issue 描述和验收标准</li>
+        <li>分析代码库结构，理解上下文</li>
+        <li>编写实现代码</li>
+        <li>运行测试和类型检查</li>
+        <li>对 UI 变更在浏览器中验证</li>
+        <li>逐条确认验收标准满足</li>
+      </ul>
+
+      <div class="note">
+        <strong>Note：</strong><code class="inline-code">/goal</code> 是 Claude Code 的内置功能，不包含在本 skill 包中。它与本工作流天然配合——<code class="inline-code">/prd</code> 生成的 Issue 格式正是 <code class="inline-code">/goal</code> 所期望的输入。
+      </div>
+    </div>
+
+    <!-- Section 7: /review-it -->
+    <div class="section" id="step-review">
+      <div class="section-title">
+        <div class="section-dot plum"></div>
+        <h3>8. Step 3: /review-it — 代码审查</h3>
+      </div>
+      <p>
+        <code class="inline-code">/review-it</code> 在代码提交前进行自动化审查，发现潜在问题并迭代修复，直到审查通过。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 审查未提交的变更（默认模式）</span>
+<span class="cmd">/review-it</span>
+
+<span class="comment"># 审查整个分支 vs main</span>
+<span class="cmd">/review-it</span> <span class="value">--mode branch</span>
+
+<span class="comment"># 审查 + 测试并行执行</span>
+<span class="cmd">/review-it</span> <span class="value">--parallel-tests "npm test"</span></code></pre>
+
+      <h3>审查原则</h3>
+      <table>
+        <tr><th>原则</th><th>说明</th></tr>
+        <tr><td>Advisory</td><td>审查结果视为建议，不盲目应用</td></tr>
+        <tr><td>Verify</td><td>每个发现都通过读取真实代码路径验证</td></tr>
+        <tr><td>Reject noise</td><td>拒绝不切实际的边界情况、投机性风险、过度重构</td></tr>
+        <tr><td>Iterate</td><td>修复后重新审查，直到无可操作发现</td></tr>
+        <tr><td>Minimal</td><td>优先小修复，不做不必要的大重构</td></tr>
+      </table>
+
+      <h3>审查模式</h3>
+      <table>
+        <tr><th>工作树状态</th><th>模式</th><th>操作</th></tr>
+        <tr><td>有未提交变更</td><td>local</td><td>直接 <code class="inline-code">/review</code></td></tr>
+        <tr><td>已提交未推送</td><td>branch</td><td><code class="inline-code">git diff origin/main...HEAD</code> + review</td></tr>
+        <tr><td>已推送 / PR</td><td>branch</td><td>同上，自动检测 PR base</td></tr>
+        <tr><td>干净工作树</td><td>skip</td><td>无需审查</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip：</strong><code class="inline-code">/review-it</code> 支持 Claude Code、Codex、OpenCode 和 DeepSeek TUI，会自动适配各 Agent 的审查命令。
+      </div>
+    </div>
+
+    <!-- Section 8: /ship-it -->
+    <div class="section" id="step-ship">
+      <div class="section-title">
+        <div class="section-dot blue"></div>
+        <h3>9. Step 4: /ship-it — 提交交付</h3>
+      </div>
+      <p>
+        <code class="inline-code">/ship-it</code> 是实现完成后的标准收尾流程：提交代码、创建 PR、合入、添加实现总结、关闭 Issue。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中调用</span>
+<span class="cmd">/ship-it</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">提交代码</span>
+<span class="cmd">创建PR并合入</span></code></pre>
+
+      <h3>完整流程</h3>
+      <pre><code><span class="comment"># Step 1: 提交代码（关联 Issue）</span>
+<span class="cmd">git add</span> <span class="value">&lt;related files&gt;</span>
+<span class="cmd">git commit -m</span> <span class="value">"Add priority field to database (#42)"</span>
+
+<span class="comment"># Step 2: 推送分支</span>
+<span class="cmd">git push -u origin</span> <span class="value">feat/issue-42-priority-field</span>
+
+<span class="comment"># Step 3: 创建 PR（body 包含 Closes #42）</span>
+<span class="cmd">gh pr create</span> <span class="flag">--title</span> <span class="value">"Add priority field"</span> \
+  <span class="flag">--body</span> <span class="value">"Closes #42 ..."</span>
+
+<span class="comment"># Step 4: 合入</span>
+<span class="cmd">gh pr merge</span> <span class="flag">--squash</span> <span class="flag">--delete-branch</span>
+
+<span class="comment"># Step 5: 关闭 Issue（如未自动关闭）</span>
+<span class="cmd">gh issue close</span> <span class="value">42</span> <span class="flag">--reason</span> <span class="value">completed</span></code></pre>
+
+      <h3>错误处理</h3>
+      <table>
+        <tr><th>场景</th><th>处理方式</th></tr>
+        <tr><td>CI checks 失败</td><td>查看失败原因，修复后追加 commit 推送</td></tr>
+        <tr><td>Merge conflict</td><td>Rebase origin/main，解决冲突后 force push</td></tr>
+        <tr><td>Branch protection</td><td>确认 required reviews 已满足</td></tr>
+        <tr><td>Issue 未自动关闭</td><td>确认 PR body 包含 <code class="inline-code">Closes #N</code>，或手动关闭</td></tr>
+      </table>
+
+      <div class="note">
+        <strong>Note：</strong><code class="inline-code">/ship-it</code> 依赖 <code class="inline-code">gh</code> CLI。确保已通过 <code class="inline-code">gh auth login</code> 完成认证。
+      </div>
+    </div>
+
+    <!-- Section 9: /humanize-it -->
+    <div class="section" id="step-humanize">
+      <div class="section-title">
+        <div class="section-dot amber"></div>
+        <h3>10. Bonus: /humanize-it — 去 AI 味改写</h3>
+      </div>
+      <p>
+        <code class="inline-code">/humanize-it</code> 对指定文档进行去 AI 味的改写。根据文档类型自动选择最合适的人性化策略，迭代改写直到效果达标。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/humanize-it</span> <span class="value">docs/architecture.md</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">去AI味：</span><span class="value">把这篇文档改成人话</span>
+<span class="cmd">降AIGC：</span><span class="value">humanize docs/blog-draft.md</span></code></pre>
+
+      <h3>子 Skill 能力矩阵</h3>
+      <table>
+        <tr><th>Skill</th><th>适用场景</th><th>改写风格</th></tr>
+        <tr><td><a href="https://github.com/op7418/Humanizer-zh" style="color: #D4A843; text-decoration: none;"><code class="inline-code">humanizer-zh</code></a></td><td>通用文本、博客、文案</td><td>自然、有温度、带观点</td></tr>
+        <tr><td><a href="https://github.com/sickn33/antigravity-awesome-skills/blob/main/plugins/antigravity-awesome-skills-claude/skills/humanize-chinese/SKILL.md" style="color: #D4A843; text-decoration: none;"><code class="inline-code">humanize-chinese</code></a></td><td>通用 + 学术 + 长文本</td><td>多风格（知乎/小红书/学术/文学等）</td></tr>
+        <tr><td><a href="https://github.com/luoling8192/technical-writing" style="color: #D4A843; text-decoration: none;"><code class="inline-code">technical-writing</code></a></td><td>技术文档、架构说明、评审稿</td><td>平实、严谨、可论证</td></tr>
+      </table>
+
+      <h3>自动策略选择</h3>
+      <table>
+        <tr><th>文档类型</th><th>优先策略顺序</th></tr>
+        <tr><td>技术文档</td><td><code class="inline-code">technical-writing</code> &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">humanize-chinese</code></td></tr>
+        <tr><td>学术论文</td><td><code class="inline-code">humanize-chinese</code> (academic) &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+        <tr><td>通用文本</td><td><code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">humanize-chinese</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+        <tr><td>长文本 (≥1500字)</td><td><code class="inline-code">humanize-chinese</code> (longform) &rarr; <code class="inline-code">humanizer-zh</code> &rarr; <code class="inline-code">technical-writing</code></td></tr>
+      </table>
+
+      <h3>迭代机制</h3>
+      <ul class="step-list">
+        <li>自动检测文档类型，选择第一个改写 skill</li>
+        <li>改写后按 5 个维度评分（AI 痕迹去除 / 自然度 / 信息完整 / 风格一致 / 可读性）</li>
+        <li>评分 ≥ 80 分则通过，输出结果</li>
+        <li>不达标则切换到下一个 skill，在上次改写基础上继续优化</li>
+        <li>同一 skill 连续 3 次无提升则自动切换</li>
+        <li>所有 skill 用完一轮后从头开始新一轮组合</li>
+        <li>最多迭代 42 轮，输出当前最佳结果</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip：</strong>你可以在触发时指定偏好，如"保持学术风格"、"要更口语化"、"技术文档不要太随意"，改写时会优先选择对应的策略。
+      </div>
+    </div>
+
+    <!-- Section 10: /listenhub-tts -->
+    <div class="section" id="step-tts">
+      <div class="section-title">
+        <div class="section-dot teal"></div>
+        <h3>11. Bonus: /listenhub-tts — 文本转语音</h3>
+      </div>
+      <p>
+        <code class="inline-code">/listenhub-tts</code> 使用 ListenHub API 将文本转换为语音。支持三种合成模式，覆盖从短文本到长文本的全场景。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/listenhub-tts</span> <span class="value">把这段文字转成语音</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">语音合成：</span><span class="value">将 README.md 朗读出来</span>
+<span class="cmd">生成音频：</span><span class="value">用晓曼的声音读这篇文章</span></code></pre>
+
+      <h3>三种合成模式</h3>
+      <table>
+        <tr><th>模式</th><th>接口</th><th>适用场景</th><th>特点</th></tr>
+        <tr><td>快速合成</td><td><code class="inline-code">/v1/tts</code></td><td>短文本（&lt; 1000 字），单音色</td><td>低延迟，返回 MP3 二进制流</td></tr>
+        <tr><td>多角色脚本</td><td><code class="inline-code">/v1/speech</code></td><td>多角色对话、播客</td><td>不同音色交替朗读</td></tr>
+        <tr><td>长文本流式</td><td><code class="inline-code">/v1/flow-speech/episodes</code></td><td>长文本（&gt; 1000 字）</td><td>异步合成，支持 AI 润色</td></tr>
+      </table>
+
+      <h3>音色选择</h3>
+      <table>
+        <tr><th>场景</th><th>行为</th></tr>
+        <tr><td>用户已指定音色</td><td>直接使用指定的 speakerId</td></tr>
+        <tr><td>用户未指定音色</td><td>调用 API 获取音色列表，展示供用户选择</td></tr>
+        <tr><td>默认音色</td><td><code class="inline-code">chat-girl-105-cn</code>（晓曼 dxqqq）</td></tr>
+      </table>
+
+      <h3>前置要求</h3>
+      <table>
+        <tr><th>配置</th><th>说明</th></tr>
+        <tr><td><code class="inline-code">LISTENHUB_API_KEY</code></td><td>ListenHub API 密钥，设置为环境变量</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip：</strong>长文本模式支持 AI 润色（<code class="inline-code">aiPolish</code>），可在合成前自动优化文本的口语化程度，让朗读效果更自然。
+      </div>
+    </div>
+
+    <!-- Section 11: /insight-diagram -->
+    <div class="section" id="step-diagram">
+      <div class="section-title">
+        <div class="section-dot violet"></div>
+        <h3>12. Bonus: /insight-diagram — UML 与架构图生成</h3>
+      </div>
+      <p>
+        <code class="inline-code">/insight-diagram</code> 为任意项目生成 UML 图、架构图和流程图。分析代码库后让用户选择要生成的图表类型，渲染为 HTML+SVG 并保存到 <code class="inline-code">docs/</code> 目录。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/insight-diagram</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">生成架构图：</span><span class="value">分析项目结构并生成架构图</span>
+<span class="cmd">画流程图：</span><span class="value">为这个模块绘制调用流程图</span>
+<span class="cmd">生成UML图：</span><span class="value">生成类图和时序图</span></code></pre>
+
+      <h3>支持的图表类型</h3>
+      <p>共支持 <strong>17 种</strong>图表类型，分为结构性图形和行为性图形两大类：</p>
+
+      <h3>结构性图形（静态）</h3>
+      <table>
+        <tr><th>编号</th><th>图表类型</th><th>关注点</th></tr>
+        <tr><td>1</td><td>系统架构图 ★</td><td>组件关系、全局视角（非UML，最常用）</td></tr>
+        <tr><td>2</td><td>类图</td><td>定义类、属性、操作及关系</td></tr>
+        <tr><td>3</td><td>对象图</td><td>特定时刻的对象实例及其关系</td></tr>
+        <tr><td>4</td><td>组件图</td><td>系统组件及其依赖关系</td></tr>
+        <tr><td>5</td><td>部署图</td><td>物理硬件、节点及软件部署</td></tr>
+        <tr><td>6</td><td>包图</td><td>将模型元素分组组织</td></tr>
+        <tr><td>7</td><td>复合结构图</td><td>类的内部结构</td></tr>
+        <tr><td>8</td><td>剖面图</td><td>扩展UML元模型、自定义构造型</td></tr>
+      </table>
+
+      <h3>行为性图形（动态）</h3>
+      <table>
+        <tr><th>编号</th><th>图表类型</th><th>关注点</th></tr>
+        <tr><td>9</td><td>流程图 ★</td><td>主流程与分支（非UML，最常用）</td></tr>
+        <tr><td>10</td><td>用例图</td><td>从用户角度展示系统功能</td></tr>
+        <tr><td>11</td><td>活动图</td><td>过程的流程或步骤</td></tr>
+        <tr><td>12</td><td>状态机图</td><td>对象生命周期的状态变迁</td></tr>
+        <tr><td>13</td><td>序列图</td><td>按时间顺序展示对象间交互</td></tr>
+        <tr><td>14</td><td>通信图</td><td>侧重于对象间的组织关系</td></tr>
+        <tr><td>15</td><td>定时图</td><td>侧重于状态变化的时间约束</td></tr>
+        <tr><td>16</td><td>交互概览图</td><td>结合活动图和时序图</td></tr>
+        <tr><td>17</td><td>泳道图</td><td>跨组件/角色职责流程（活动图变体）</td></tr>
+      </table>
+      <p style="font-size:0.6875rem;color:#8B8680;margin-top:0.25rem;">★ 标注为最常用的图表类型。默认推荐组合：架构图 + 序列图 + 流程图。</p>
+
+      <h3>工作流程</h3>
+      <ul class="step-list">
+        <li>分析项目代码库，识别关键组件和依赖关系</li>
+        <li>展示可选的图表类型列表，用户选择需要生成的类型</li>
+        <li>使用 <a href="https://github.com/Cocoon-AI/architecture-diagram-generator" style="color: #7C5CBF; text-decoration: none;">architecture-diagram</a> skill 渲染为 HTML+SVG</li>
+        <li>保存输出到 <code class="inline-code">docs/</code> 目录</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip：</strong>你可以在触发时指定关注范围，如"只看 <code class="inline-code">src/services/</code> 目录"、"重点分析数据库层"，生成结果会更聚焦。
+      </div>
+    </div>
+
+    <!-- Section 12: Refactor -->
+    <div class="section" id="step-refactor">
+      <div class="section-title">
+        <div class="section-dot coral"></div>
+        <h3>13. Bonus: /refactor — 专家级代码重构</h3>
+      </div>
+      <p>
+        <code class="inline-code">/refactor</code> 基于 Martin Fowler《重构》第 2 版的完整目录，提供专家级代码重构能力。通过识别代码坏味道并应用经过验证的重构手法，在不改变外部行为的前提下改善代码的可维护性、可读性和结构。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/refactor</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">重构：</span><span class="value">重构 UserManager 类，它太大了</span>
+<span class="cmd">code smell：</span><span class="value">这个函数有 Feature Envy，修复它</span>
+<span class="cmd">extract method：</span><span class="value">把这个长方法拆分成更小的函数</span></code></pre>
+
+      <h3>代码坏味道目录</h3>
+      <p>共识别 <strong>22 种</strong>代码坏味道，按五大类别组织：</p>
+
+      <table>
+        <tr><th>类别</th><th>坏味道</th><th>主要重构手法</th></tr>
+        <tr><td rowspan="5"><strong>臃肿类</strong></td><td>过长方法</td><td>Extract Method, Replace Temp with Query</td></tr>
+        <tr><td>过大的类</td><td>Extract Class, Extract Subclass</td></tr>
+        <tr><td>基本类型偏执</td><td>Replace Data Value with Object</td></tr>
+        <tr><td>过长参数列表</td><td>Introduce Parameter Object</td></tr>
+        <tr><td>数据泥团</td><td>Extract Class</td></tr>
+        <tr><td rowspan="4"><strong>OO 滥用类</strong></td><td>Switch 语句</td><td>Replace Conditional with Polymorphism</td></tr>
+        <tr><td>临时字段</td><td>Extract Class, Introduce Null Object</td></tr>
+        <tr><td>被拒绝的遗赠</td><td>Replace Inheritance with Delegation</td></tr>
+        <tr><td>异曲同工的类</td><td>Rename Method, Extract Superclass</td></tr>
+        <tr><td rowspan="3"><strong>变更阻碍类</strong></td><td>发散式变化</td><td>Extract Class</td></tr>
+        <tr><td>霰弹式修改</td><td>Move Method, Move Field</td></tr>
+        <tr><td>平行继承体系</td><td>Move Method, Move Field</td></tr>
+        <tr><td rowspan="6"><strong>冗余类</strong></td><td>注释（代码自说明）</td><td>Extract Method, Rename Variable</td></tr>
+        <tr><td>重复代码</td><td>Extract Method, Pull Up Method</td></tr>
+        <tr><td>冗赘类</td><td>Inline Class, Collapse Hierarchy</td></tr>
+        <tr><td>纯数据类</td><td>Move Method, Encapsulate Field</td></tr>
+        <tr><td>死代码</td><td>删除（Git 历史有记录）</td></tr>
+        <tr><td>夸夸其谈未来性</td><td>Inline Class, Remove Parameter</td></tr>
+        <tr><td rowspan="5"><strong>耦合类</strong></td><td>依恋情节</td><td>Move Method</td></tr>
+        <tr><td>狎昵关系</td><td>Move Method, Move Field</td></tr>
+        <tr><td>消息链</td><td>Hide Delegate</td></tr>
+        <tr><td>中间人</td><td>Remove Middle Man</td></tr>
+        <tr><td>不完美的库类</td><td>Introduce Foreign Method</td></tr>
+      </table>
+
+      <h3>重构手法目录</h3>
+      <p><strong>40+ 种</strong>重构手法，分 6 大类，每种附带机械步骤和对比示例：</p>
+
+      <table>
+        <tr><th>类别</th><th>手法数</th><th>代表性手法</th></tr>
+        <tr><td>组合方法</td><td>9</td><td>Extract Method, Inline Method, Extract Variable, Replace Temp with Query, Substitute Algorithm</td></tr>
+        <tr><td>移动特性</td><td>7</td><td>Move Method, Move Field, Extract Class, Inline Class, Hide Delegate</td></tr>
+        <tr><td>组织数据</td><td>13</td><td>Replace Data Value with Object, Encapsulate Field, Replace Type Code with Subclasses, Replace Magic Number</td></tr>
+        <tr><td>简化条件</td><td>8</td><td>Decompose Conditional, Guard Clauses, Replace Conditional with Polymorphism, Introduce Null Object</td></tr>
+        <tr><td>方法调用</td><td>13</td><td>Rename Method, Separate Query from Modifier, Introduce Parameter Object, Replace Error Code with Exception</td></tr>
+        <tr><td>泛化</td><td>9</td><td>Pull Up Method, Push Down Method, Extract Interface, Form Template Method, Replace Inheritance with Delegation</td></tr>
+      </table>
+
+      <h3>安全协议</h3>
+      <ul class="step-list">
+        <li><strong>准备阶段：</strong>编写特征测试 → 提交当前状态 → 创建重构分支</li>
+        <li><strong>每一步：</strong>一次仅做一处变更 → 编译通过 → 所有测试通过 → 提交</li>
+        <li><strong>验证阶段：</strong>全部测试通过 → 手动冒烟测试 → 自审 diff → 最终提交</li>
+        <li><strong>铁律：</strong>不改变外部行为，不混杂功能变更，每一步都有测试保障</li>
+      </ul>
+
+      <h3>语言专属指南</h3>
+      <table>
+        <tr><th>语言</th><th>核心建议</th></tr>
+        <tr><td>Java</td><td>final 局部变量、IDE 自动重构、Records、Sealed Classes</td></tr>
+        <tr><td>TypeScript</td><td>解构减少参数、const 优先、Union Types 替代类型码、?. 消除 null 检查</td></tr>
+        <tr><td>Python</td><td>Type Hints、dataclasses、@property、Context Managers</td></tr>
+        <tr><td>Go</td><td>小接口、命名返回值、表格驱动测试、early returns 消除嵌套</td></tr>
+        <tr><td>Rust</td><td>Result/Option 替代错误码和 null、Pattern Matching、From trait、Derive macros</td></tr>
+      </table>
+
+      <div class="tip">
+        <strong>Tip：</strong>每次重构只需告诉 AI "这个类的这个坏味道，请用对应的重构手法修复"，AI 会按安全协议逐步执行，每步提交。
+      </div>
+    </div>
+
+    <!-- Section 13: Modern-Go -->
+    <div class="section" id="step-modern-go">
+      <div class="section-title">
+        <div class="section-dot teal"></div>
+        <h3>14. Bonus: /modern-go — Go 代码现代化改造</h3>
+      </div>
+      <p>
+        <code class="inline-code">/modern-go</code> 自动将 Go 代码升级为现代写法和 API，类似 <code class="inline-code">go fix</code>。扫描 <code class="inline-code">go.mod</code> 检测 Go 版本，对 Go 源文件批量应用版本适配的转换规则，覆盖从 Go 1.0 到 1.26+ 的 35+ 条规则。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/modern-go</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">modernize：</span><span class="value">现代化改造这个项目的 Go 代码</span>
+<span class="cmd">升级Go代码：</span><span class="value">更新到 Go 1.22 的写法</span>
+<span class="cmd">gofix：</span><span class="value">扫描 pkg/ 目录并应用转换</span></code></pre>
+
+      <h3>工作流程</h3>
+      <ul class="step-list">
+        <li>读取 <code class="inline-code">go.mod</code> 获取 Go 版本</li>
+        <li>在目标范围内（指定文件/目录/整个项目）查找 <code class="inline-code">.go</code> 文件</li>
+        <li>逐个文件扫描 "Before" 模式，应用所有版本 ≤ 项目版本的转换</li>
+        <li>每条转换附带简洁对照表和代码示例（before/after）</li>
+        <li>编辑完成后运行 <code class="inline-code">goimports -w</code> 清理 import</li>
+        <li>输出改造报告：文件数、应用转换数、已跳过的规则</li>
+      </ul>
+
+      <h3>转换规则目录（按 Go 版本）</h3>
+      <table>
+        <tr><th>版本</th><th>规则</th><th>示例（Before → After）</th></tr>
+        <tr><td>1.0+</td><td><code class="inline-code">time.Since</code></td><td><code class="inline-code">time.Now().Sub(start)</code> → <code class="inline-code">time.Since(start)</code></td></tr>
+        <tr><td>1.8+</td><td><code class="inline-code">time.Until</code></td><td><code class="inline-code">deadline.Sub(time.Now())</code> → <code class="inline-code">time.Until(deadline)</code></td></tr>
+        <tr><td>1.10+</td><td><code class="inline-code">strings.Builder</code></td><td>循环内 <code class="inline-code">s += item</code> → <code class="inline-code">strings.Builder</code></td></tr>
+        <tr><td>1.13+</td><td><code class="inline-code">errors.Is</code></td><td><code class="inline-code">err == io.EOF</code> → <code class="inline-code">errors.Is(err, io.EOF)</code></td></tr>
+        <tr><td>1.18+</td><td><code class="inline-code">any</code>, <code class="inline-code">strings.Cut</code>, <code class="inline-code">bytes.Cut</code></td><td><code class="inline-code">interface{}</code> → <code class="inline-code">any</code>, Index+切片 → Cut</td></tr>
+        <tr><td>1.19+</td><td><code class="inline-code">fmt.Appendf</code>, 类型安全原子操作</td><td><code class="inline-code">append(buf, fmt.Sprintf(...)...)</code> → <code class="inline-code">fmt.Appendf</code></td></tr>
+        <tr><td>1.20+</td><td><code class="inline-code">strings.Clone</code>, <code class="inline-code">CutPrefix/CutSuffix</code>, <code class="inline-code">errors.Join</code></td><td><code class="inline-code">string([]byte(s))</code> → <code class="inline-code">strings.Clone(s)</code></td></tr>
+        <tr><td>1.21+</td><td><code class="inline-code">min</code>/<code class="inline-code">max</code>, <code class="inline-code">clear</code>, <code class="inline-code">slices</code>/<code class="inline-code">maps</code> 包</td><td>手动循环 → <code class="inline-code">slices.Contains</code>, <code class="inline-code">maps.Clone</code> 等</td></tr>
+        <tr><td>1.22+</td><td>range over int, <code class="inline-code">cmp.Or</code>, <code class="inline-code">reflect.TypeFor</code></td><td><code class="inline-code">for i:=0;i&lt;n;i++</code> → <code class="inline-code">for i:=range n</code></td></tr>
+        <tr><td>1.23+</td><td>迭代器 helpers, <code class="inline-code">SplitSeq/FieldsSeq</code></td><td><code class="inline-code">for _,p:=range strings.Split(s,sep)</code> → <code class="inline-code">SplitSeq</code></td></tr>
+        <tr><td>1.24+</td><td><code class="inline-code">t.Context()</code>, <code class="inline-code">omitzero</code>, <code class="inline-code">b.Loop()</code></td><td>测试中 <code class="inline-code">context.Background()</code> → <code class="inline-code">t.Context()</code></td></tr>
+        <tr><td>1.25+</td><td><code class="inline-code">wg.Go()</code></td><td><code class="inline-code">wg.Add(1); go func(){defer wg.Done();fn()}()</code> → <code class="inline-code">wg.Go(fn)</code></td></tr>
+        <tr><td>1.26+</td><td><code class="inline-code">new(expr)</code>, <code class="inline-code">errors.AsType</code></td><td><code class="inline-code">v:=42; &amp;v</code> → <code class="inline-code">new(42)</code></td></tr>
+      </table>
+
+      <h3>安全规则</h3>
+      <ul class="step-list">
+        <li><code class="inline-code">omitzero</code> 仅建议不自动应用（可能改变 JSON 序列化行为）</li>
+        <li><code class="inline-code">SplitSeq</code> 仅在循环体不需要索引或完整切片时应用</li>
+        <li><code class="inline-code">strings.Builder</code> 仅当拼接发生在循环内时应用</li>
+        <li>每次转换若需要新 import，自动添加并运行 <code class="inline-code">goimports</code> 清理</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip：</strong>可以在触发时指定范围，如 <code class="inline-code">/modern-go pkg/</code> 仅改造 <code class="inline-code">pkg/</code> 目录，或 <code class="inline-code">/modern-go main.go</code> 仅改造单个文件。
+      </div>
+    </div>
+
+    <!-- Section 14: Notes -->
+    <div class="section" id="step-note-it">
+      <div class="section-title">
+        <div class="section-dot slate"></div>
+        <h3>15. Bonus: /note-it — 实现笔记记录</h3>
+      </div>
+      <p>
+        <code class="inline-code">/note-it</code> 在代码实现和审查完成后，为当前 Issue 生成一份结构化实现笔记，记录设计决策、偏离、权衡和待确认问题，输出为 HTML 格式保存到 <code class="inline-code">docs/</code> 目录。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/note-it</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">记录笔记：</span><span class="value">为 Issue #42 生成实现笔记</span>
+<span class="cmd">implementation notes：</span><span class="value">记录本次实现的决策和偏离</span></code></pre>
+
+      <h3>笔记内容</h3>
+      <table>
+        <tr><th>类别</th><th>关注点</th><th>示例</th></tr>
+        <tr><td>Design Decisions</td><td>规格模糊处的选择及理由</td><td>为什么选择接口多态而非 switch</td></tr>
+        <tr><td>Deviations</td><td>有意偏离规格的地方及原因</td><td>简化了错误处理策略的理由</td></tr>
+        <tr><td>Tradeoffs</td><td>考虑的替代方案及取舍分析</td><td>内联 vs 提取函数的选择</td></tr>
+        <tr><td>Open Questions</td><td>需要确认或修改的事项</td><td>性能假设是否需要基准测试验证</td></tr>
+      </table>
+
+      <h3>输出</h3>
+      <ul class="step-list">
+        <li>自动检测 Issue 编号（从分支名或 /goal 上下文）</li>
+        <li>生成 HTML 格式笔记文件</li>
+        <li>保存到 <code class="inline-code">docs/issue#XXXX.html</code></li>
+        <li>如已存在该 Issue 笔记，提示是否追加或覆盖</li>
+      </ul>
+
+      <h3>定位</h3>
+      <p>
+        <code class="inline-code">/note-it</code> 位于工作流中 <code class="inline-code">/review-it</code> 和 <code class="inline-code">/ship-it</code> 之间，作为提交前最终检查点——确保实现意图被完整记录，方便后续维护者理解代码背后的决策逻辑。
+      </p>
+
+      <div class="tip">
+        <strong>Tip：</strong>即使没有偏离规格，记录设计决策和权衡也是有价值的——6 个月后回看代码时，这些笔记比代码注释更能解释"当时为什么这么做"。
+      </div>
+    </div>
+
+    <!-- Section 15: /code-to-spec -->
+    <div class="section" id="step-code-to-spec">
+      <div class="section-title">
+        <div class="section-dot sage"></div>
+        <h3>16. Bonus: /code-to-spec — 逆向生成规格文档</h3>
+      </div>
+      <p>
+        <code class="inline-code">/code-to-spec</code> 分析一个既有项目的代码、配置、测试和结构，反向生成一份完整的 SPEC（规格）文档。输出可用于重建项目、新人入职或对比实际实现与预期设计。
+      </p>
+
+      <h3>触发方式</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/code-to-spec</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">生成设计文档：</span><span class="value">分析当前项目并生成 SPEC</span>
+<span class="cmd">reverse spec：</span><span class="value">逆向工程这个项目的规格</span>
+<span class="cmd">生成规格文档：</span><span class="value">为 src/ 目录生成技术规格</span></code></pre>
+
+      <h3>分析深度</h3>
+      <table>
+        <tr><th>级别</th><th>内容</th><th>适用场景</th></tr>
+        <tr><td>Overview</td><td>架构 + 技术栈 + 核心功能</td><td>快速了解项目，~5 分钟</td></tr>
+        <tr><td>Standard（默认）</td><td>+ API 合约 + 数据模型 + 配置 + 依赖</td><td>全面理解项目</td></tr>
+        <tr><td>Deep</td><td>+ 内部模块交互 + 错误处理 + 测试覆盖</td><td>准备重构或重写</td></tr>
+      </table>
+
+      <h3>SPEC 文档结构（12 章节）</h3>
+      <table>
+        <tr><th>#</th><th>章节</th><th>内容</th></tr>
+        <tr><td>1</td><td>Overview</td><td>目的、核心功能、架构风格</td></tr>
+        <tr><td>2</td><td>Tech Stack</td><td>语言、框架、数据库、构建、测试、部署</td></tr>
+        <tr><td>3</td><td>Project Structure</td><td>目录树 + 各目录职责注释</td></tr>
+        <tr><td>4</td><td>Data Model</td><td>核心实体、字段、关系、状态流转</td></tr>
+        <tr><td>5</td><td>API Surface</td><td>端点/命令/函数表 + 请求响应 Schema</td></tr>
+        <tr><td>6</td><td>Configuration</td><td>环境变量、配置文件、Feature Flags</td></tr>
+        <tr><td>7</td><td>External Dependencies</td><td>第三方服务、基础设施、失败影响</td></tr>
+        <tr><td>8</td><td>Business Rules</td><td>不变量、校验规则、业务逻辑约束</td></tr>
+        <tr><td>9</td><td>Non-Functional</td><td>性能、安全、错误处理模式</td></tr>
+        <tr><td>10</td><td>Testing Strategy</td><td>测试框架、覆盖模式</td></tr>
+        <tr><td>11</td><td>Known Gaps</td><td>不确定项、假设、无测试区域</td></tr>
+        <tr><td>12</td><td>Appendix</td><td>依赖图、本地环境搭建步骤</td></tr>
+      </table>
+
+      <h3>工作流程</h3>
+      <ul class="step-list">
+        <li>确认分析范围（整个仓库 / 指定目录 / 特定方面）和深度级别</li>
+        <li>扫描项目：识别入口点、目录结构、依赖图、API 路由、数据模型</li>
+        <li>提取业务规则：从校验函数、Guard Clauses、测试断言中推导</li>
+        <li>合成生成 12 章节 SPEC 文档</li>
+        <li>展示供审阅，根据反馈迭代调整</li>
+        <li>保存到 <code class="inline-code">docs/SPEC.md</code> 或用户指定位置</li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip：</strong>对于大型项目（>500 文件），建议先用 Overview 深度快速了解全貌，再对感兴趣的模块用 Deep 深度分析。
+      </div>
+    </div>
+
+    <!-- Section 16: Platforms -->
+    <div class="section" id="platforms">
+      <div class="section-title">
+        <div class="section-dot slate"></div>
+        <h3>17. 支持的平台</h3>
+      </div>
+      <p>Goal Workflow 的技能可在多个 AI Coding Agent 中使用：</p>
+
+      <table>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+      </table>
+
+      <h3>Issue 创建平台</h3>
+      <table>
+        <tr><th>平台</th><th>工具</th><th>说明</th></tr>
+        <tr><td>GitHub</td><td><code class="inline-code">gh issue create</code></td><td>需要 gh CLI 认证</td></tr>
+        <tr><td>Local</td><td>Markdown 文件</td><td>保存到本地目录</td></tr>
+        <tr><td>Baidu iCafe</td><td><code class="inline-code">icafe-cli</code></td><td>需要 iCafe 空间参数</td></tr>
+      </table>
+    </div>
+
+    <!-- Section 17: FAQ -->
+    <div class="section" id="faq">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>18. FAQ</h3>
+      </div>
+
+      <h3>Q: 必须按顺序使用所有步骤吗？</h3>
+      <p>不必。每个 Skill 都是独立的，可以单独使用。比如你已经有 Issue 了，可以直接从 <code class="inline-code">/goal</code> 开始；代码已经写好，可以直接用 <code class="inline-code">/review-it</code> 审查。但完整走一遍流程能获得最好的效果。</p>
+
+      <h3>Q: /goal 是哪里来的？为什么没有在 skills 目录中？</h3>
+      <p><code class="inline-code">/goal</code> 是 Claude Code 的内置功能，不需要额外安装。本工作流的 <code class="inline-code">/prd</code> 生成的 Issue 格式与 <code class="inline-code">/goal</code> 的期望输入完全匹配。</p>
+
+      <h3>Q: 可以在非 GitHub 项目中使用吗？</h3>
+      <p>可以。<code class="inline-code">/prd</code> 支持将 Issue 保存为本地 Markdown 文件或创建到百度 iCafe。<code class="inline-code">/review-it</code> 只需要本地 git 仓库。<code class="inline-code">/ship-it</code> 目前依赖 GitHub（<code class="inline-code">gh</code> CLI）。</p>
+
+      <h3>Q: /review-it 和手动 code review 的区别？</h3>
+      <p><code class="inline-code">/review-it</code> 是自动化的自查（self-review），在提交前发现明显问题。它不替代团队 code review，而是在 PR 创建前提升代码质量，减少 reviewer 需要指出的低级问题。</p>
+
+      <h3>Q: Issue 粒度应该多大？</h3>
+      <p>每个 Issue 应该是一个 Agent 在单次会话中可以完成的工作量——通常是 1-3 个文件的变更，有明确的验收标准。<code class="inline-code">/prd</code> 会自动按这个粒度拆解，但你可以在确认前调整。</p>
+
+      <h3>Q: 如何在 Codex 中使用？</h3>
+      <p>通过 <code class="inline-code">npx skills add</code> 安装时选择 <code class="inline-code">-a codex</code>。在 Codex 中使用 <code class="inline-code">codex --goal "..."</code> 替代 <code class="inline-code">/goal</code>，<code class="inline-code">/review-it</code> 在各 Agent 中通用。</p>
+
+      <h3>Q: /prd-to-spec 是必需的吗？什么时候可以跳过？</h3>
+      <p>不是必需的。<code class="inline-code">/prd-to-spec</code> 是一个可选步骤。PRD 说的是"做什么"，SPEC 说的是"怎么做"。区别在于：AI agent 在执行 <code class="inline-code">/goal</code> 时本身就具备"怎么做"的能力——它会自动分析代码库、理解现有架构和约定、在实现过程中做出合理的技术决策。换句话说，<strong>AI agent 就是一个活的 SPEC 引擎</strong>，不需要在纸面上先画一遍。</p>
+      <p>大多数中小型功能只靠 PRD → /goal 就能很好地跑通。以下场景才值得多写一步 /prd-to-spec：</p>
+      <ul class="step-list">
+        <li><strong>多人/多 agent 并行开发</strong>——需要共享技术约定，避免各自按不同方式实现</li>
+        <li><strong>跨多个服务/模块的改动</strong>——架构决策影响面大，返工成本高</li>
+        <li><strong>后期需要维护文档</strong>——需要一份正式的技术参考供团队查阅</li>
+        <li><strong>合规/评审要求</strong>——组织流程强制要求设计文档</li>
+        <li><strong>PRD 写得太模糊</strong>——SPEC 可以用技术细节补足，降低 agent 的理解偏差</li>
+      </ul>
+      <p>如果你的项目是单人开发、功能边界清晰、agent 已经能稳定理解项目结构的，跳过 /prd-to-spec 完全合理，甚至更高效。把它当成工具包里的<strong>可选武器</strong>，需要时再拿出来。</p>
+
+      <h3>Q: /humanize-it 的 42 次迭代上限是怎么来的？</h3>
+      <p>数字 42 并非迭代次数有特殊要求，而是向经典科幻小说《银河系漫游指南》（<em>The Hitchhiker's Guide to the Galaxy</em>）致敬的极客文化。在该书中，超级计算机经过 750 万年计算，得出了"生命、宇宙及一切的终极答案"就是 42。在编程界，这个数字非常流行，原因有二：</p>
+      <ul class="step-list">
+        <li><strong>致敬科幻：</strong>作为程序员群体中广为人知的彩蛋，代表了终极的解答。</li>
+        <li><strong>ASCII 巧合：</strong>在 ASCII 编码中，42 对应的是星号 <code class="inline-code">*</code>。在计算机科学中，<code class="inline-code">*</code> 经常被用作通配符，表示"任何事物"或"一切皆有可能"。因此，"终极答案是 42（*）"刚好契合了"任何你想要的答案"这一哲学梗。</li>
+      </ul>
+      <p>实际使用中，大多数文档在 3-5 轮迭代后就能达标。迭代的核心是智能切换策略——当一种改写方式效果停滞时，自动换用另一种，三种策略组合使用可以互补覆盖不同类型的 AI 痕迹。</p>
+
+      <h3>Q: /humanize-it 支持英文文档吗？</h3>
+      <p>目前 <code class="inline-code">/humanize-it</code> 的三个子 skill 主要针对中文文本优化。<code class="inline-code">humanizer-zh</code> 的模式检测规则对英文也部分适用，但改写效果以中文为最佳。</p>
+
+      <h3>Q: /listenhub-tts 如何获取 API Key？</h3>
+      <p>前往 <a href="https://listenhub.ai" style="color: #2D9CDB; text-decoration: none;">listenhub.ai</a> 注册并获取 API Key，然后设置为环境变量：<code class="inline-code">export LISTENHUB_API_KEY=your_key</code>。</p>
+
+      <h3>Q: /listenhub-tts 支持哪些语言？</h3>
+      <p>ListenHub 支持中文（zh）和英文（en）等多种语言的音色。调用音色列表 API 时可通过 <code class="inline-code">?language=zh</code> 参数筛选。</p>
+
+      <h3>Q: /insight-diagram 支持哪些图表类型？</h3>
+      <p><code class="inline-code">/insight-diagram</code> 支持 17 种图表类型，包括系统架构图、14 种 UML 图（类图、对象图、组件图、部署图、包图、复合结构图、剖面图、用例图、活动图、状态机图、序列图、通信图、定时图、交互概览图）、流程图和泳道图。输出为 HTML+SVG 格式，保存到 <code class="inline-code">docs/</code> 目录。适用于任何软件项目。</p>
+    </div>
+
+    <!-- Footer -->
+    <p class="footer">
+      goal-workflow · AI-driven development workflow · github.com/smallnest/goal-workflow
+    </p>
+  </div>
+
+  <!-- Particles Background Canvas -->
+  <canvas id="particles-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;"></canvas>
+
+  <script type="module">
+  import { animate, stagger } from 'https://cdn.jsdmirror.com/npm/animejs/+esm';
+
+  // Set container above particles
+  document.querySelector('.container').style.position = 'relative';
+  document.querySelector('.container').style.zIndex = '1';
+
+  // ===== 1. PARTICLE BACKGROUND =====
+  const canvas = document.getElementById('particles-canvas');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  const PARTICLE_COUNT = 60;
+  const colors = ['#D97757', '#5B8A72', '#8B6F8A', '#4A6FA5', '#C96464', '#2D9CDB', '#7C5CBF'];
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      size: Math.random() * 3 + 1,
+      speedX: (Math.random() - 0.5) * 0.5,
+      speedY: (Math.random() - 0.5) * 0.5,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      opacity: Math.random() * 0.3 + 0.1
+    };
+  }
+
+  for (let i = 0; i < PARTICLE_COUNT; i++) {
+    particles.push(createParticle());
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.opacity;
+      ctx.fill();
+      p.x += p.speedX;
+      p.y += p.speedY;
+      if (p.x < 0 || p.x > canvas.width) p.speedX *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.speedY *= -1;
+    });
+
+    // Draw connection lines
+    ctx.globalAlpha = 1;
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.strokeStyle = particles[i].color;
+          ctx.globalAlpha = (1 - dist / 120) * 0.08;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // ===== 2. INITIAL PAGE LOAD ANIMATION =====
+
+  // Only hide container-level sections for load animation
+  // Inner elements are handled by scroll observer
+  document.querySelectorAll('.toc, .header, .footer').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+  });
+
+  // Header entrance
+  animate('.header', {
+    opacity: [0, 1],
+    translateY: [40, 0],
+    duration: 900,
+    ease: 'easeOutExpo'
+  });
+
+  // Pulse dot special animation
+  animate('.pulse-dot', {
+    scale: [0, 1],
+    duration: 600,
+    ease: 'easeOutElastic(1, .6)',
+    onComplete: function() {
+      document.querySelector('.pulse-dot').style.animation = 'pulse 2.5s ease-in-out infinite';
+    }
+  });
+
+  // Title text reveal
+  animate('h1', {
+    opacity: [0, 1],
+    translateX: [-30, 0],
+    duration: 800,
+    delay: 200,
+    ease: 'easeOutExpo'
+  });
+
+  // Subtitle fade in
+  animate('.subtitle, .diagram-desc', {
+    opacity: [0, 1],
+    translateY: [15, 0],
+    duration: 700,
+    delay: stagger(150, {start: 400}),
+    ease: 'easeOutCubic'
+  });
+
+  // TOC slide in
+  animate('.toc', {
+    opacity: [0, 1],
+    translateY: [30, 0],
+    duration: 800,
+    delay: 600,
+    ease: 'easeOutCubic',
+    onComplete: function() {
+      animate('.toc li', {
+        opacity: [0, 1],
+        translateX: [-20, 0],
+        delay: stagger(60),
+        duration: 400,
+        ease: 'easeOutCubic'
+      });
+    }
+  });
+
+  // Sections are NOT animated on load — they use scroll observer instead
+
+  // Footer
+  animate('.footer', {
+    opacity: [0, 1],
+    translateY: [20, 0],
+    duration: 600,
+    delay: 1800,
+    ease: 'easeOutCubic'
+  });
+
+  // ===== 3. SECTION DOT — handled by scroll observer via .section-title =====
+
+  // ===== 4. CARD ENTRANCE — handled by scroll observer =====
+
+  // ===== 5. FLOW STEPS — handled by scroll observer =====
+
+  // ===== 6. SVG DIAGRAM — handled by scroll observer =====
+
+  // ===== 7. BADGE — handled by scroll observer =====
+
+  // ===== 8. CODE BLOCK SHIMMER — shimmer runs when code block scrolls in =====
+
+  // ===== 9. SCROLL-TRIGGERED ANIMATIONS =====
+
+  // Hide scroll-reveal elements initially
+  const scrollRevealTargets = '.section .section-title, .section p, .section pre, .section table, .section .cards, .section .note, .section .tip, .step-list li, .section .diagram-box, .section .flow-step, .section .flow-connector, .section .diagram-desc, .section img';
+  document.querySelectorAll(scrollRevealTargets).forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'none';
+    el.dataset.scrollReveal = 'true';
+  });
+
+  // Also hide tables and note/tip at top level
+  document.querySelectorAll('table, .note, .tip').forEach(el => {
+    if (!el.dataset.scrollReveal) {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.dataset.scrollReveal = 'true';
+    }
+  });
+
+  const scrollObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+
+        // Step list items
+        if (el.classList.contains('step-list')) {
+          animate(el.querySelectorAll('li'), {
+            opacity: [0, 1],
+            translateX: [-20, 0],
+            delay: stagger(80),
+            duration: 500,
+            ease: 'easeOutCubic'
+          });
+          scrollObserver.unobserve(el);
+          return;
+        }
+
+        // Individual scroll-reveal elements
+        if (el.dataset.scrollReveal === 'true') {
+          // Determine animation type based on element
+          if (el.tagName === 'PRE') {
+            // Code blocks: slide from left with shimmer
+            animate(el, {
+              opacity: [0, 1],
+              translateX: [-30, 0],
+              duration: 600,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.classList.contains('cards')) {
+            // Cards container: stagger children
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            el.querySelectorAll('.card').forEach((card, i) => {
+              card.style.opacity = '0';
+              card.style.transform = 'perspective(600px) rotateY(-15deg)';
+              animate(card, {
+                opacity: [0, 1],
+                rotateY: [-15, 0],
+                translateX: [-30, 0],
+                duration: 700,
+                delay: i * 120,
+                ease: 'easeOutExpo'
+              });
+            });
+          } else if (el.tagName === 'TABLE') {
+            // Tables: row-by-row
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            animate(el.querySelectorAll('tr'), {
+              opacity: [0, 1],
+              translateY: [10, 0],
+              delay: stagger(60),
+              duration: 400,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.classList.contains('note') || el.classList.contains('tip')) {
+            // Notes/tips: slide from left with border growing
+            animate(el, {
+              opacity: [0, 1],
+              translateX: [-25, 0],
+              borderLeftWidth: [0, 3],
+              duration: 600,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.classList.contains('diagram-box')) {
+            // Diagram box: scale up
+            animate(el, {
+              opacity: [0, 1],
+              scale: [0.95, 1],
+              duration: 700,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.classList.contains('flow-step')) {
+            const parent = el.closest('.flow-arrow');
+            const siblings = parent ? parent.querySelectorAll('.flow-step') : [el];
+            const idx = Array.from(siblings).indexOf(el);
+            animate(el, {
+              opacity: [0, 1],
+              scale: [0.5, 1],
+              duration: 500,
+              delay: idx * 150,
+              ease: 'easeOutBack'
+            });
+          } else if (el.classList.contains('flow-connector')) {
+            const parent = el.closest('.flow-arrow');
+            const siblings = parent ? parent.querySelectorAll('.flow-connector') : [el];
+            const idx = Array.from(siblings).indexOf(el);
+            animate(el, {
+              opacity: [0, 1],
+              translateX: [-10, 0],
+              duration: 300,
+              delay: idx * 150 + 80,
+              ease: 'easeOutCubic'
+            });
+          } else if (el.tagName === 'IMG') {
+            // Images: clip reveal
+            animate(el, {
+              opacity: [0, 1],
+              clipPath: ['inset(0 100% 0 0)', 'inset(0 0% 0 0)'],
+              duration: 1000,
+              ease: 'easeInOutCubic'
+            });
+          } else if (el.classList.contains('section-title')) {
+            // Section title (dot + h3) as one unit
+            el.style.opacity = '1';
+            el.style.transform = 'none';
+            const dot = el.querySelector('.section-dot');
+            const h3 = el.querySelector('h3');
+            if (dot) {
+              animate(dot, {
+                scale: [0, 1],
+                duration: 500,
+                ease: 'easeOutElastic(1, .5)'
+              });
+            }
+            if (h3) {
+              animate(h3, {
+                opacity: [0, 1],
+                translateX: [-20, 0],
+                duration: 500,
+                delay: 150,
+                ease: 'easeOutCubic'
+              });
+            }
+          } else if (el.tagName === 'H3') {
+            // Headings: slide from left
+            animate(el, {
+              opacity: [0, 1],
+              translateX: [-20, 0],
+              duration: 500,
+              ease: 'easeOutCubic'
+            });
+          } else {
+            // Default: fade up
+            animate(el, {
+              opacity: [0, 1],
+              translateY: [20, 0],
+              duration: 500,
+              ease: 'easeOutCubic'
+            });
+          }
+          scrollObserver.unobserve(el);
+        }
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+
+  // Observe all scroll-reveal elements
+  document.querySelectorAll(scrollRevealTargets).forEach(el => {
+    scrollObserver.observe(el);
+  });
+  // Also observe standalone tables, notes, tips, step-lists
+  document.querySelectorAll('table, .note, .tip, .step-list').forEach(el => {
+    scrollObserver.observe(el);
+  });
+
+  // ===== 10. HOVER ANIMATIONS =====
+  document.querySelectorAll('.section').forEach(section => {
+    section.addEventListener('mouseenter', function() {
+      animate(this, {
+        translateY: -2,
+        boxShadow: '0 4px 16px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+    section.addEventListener('mouseleave', function() {
+      animate(this, {
+        translateY: 0,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('mouseenter', function() {
+      animate(this, {
+        scale: 1.03,
+        boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+    card.addEventListener('mouseleave', function() {
+      animate(this, {
+        scale: 1,
+        boxShadow: '0 1px 2px rgba(0,0,0,0.03)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  document.querySelectorAll('.flow-step').forEach(step => {
+    step.addEventListener('mouseenter', function() {
+      animate(this.querySelector('.step-num'), {
+        scale: [1, 1.3],
+        rotate: '1turn',
+        duration: 400,
+        ease: 'easeOutBack'
+      });
+    });
+    step.addEventListener('mouseleave', function() {
+      animate(this.querySelector('.step-num'), {
+        scale: [1.3, 1],
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  document.querySelectorAll('.toc a').forEach(link => {
+    link.style.display = 'inline-block';
+    link.addEventListener('mouseenter', function() {
+      animate(this, {
+        translateX: 8,
+        color: '#D97757',
+        duration: 250,
+        ease: 'easeOutCubic'
+      });
+    });
+    link.addEventListener('mouseleave', function() {
+      animate(this, {
+        translateX: 0,
+        color: '#5B8A72',
+        duration: 250,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  // ===== 11. SVG STEP BOX HOVER GLOW =====
+  document.querySelectorAll('.diagram-box svg rect:not([width="100%"])').forEach(rect => {
+    const originalStroke = rect.getAttribute('stroke');
+    rect.style.cursor = 'pointer';
+    rect.addEventListener('mouseenter', function() {
+      animate(this, {
+        filter: 'drop-shadow(0 0 6px ' + originalStroke + ')',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+    rect.addEventListener('mouseleave', function() {
+      animate(this, {
+        filter: 'drop-shadow(0 0 0px transparent)',
+        duration: 300,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  // ===== 12. CONTINUOUS FLOATING ANIMATION FOR HEADER DOT =====
+  animate('.pulse-dot', {
+    translateY: [-3, 3],
+    duration: 2000,
+    direction: 'alternate',
+    ease: 'easeInOutSine',
+    loop: true
+  });
+
+  // ===== 13. INLINE CODE HOVER POP =====
+  document.querySelectorAll('.inline-code').forEach(code => {
+    code.addEventListener('mouseenter', function() {
+      animate(this, {
+        scale: 1.1,
+        backgroundColor: '#D97757',
+        color: '#ffffff',
+        duration: 200,
+        ease: 'easeOutCubic'
+      });
+    });
+    code.addEventListener('mouseleave', function() {
+      animate(this, {
+        scale: 1,
+        backgroundColor: '#F5F3F0',
+        color: '#D97757',
+        duration: 200,
+        ease: 'easeOutCubic'
+      });
+    });
+  });
+
+  // ===== 14. IMAGE REVEAL — handled by scroll observer =====
+
+  </script>
+</body>
+</html>
