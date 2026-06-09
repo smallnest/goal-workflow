@@ -523,8 +523,9 @@
         <li><a href="#step-note-it">15. Bonus: /note-it — 实现笔记记录</a></li>
         <li><a href="#step-code-to-spec">16. Bonus: /code-to-spec — 逆向生成规格文档</a></li>
         <li><a href="#step-smell">17. Bonus: /smell — 架构坏味道检测</a></li>
-        <li><a href="#platforms">18. 支持的平台</a></li>
-        <li><a href="#faq">19. FAQ</a></li>
+        <li><a href="#step-loop-it">18. Bonus: /loop-it — 自动化 Issue 批量实现循环</a></li>
+        <li><a href="#platforms">19. 支持的平台</a></li>
+        <li><a href="#faq">20. FAQ</a></li>
       </ul>
     </div>
 
@@ -709,6 +710,18 @@
             <li>输出详细 Markdown 报告与重构路线图</li>
           </ul>
         </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot plum"></div>
+            <h4>/loop-it</h4>
+          </div>
+          <p>自动化 Issue 批量实现循环</p>
+          <ul>
+            <li>获取 Issue → 依赖拓扑排序 → 自动实现</li>
+            <li>检查点恢复，crash 不丢进度</li>
+            <li>10 类错误分类，结构化恢复策略</li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -736,6 +749,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">note-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">code-to-spec</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">smell</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">loop-it</span>
 
 <span class="comment"># 全局安装（所有项目可用）</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
@@ -752,7 +766,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/listenhub-tts</code>、<code class="inline-code">/insight-diagram</code>、<code class="inline-code">/smell</code> 即可直接调用对应技能。
+        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/loop-it</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/listenhub-tts</code>、<code class="inline-code">/insight-diagram</code>、<code class="inline-code">/smell</code> 即可直接调用对应技能。
       </div>
     </div>
 
@@ -1658,20 +1672,61 @@
       </div>
     </div>
 
-    <!-- Section 18: Platforms -->
+    <!-- Section 18: /loop-it -->
+    <div class="section" id="step-loop-it">
+      <div class="section-title">
+        <div class="section-dot plum"></div>
+        <h3>18. Bonus: /loop-it — 自动化 Issue 批量实现循环</h3>
+      </div>
+      <p>
+        <code class="inline-code">/loop-it</code> 获取所有打开的 GitHub Issue，解析依赖顺序，并通过完整流水线（<code class="inline-code">/goal</code> → <code class="inline-code">/review-it</code> → <code class="inline-code">/note-it</code> → <code class="inline-code">/ship-it</code>）逐个实现。进度持久化到 <code class="inline-code">.loop-state.json</code>，崩溃或中断后可从断点恢复。
+      </p>
+
+      <h3>如何调用</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/loop-it</span>
+
+<span class="comment"># 或使用触发短语</span>
+<span class="cmd">批量实现: </span><span class="value">实现所有issue</span>
+<span class="cmd">循环实现: </span><span class="value">批量实现</span>
+<span class="cmd">恢复循环: </span><span class="value">resume loop</span></code></pre>
+
+      <h3>核心特性</h3>
+      <ul class="step-list">
+        <li><strong>前置检查</strong> — 验证 gh 认证、git 状态、远程可达性、工作树清洁度</li>
+        <li><strong>依赖拓扑排序</strong> — 解析 Issue 正文中的依赖关系，按拓扑顺序处理</li>
+        <li><strong>检查点恢复</strong> — 每次状态变更写入 <code class="inline-code">.loop-state.json</code>，崩溃后可断点续传</li>
+        <li><strong>结构化错误恢复</strong> — 10 类错误（构建、测试、lint、合并冲突、CI、认证、限流等），每类有独立恢复策略和重试上限</li>
+        <li><strong>分支卫生</strong> — 每个 Issue 独立分支 <code class="inline-code">feat/issue-N-desc</code>，ship 后清理，失败分支保留</li>
+        <li><strong>依赖阻塞</strong> — 依赖的 Issue 未 shipped 时自动跳过并标记 blocked</li>
+        <li><strong>进度可观测</strong> — 每个 Issue 后输出结构化进度（已交付/跳过/阻塞/失败/剩余）</li>
+      </ul>
+
+      <h3>流水线集成</h3>
+      <pre><code><span class="comment"># 从 PRD 到代码交付的完整流水线</span>
+<span class="cmd">/prd</span> → <span class="cmd">/prd-to-spec</span> → <span class="cmd">/to-issues</span> → <span class="cmd">/loop-it</span>
+                                               │
+                                               └→ (<span class="cmd">/goal</span> → <span class="cmd">/review-it</span> → <span class="cmd">/note-it</span> → <span class="cmd">/ship-it</span>) × N 个 Issue</code></pre>
+
+      <div class="tip">
+        <strong>提示：</strong>将 <code class="inline-code">.loop-state.json</code> 添加到 <code class="inline-code">.gitignore</code>。如果循环崩溃，再次运行 <code class="inline-code">/loop-it</code> 即可检测状态文件并恢复。
+      </div>
+    </div>
+
+    <!-- Section 19: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>18. 支持的平台</h3>
+        <h3>19. 支持的平台</h3>
       </div>
       <p>Goal Workflow 的技能可在多个 AI Coding Agent 中使用：</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
-        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
       </table>
 
       <h3>Issue 创建平台</h3>
@@ -1683,11 +1738,11 @@
       </table>
     </div>
 
-    <!-- Section 19: FAQ -->
+    <!-- Section 20: FAQ -->
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>19. FAQ</h3>
+        <h3>20. FAQ</h3>
       </div>
 
       <h3>Q: 必须按顺序使用所有步骤吗？</h3>

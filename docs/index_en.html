@@ -523,8 +523,9 @@
         <li><a href="#step-note-it">15. Bonus: /note-it — Implementation Notes</a></li>
         <li><a href="#step-code-to-spec">16. Bonus: /code-to-spec — Reverse-Generate SPEC</a></li>
         <li><a href="#step-smell">17. Bonus: /smell — Architecture Smell Detection</a></li>
-        <li><a href="#platforms">18. Supported Platforms</a></li>
-        <li><a href="#faq">19. FAQ</a></li>
+        <li><a href="#step-loop-it">18. Bonus: /loop-it — Automated Issue Implementation Loop</a></li>
+        <li><a href="#platforms">19. Supported Platforms</a></li>
+        <li><a href="#faq">20. FAQ</a></li>
       </ul>
     </div>
 
@@ -709,6 +710,18 @@
             <li>Detailed markdown report with refactoring roadmap</li>
           </ul>
         </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot plum"></div>
+            <h4>/loop-it</h4>
+          </div>
+          <p>Automated batch issue implementation</p>
+          <ul>
+            <li>Fetch issues → dependency sort → implement loop</li>
+            <li>Checkpoint/resume with .loop-state.json</li>
+            <li>Structured error recovery (10 error classes)</li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -736,6 +749,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">note-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">code-to-spec</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">smell</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">loop-it</span>
 
 <span class="comment"># Global install (available for all projects)</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
@@ -752,7 +766,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/listenhub-tts</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code> in Claude Code to directly invoke the corresponding skill.
+        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/listenhub-tts</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code> in Claude Code to directly invoke the corresponding skill.
       </div>
     </div>
 
@@ -1658,20 +1672,61 @@
       </div>
     </div>
 
-    <!-- Section 18: Platforms -->
+    <!-- Section 18: /loop-it -->
+    <div class="section" id="step-loop-it">
+      <div class="section-title">
+        <div class="section-dot plum"></div>
+        <h3>18. Bonus: /loop-it — Automated Issue Implementation Loop</h3>
+      </div>
+      <p>
+        <code class="inline-code">/loop-it</code> fetches all open GitHub issues, resolves dependency order, and implements each through the full pipeline (<code class="inline-code">/goal</code> → <code class="inline-code">/review-it</code> → <code class="inline-code">/note-it</code> → <code class="inline-code">/ship-it</code>) in a single loop. It persists progress to <code class="inline-code">.loop-state.json</code> so you can resume from where you left off after a crash or interruption.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/loop-it</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Batch implement: </span><span class="value">实现所有issue</span>
+<span class="cmd">Loop issues: </span><span class="value">批量实现</span>
+<span class="cmd">Resume loop: </span><span class="value">恢复循环</span></code></pre>
+
+      <h3>Key Features</h3>
+      <ul class="step-list">
+        <li><strong>Pre-flight Checks</strong> — Validates gh auth, git status, remote access, and branch cleanliness before starting</li>
+        <li><strong>Dependency-Aware Topological Sort</strong> — Parses issue bodies for dependency patterns and sorts accordingly</li>
+        <li><strong>Checkpoint/Resume</strong> — Persists state to <code class="inline-code">.loop-state.json</code> after every status transition; resume from checkpoint on crash</li>
+        <li><strong>Structured Error Recovery</strong> — 10 error classes (build, test, lint, merge conflict, CI, auth, rate limit, etc.) with per-class recovery strategies and retry limits</li>
+        <li><strong>Branch Hygiene</strong> — Isolated <code class="inline-code">feat/issue-N-desc</code> branch per issue; cleanup after ship; failed branches preserved</li>
+        <li><strong>Dependency Blocking</strong> — Issues whose dependencies are not shipped are automatically blocked</li>
+        <li><strong>Progress Observability</strong> — Structured progress report after each issue (shipped/skipped/blocked/failed/remaining)</li>
+      </ul>
+
+      <h3>Pipeline Integration</h3>
+      <pre><code><span class="comment"># Full pipeline from PRD to shipped code</span>
+<span class="cmd">/prd</span> → <span class="cmd">/prd-to-spec</span> → <span class="cmd">/to-issues</span> → <span class="cmd">/loop-it</span>
+                                               │
+                                               └→ (<span class="cmd">/goal</span> → <span class="cmd">/review-it</span> → <span class="cmd">/note-it</span> → <span class="cmd">/ship-it</span>) × N issues</code></pre>
+
+      <div class="tip">
+        <strong>Tip:</strong> Add <code class="inline-code">.loop-state.json</code> to your <code class="inline-code">.gitignore</code>. If the loop crashes, just run <code class="inline-code">/loop-it</code> again — it will detect the state file and offer to resume.
+      </div>
+    </div>
+
+    <!-- Section 19: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>18. Supported Platforms</h3>
+        <h3>19. Supported Platforms</h3>
       </div>
       <p>Goal Workflow skills can be used across multiple AI Coding Agents:</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
-        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (Built-in)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (Built-in)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
       </table>
 
       <h3>Issue Creation Platforms</h3>
@@ -1683,11 +1738,11 @@
       </table>
     </div>
 
-    <!-- Section 17: FAQ -->
+    <!-- Section 20: FAQ -->
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>19. FAQ</h3>
+        <h3>20. FAQ</h3>
       </div>
 
       <h3>Q: Do I have to use all steps in order?</h3>
