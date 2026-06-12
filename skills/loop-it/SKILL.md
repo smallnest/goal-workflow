@@ -1,6 +1,6 @@
 ---
 name: loop-it
-description: "Automated issue loop with checkpoint/resume: fetch open GitHub issues → dependency-aware topological sort → implement via /goal → review with /review-it → document with /note-it → ship with /ship-it → repeat. Persists state to .loop-state.json for crash recovery. Triggers on: loop-it, loop issues, auto implement, 批量实现, 循环实现, 实现所有issue, 恢复循环, resume loop."
+description: "Automated issue loop with checkpoint/resume: fetch open GitHub issues → dependency-aware topological sort → implement each issue end-to-end → review with /review-it → document with /note-it → ship with /ship-it → repeat. Persists state to .loop-state.json for crash recovery. Triggers on: loop-it, loop issues, auto implement, 批量实现, 循环实现, 实现所有issue, 恢复循环, resume loop."
 user-invocable: true
 allowed-tools:
   - Bash(gh:*)
@@ -11,6 +11,9 @@ allowed-tools:
 # loop-it — 带检查点恢复的自动化 Issue 实现循环
 
 Fetch all open GitHub issues, resolve dependency order, implement each through the full pipeline (`/goal` → `/review-it` → `/note-it` → `/ship-it`), persist progress to state file, and resume from checkpoint on crash.
+
+> **⚠️ 关键前提：`/goal` 是斜杠命令（slash command / UI command），不是 skill。**
+> 不要用 Skill 工具去调用 `/goal`——那会报错 `goal is a UI command, not a skill`，进而让你误以为流水线坏了，转而手工拼凑整条流程。`/goal` 必须作为斜杠命令直接发起（在交互中输入 `/goal {issue-number}`）。同理：`/review-it`、`/note-it`、`/ship-it` 是 skill，可经 Skill 工具调用；而 `/goal` 不是。遇到 `goal is a UI command, not a skill` 报错时，**这是预期的调用方式提示，而非流水线故障**——改用斜杠命令重试，切勿回退到手工替代。
 
 ---
 
@@ -297,9 +300,13 @@ Update state: `pending` → `skipped` or `pending` → `blocked`, write checkpoi
 
 Update state: `pending` → `in_progress`, `phase: "goal"`, write checkpoint.
 
+以**斜杠命令**方式发起实现（`/goal` 是 UI command，不是 skill——不要用 Skill 工具调用）：
+
 ```
 /goal {issue-number}
 ```
+
+> 若收到 `goal is a UI command, not a skill`，这是正确的调用约定提示，不是故障。直接以斜杠命令重发即可，**切勿改用手工流程替代 `/goal`**。
 
 **On success:**
 
@@ -509,6 +516,7 @@ Every key step MUST print a log line with emoji prefix:
 - **State file in .gitignore** — 提醒用户添加 `.loop-state.json`
 - **Strictly sequential** — 一次只处理一个 issue（/goal 修改工作树，不能并行）
 - **Skip dependency-blocked issues** — 依赖的 issue 未 shipped 时标记 `blocked`
+- **`/goal` 是斜杠命令** — 必须以斜杠命令发起，不可用 Skill 工具调用。报 `goal is a UI command, not a skill` 时改用斜杠命令重发，**绝不**手工拼凑流水线替代它
 
 ---
 
@@ -531,6 +539,7 @@ Every key step MUST print a log line with emoji prefix:
 | Circular dependencies | 打印警告，按编号顺序打破循环 |
 | `/note-it` can't find issue number | 打印警告，跳过 /note-it，继续 /ship-it |
 | `.loop-state.json` is git-tracked | 警告用户添加到 .gitignore，继续 |
+| 调用 `/goal` 报 `goal is a UI command, not a skill` | 预期提示：`/goal` 是斜杠命令而非 skill。以斜杠命令 `/goal {N}` 直接重发，**不要**手工替代整条流水线 |
 
 ---
 
@@ -538,10 +547,10 @@ Every key step MUST print a log line with emoji prefix:
 
 ```
 /loop-it
-  ├── /goal       ← implement each issue
-  ├── /review-it  ← review code before shipping
-  ├── /note-it    ← capture implementation notes (best-effort)
-  └── /ship-it    ← commit, PR, merge, close
+  ├── /goal       ← implement each issue（斜杠命令 / UI command，非 skill，不可用 Skill 工具调用）
+  ├── /review-it  ← review code before shipping（skill）
+  ├── /note-it    ← capture implementation notes (best-effort)（skill）
+  └── /ship-it    ← commit, PR, merge, close（skill）
 ```
 
 Part of the goal-workflow pipeline:
