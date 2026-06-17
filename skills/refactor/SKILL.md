@@ -273,6 +273,15 @@ When a reference object is small, immutable, and you want value semantics.
 #### Replace Array with Object
 When an array holds heterogeneous data (`String[] row = new String[3]` — name, score, wins), replace with an object.
 
+#### Duplicate Observed Data
+Domain data lives in a GUI control but domain logic needs it. Copy the data into a domain object and set up an observer to keep the two in sync (Observer pattern). Separates presentation from domain so each can evolve independently.
+
+#### Change Unidirectional Association to Bidirectional
+Two classes need each other's features but only one holds a reference. Add a back-pointer and make the modifiers on both ends keep the link consistent. Add the reference only when genuinely needed — bidirectional links raise coupling and risk inconsistency.
+
+#### Change Bidirectional Association to Unidirectional
+A two-way link exists but one side no longer uses the other. Drop the unneeded direction. Reduces coupling, simplifies lifecycle management, and avoids "zombie" objects kept alive only by a stale back-pointer.
+
 #### Replace Magic Number with Symbolic Constant
 Replace literal numbers/strings with named constants.
 
@@ -394,7 +403,7 @@ The inverse: when a parameter essentially selects different behavior, create sep
 Pass the whole object instead of pulling individual fields from it.
 
 #### Replace Parameter with Method
-When a parameter can be computed from data the object already has.
+*(refactoring.guru: Replace Parameter with Method Call)* When a parameter can be computed from data the object already has, remove the parameter and let the method call the query itself.
 
 #### Introduce Parameter Object
 Group parameters that naturally go together into an object.
@@ -662,3 +671,4 @@ Replace null checks with a default object. **Smell:** Repeated `if (x == null)` 
 - Martin Fowler, *Refactoring: Improving the Design of Existing Code* (2nd Edition, 2018)
 - [refactoring.com](https://refactoring.com) — Fowler's online catalog
 - [refactoring.guru](https://refactoring.guru) — Illustrated refactoring patterns
+- [refactoring.guru/refactoring/catalog](https://refactoring.guru/refactoring/catalog) — full technique catalog (6 categories, 66 techniques) and code-smell taxonomy this skill mirrors
