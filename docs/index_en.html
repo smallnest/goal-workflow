@@ -516,14 +516,14 @@
         <li><a href="#step-review">8. Step 3: /review-it — Code Review</a></li>
         <li><a href="#step-ship">9. Step 4: /ship-it — Commit and Ship</a></li>
         <li><a href="#step-humanize">10. Bonus: /humanize-it — De-AI Text Rewriting</a></li>
-        <li><a href="#step-tts">11. Bonus: /listenhub-tts — Text to Speech</a></li>
-        <li><a href="#step-diagram">12. Bonus: /insight-diagram — UML and Architecture Diagrams</a></li>
-        <li><a href="#step-refactor">13. Bonus: /refactor — Expert-Level Code Refactoring</a></li>
-        <li><a href="#step-modern-go">14. Bonus: /modern-go — Go Code Modernization</a></li>
-        <li><a href="#step-note-it">15. Bonus: /note-it — Implementation Notes</a></li>
-        <li><a href="#step-code-to-spec">16. Bonus: /code-to-spec — Reverse-Generate SPEC</a></li>
-        <li><a href="#step-smell">17. Bonus: /smell — Architecture Smell Detection</a></li>
-        <li><a href="#step-loop-it">18. Bonus: /loop-it — Automated Issue Implementation Loop</a></li>
+        <li><a href="#step-diagram">11. Bonus: /insight-diagram — UML and Architecture Diagrams</a></li>
+        <li><a href="#step-refactor">12. Bonus: /refactor — Expert-Level Code Refactoring</a></li>
+        <li><a href="#step-modern-go">13. Bonus: /modern-go — Go Code Modernization</a></li>
+        <li><a href="#step-note-it">14. Bonus: /note-it — Implementation Notes</a></li>
+        <li><a href="#step-code-to-spec">15. Bonus: /code-to-spec — Reverse-Generate SPEC</a></li>
+        <li><a href="#step-smell">16. Bonus: /smell — Architecture Smell Detection</a></li>
+        <li><a href="#step-loop-it">17. Bonus: /loop-it — Automated Issue Implementation Loop</a></li>
+        <li><a href="#step-to-design">18. Bonus: /to-design — PRD to Design Document</a></li>
         <li><a href="#platforms">19. Supported Platforms</a></li>
         <li><a href="#faq">20. FAQ</a></li>
       </ul>
@@ -628,18 +628,6 @@
         </div>
         <div class="card">
           <div class="card-header">
-            <div class="card-dot teal"></div>
-            <h4>/listenhub-tts</h4>
-          </div>
-          <p>ListenHub text-to-speech</p>
-          <ul>
-            <li>Quick synthesis / multi-voice / long text</li>
-            <li>Voice list to choose from, default Xiaoman</li>
-            <li>Supports AI polishing for long text</li>
-          </ul>
-        </div>
-        <div class="card">
-          <div class="card-header">
             <div class="card-dot violet"></div>
             <h4>/insight-diagram</h4>
           </div>
@@ -722,6 +710,18 @@
             <li>Structured error recovery (10 error classes)</li>
           </ul>
         </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot terracotta"></div>
+            <h4>/to-design</h4>
+          </div>
+          <p>PRD to design document (Go proposal style)</p>
+          <ul>
+            <li>A decision doc on "why this approach"</li>
+            <li>Proactively lists rejected alternatives + reasons</li>
+            <li>Distinct from SPEC: a decision artifact, not a contract</li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -742,7 +742,6 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">review-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">ship-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">humanize-it</span>
-<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">listenhub-tts</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">insight-diagram</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">refactor</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">modern-go</span>
@@ -750,6 +749,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">code-to-spec</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">smell</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">loop-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-design</span>
 
 <span class="comment"># Global install (available for all projects)</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
@@ -766,7 +766,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/listenhub-tts</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code> in Claude Code to directly invoke the corresponding skill.
+        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code>, <code class="inline-code">/to-design</code> in Claude Code to directly invoke the corresponding skill.
       </div>
     </div>
 
@@ -1268,56 +1268,11 @@
       </div>
     </div>
 
-    <!-- Section 10: /listenhub-tts -->
-    <div class="section" id="step-tts">
-      <div class="section-title">
-        <div class="section-dot teal"></div>
-        <h3>11. Bonus: /listenhub-tts — Text to Speech</h3>
-      </div>
-      <p>
-        <code class="inline-code">/listenhub-tts</code> converts text to speech using the ListenHub API. Supports three synthesis modes, covering everything from short text to long-form content.
-      </p>
-
-      <h3>How to Invoke</h3>
-      <pre><code><span class="comment"># Type directly in Claude Code</span>
-<span class="cmd">/listenhub-tts</span> <span class="value">Convert this text to speech</span>
-
-<span class="comment"># Or use trigger phrases</span>
-<span class="cmd">Speech synthesis: </span><span class="value">Read README.md aloud</span>
-<span class="cmd">Generate audio: </span><span class="value">Read this article in Xiaoman's voice</span></code></pre>
-
-      <h3>Three Synthesis Modes</h3>
-      <table>
-        <tr><th>Mode</th><th>API</th><th>Best For</th><th>Characteristics</th></tr>
-        <tr><td>Quick Synthesis</td><td><code class="inline-code">/v1/tts</code></td><td>Short text (&lt; 1000 chars), single voice</td><td>Low latency, returns MP3 binary stream</td></tr>
-        <tr><td>Multi-Voice Script</td><td><code class="inline-code">/v1/speech</code></td><td>Multi-voice dialogue, podcasts</td><td>Different voices alternating narration</td></tr>
-        <tr><td>Long-Form Streaming</td><td><code class="inline-code">/v1/flow-speech/episodes</code></td><td>Long text (&gt; 1000 chars)</td><td>Async synthesis, supports AI polishing</td></tr>
-      </table>
-
-      <h3>Voice Selection</h3>
-      <table>
-        <tr><th>Scenario</th><th>Behavior</th></tr>
-        <tr><td>User specified voice</td><td>Use the specified speakerId directly</td></tr>
-        <tr><td>User did not specify voice</td><td>Call API to get voice list, present for user selection</td></tr>
-        <tr><td>Default voice</td><td><code class="inline-code">chat-girl-105-cn</code> (Xiaoman dxqqq)</td></tr>
-      </table>
-
-      <h3>Prerequisites</h3>
-      <table>
-        <tr><th>Config</th><th>Description</th></tr>
-        <tr><td><code class="inline-code">LISTENHUB_API_KEY</code></td><td>ListenHub API key, set as environment variable</td></tr>
-      </table>
-
-      <div class="tip">
-        <strong>Tip:</strong> Long-form mode supports AI polishing (<code class="inline-code">aiPolish</code>), which can automatically optimize text for spoken delivery before synthesis, making the narration more natural.
-      </div>
-    </div>
-
     <!-- Section 11: /insight-diagram -->
     <div class="section" id="step-diagram">
       <div class="section-title">
         <div class="section-dot violet"></div>
-        <h3>12. Bonus: /insight-diagram — UML and Architecture Diagrams</h3>
+        <h3>11. Bonus: /insight-diagram — UML and Architecture Diagrams</h3>
       </div>
       <p>
         <code class="inline-code">/insight-diagram</code> generates UML diagrams, architecture diagrams, and flowcharts for any project. After analyzing the codebase, it lets users choose which diagram types to generate, renders them as HTML+SVG, and saves to the <code class="inline-code">docs/</code> directory.
@@ -1380,7 +1335,7 @@
     <div class="section" id="step-refactor">
       <div class="section-title">
         <div class="section-dot coral"></div>
-        <h3>13. Bonus: /refactor — Expert-Level Code Refactoring</h3>
+        <h3>12. Bonus: /refactor — Expert-Level Code Refactoring</h3>
       </div>
       <p>
         <code class="inline-code">/refactor</code> provides expert-level code refactoring based on Martin Fowler's complete catalog from <em>Refactoring</em> 2nd Edition. By identifying code smells and applying proven refactoring techniques, it improves code maintainability, readability, and structure without changing external behavior.
@@ -1465,7 +1420,7 @@
     <div class="section" id="step-modern-go">
       <div class="section-title">
         <div class="section-dot teal"></div>
-        <h3>14. Bonus: /modern-go — Go Code Modernization</h3>
+        <h3>13. Bonus: /modern-go — Go Code Modernization</h3>
       </div>
       <p>
         <code class="inline-code">/modern-go</code> automatically upgrades Go code to modern idioms and APIs, similar to <code class="inline-code">go fix</code>. It scans <code class="inline-code">go.mod</code> to detect the Go version, then batch-applies version-appropriate transformation rules to Go source files, covering 35+ rules from Go 1.0 through 1.26+.
@@ -1525,7 +1480,7 @@
     <div class="section" id="step-note-it">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>15. Bonus: /note-it — Implementation Notes</h3>
+        <h3>14. Bonus: /note-it — Implementation Notes</h3>
       </div>
       <p>
         <code class="inline-code">/note-it</code> generates a structured implementation note for the current Issue after code implementation and review, recording design decisions, deviations, tradeoffs, and open questions. Output is saved as HTML in the <code class="inline-code">docs/</code> directory.
@@ -1570,7 +1525,7 @@
     <div class="section" id="step-code-to-spec">
       <div class="section-title">
         <div class="section-dot sage"></div>
-        <h3>16. Bonus: /code-to-spec — Reverse-Generate SPEC</h3>
+        <h3>15. Bonus: /code-to-spec — Reverse-Generate SPEC</h3>
       </div>
       <p>
         <code class="inline-code">/code-to-spec</code> analyzes an existing project's code, configuration, tests, and structure, then reverse-generates a complete SPEC document. The output can be used for project reconstruction, onboarding new team members, or comparing actual implementation against intended design.
@@ -1629,7 +1584,7 @@
     <div class="section" id="step-smell">
       <div class="section-title">
         <div class="section-dot gold"></div>
-        <h3>17. Bonus: /smell — Architecture Smell Detection</h3>
+        <h3>16. Bonus: /smell — Architecture Smell Detection</h3>
       </div>
       <p>
         <code class="inline-code">/smell</code> analyzes a codebase for architectural anti-patterns, code smells, and algorithmic complexity hotspots. It produces a detailed markdown report with severity levels, evidence, and a refactoring roadmap.
@@ -1676,7 +1631,7 @@
     <div class="section" id="step-loop-it">
       <div class="section-title">
         <div class="section-dot plum"></div>
-        <h3>18. Bonus: /loop-it — Automated Issue Implementation Loop</h3>
+        <h3>17. Bonus: /loop-it — Automated Issue Implementation Loop</h3>
       </div>
       <p>
         <code class="inline-code">/loop-it</code> fetches all open GitHub issues, resolves dependency order, and implements each through the full pipeline (<code class="inline-code">/goal</code> → <code class="inline-code">/review-it</code> → <code class="inline-code">/note-it</code> → <code class="inline-code">/ship-it</code>) in a single loop. It persists progress to <code class="inline-code">.loop-state.json</code> so you can resume from where you left off after a crash or interruption.
@@ -1717,6 +1672,64 @@
       </div>
     </div>
 
+    <!-- Section 18: /to-design -->
+    <div class="section" id="step-to-design">
+      <div class="section-title">
+        <div class="section-dot terracotta"></div>
+        <h3>18. Bonus: /to-design — PRD to Design Document</h3>
+      </div>
+      <p>
+        <code class="inline-code">/to-design</code> turns a PRD (or a rough idea) into a <strong>design document</strong> written in the style of Go's official design proposals: plain language, concrete examples, and — above all — an honest account of <strong>why this approach and not the alternatives</strong>.
+      </p>
+
+      <div class="note">
+        <strong>How is it different from /prd-to-spec?</strong> A SPEC is an <strong>implementation contract</strong> (tables, endpoints, schemas) for an engineer to build against. A design document is a <strong>decision artifact</strong> — it argues for a direction, surfaces the tradeoffs, and lets a team agree on the same facts before anyone writes code. When the question is "how should we build this and why", produce a design doc; when the question is "give me the exact contract to implement", produce a SPEC. They chain: run <code class="inline-code">/to-design</code> to settle direction, then <code class="inline-code">/prd-to-spec</code> for the contract.
+      </div>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/to-design</span> <span class="value">tasks/prd-priority-system.md</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Design doc: </span><span class="value">write a design doc for the priority system</span>
+<span class="cmd">prd-to-design: </span><span class="value">based on prd-user-auth.md</span></code></pre>
+
+      <h3>When to Use</h3>
+      <ul class="step-list">
+        <li>A PRD exists and you need to decide <strong>how</strong> to build it before committing</li>
+        <li>The approach has real tradeoffs you want documented and debated</li>
+        <li>The change is risky, breaking, or hard to reverse (a design doc forces the compatibility conversation early)</li>
+        <li>Multiple people need to agree on a direction before work fans out</li>
+        <li>You want a durable record of "why we chose X and rejected Y" — even if later rejected</li>
+      </ul>
+
+      <h3>Design Document Structure (distilled from 5 Go proposals)</h3>
+      <table>
+        <tr><th>Section</th><th>Purpose</th></tr>
+        <tr><td>Abstract</td><td>The whole doc in one paragraph, with the single most important promise embedded (e.g. backward compatibility)</td></tr>
+        <tr><td>Background</td><td>Explain the pain with concrete examples or real buggy code — quantify it, don't pile on adjectives</td></tr>
+        <tr><td>Design</td><td>The body. Declaration + example + boundaries, taught progressively from simple to complex</td></tr>
+        <tr><td>Rationale</td><td><strong>The key section</strong>: proactively lists the rejected alternatives and why they were dropped</td></tr>
+        <tr><td>Compatibility</td><td>For any breaking change, admit it head-on; honestly list the cost and a gradual migration path</td></tr>
+        <tr><td>Implementation</td><td>Back up "it's shippable" with data and tooling, not a hand-wave of "risk is manageable"</td></tr>
+        <tr><td>Appendix</td><td>(Optional) full API, end-to-end examples, FAQ</td></tr>
+      </table>
+
+      <h3>Workflow</h3>
+      <ul class="step-list">
+        <li>Locate input (PRD file / Issue URL / pasted content / just an idea)</li>
+        <li>(Optional) Scan the codebase: existing patterns, constraints, real pain to quote</li>
+        <li>Find the genuine "forks in the road" and ask 3-5 clarifying questions</li>
+        <li>Generate the design doc in Go-proposal style</li>
+        <li>Present for review — steer feedback to Rationale and Compatibility</li>
+        <li>Save to <code class="inline-code">tasks/design-[feature-name].md</code></li>
+      </ul>
+
+      <div class="tip">
+        <strong>Tip:</strong> The value of a design doc does not depend on whether the proposal is accepted — it depends on whether it grounds the discussion in <strong>the same set of facts and tradeoffs</strong>. Even when rejected, recording "why this path doesn't work" is itself a high-value artifact.
+      </div>
+    </div>
+
     <!-- Section 19: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
@@ -1726,7 +1739,7 @@
       <p>Goal Workflow skills can be used across multiple AI Coding Agents:</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/listenhub-tts</th><th>/insight-diagram</th></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th></tr>
         <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (Built-in)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
         <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
         <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
@@ -1789,12 +1802,6 @@
 
       <h3>Q: Does /humanize-it support English documents?</h3>
       <p>Currently, the three sub-skills of <code class="inline-code">/humanize-it</code> are primarily optimized for Chinese text. <code class="inline-code">humanizer-zh</code>'s pattern detection rules partially work for English as well, but rewriting effects are best for Chinese.</p>
-
-      <h3>Q: How do I get an API Key for /listenhub-tts?</h3>
-      <p>Go to <a href="https://listenhub.ai" style="color: #2D9CDB; text-decoration: none;">listenhub.ai</a> to register and get an API Key, then set it as an environment variable: <code class="inline-code">export LISTENHUB_API_KEY=your_key</code>.</p>
-
-      <h3>Q: What languages does /listenhub-tts support?</h3>
-      <p>ListenHub supports voices for multiple languages including Chinese (zh) and English (en). When calling the voice list API, you can filter with the <code class="inline-code">?language=zh</code> parameter.</p>
 
       <h3>Q: What diagram types does /insight-diagram support?</h3>
       <p><code class="inline-code">/insight-diagram</code> supports 17 diagram types, including system architecture diagrams, 14 UML diagrams (class, object, component, deployment, package, composite structure, profile, use case, activity, state machine, sequence, communication, timing, interaction overview), flowcharts, and swimlane diagrams. Output is in HTML+SVG format, saved to the <code class="inline-code">docs/</code> directory. Applicable to any software project.</p>
