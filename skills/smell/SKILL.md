@@ -8,7 +8,7 @@ user-invocable: true
 
 Analyze a codebase to find violations of software architecture principles, anti-patterns, code "bad smells," and algorithmic complexity hotspots. Produce a comprehensive, actionable markdown report.
 
-**Knowledge base:** This skill encodes architectural patterns, anti-patterns, code smells, and algorithmic complexity heuristics drawn from industry research and practice.
+**Knowledge base:** This skill encodes architectural patterns, anti-patterns, code smells, and algorithmic complexity heuristics drawn from industry research and practice, including the classic code smells catalog by Martin Fowler / Kent Beck (as organized on refactoring.guru: Bloaters, Object-Orientation Abusers, Change Preventers, Dispensables, Couplers).
 
 ---
 
@@ -64,6 +64,12 @@ Run these in parallel to gather evidence efficiently:
 | **Architecture** | Distributed Monolith | Microservices sharing a database; services that can't deploy independently |
 | **Architecture** | Anemic Domain Model | Model/entity classes with only getters/setters and no behavior; all logic in services |
 | **Architecture** | CQRS Without Need | Separate read/write models for simple CRUD; unnecessary complexity |
+| **Architecture** | Over-Layered Architecture | Excessive layers/tiers that add pass-through code with no real value |
+| **Architecture** | Over-Abstraction | So many indirections/interfaces/generics that you get lost following the code |
+| **Architecture** | Futuristic Architecture | Speculative flexibility for requirements that may never come (predicting the future) |
+| **Architecture** | Technology-Enthusiast Architecture | Shiny/unproven tech adopted in production because it's new, not because it fits |
+| **Architecture** | Overkill Architecture | Heavyweight architecture/tech thrown at a simple problem |
+| **Architecture** | Cloud/Visio Architecture | Diagrams disconnected from the actual code and runtime reality |
 | **Coupling** | Circular Dependencies | Module A imports B, B imports A; detected via import graph analysis |
 | **Coupling** | Content Coupling | One module directly accesses another's internal/private members |
 | **Coupling** | Common Coupling | Excessive global variables/shared mutable state; singleton abuse |
@@ -76,6 +82,19 @@ Run these in parallel to gather evidence efficiently:
 | **Design** | Static Cling | Excessive use of static methods; static state that prevents testability |
 | **Design** | Service Locator Abuse | DI container passed around instead of proper constructor injection |
 | **Design** | Violated SOLID | SRP violations, OCP violations (switch/if-else chains on types), ISP violations (fat interfaces) |
+| **Design** | Switch Statements | Same `switch`/if-else chain on a type code appearing in multiple places; should be polymorphism |
+| **Design** | Refused Bequest | Subclass inherits methods/fields it doesn't use or overrides them to throw/no-op |
+| **Design** | Alternative Classes w/ Different Interfaces | Two classes do the same thing but have differently-named methods |
+| **Design** | Parallel Inheritance Hierarchies | Creating a subclass in one hierarchy forces a matching subclass in another |
+| **Design** | Speculative Generality | Unused abstract classes, hooks, params, or generics "for future needs" (YAGNI) |
+| **Design** | Incomplete Library Class | Wrapping/patching a third-party class because it lacks needed methods |
+| **Cohesion** | Divergent Change | One module changed for many unrelated reasons (opposite of Shotgun Surgery) |
+| **Cohesion** | Data Class | Class with only fields + getters/setters, no behavior (anemic data bag) |
+| **Cohesion** | Lazy Class | Class/module that does too little to justify its existence |
+| **Coupling** | Inappropriate Intimacy | Two classes access each other's private/internal parts too much |
+| **Coupling** | Message Chains | Long call chains `a.getB().getC().getD()` (Law of Demeter violation) |
+| **Coupling** | Middle Man | Class that only delegates every call to another class |
+| **Code** | Temporary Field | Instance field set/used only in certain circumstances, empty otherwise |
 | **Code** | Duplicated Code | Identical/similar logic appearing in 3+ places; copy-paste patterns |
 | **Code** | Long Method | Methods > 50 lines; deep nesting (> 3 levels) |
 | **Code** | Long Parameter List | Methods with > 4 parameters |
@@ -88,6 +107,7 @@ Run these in parallel to gather evidence efficiently:
 | **Testing** | Slow Tests | Tests doing real I/O, database calls, network requests without mocking |
 | **Naming** | Vague Names | `Manager`, `Handler`, `Processor`, `Helper`, `Util`, `Service`, `Data`, `Info` used excessively without context |
 | **Naming** | Inconsistent Naming | Snake_case and camelCase mixed; different patterns for same concept |
+| **Readability** | Deep Nesting (Arrow Anti-Pattern) | Loops/conditionals nested > 3 levels deep; rightward-drifting "arrow" shape hard to trace |
 | **Complexity** | Nested Loops (O(n^2)+) | Loop inside loop; forEach inside for; map inside map; nested iteration suggesting polynomial complexity |
 | **Complexity** | Repeated Linear Scan | `includes()`/`indexOf()`/`.find()` inside a loop; O(n*m) membership check on list instead of Set/Map |
 | **Complexity** | Sort-in-Loop | `.sort()` or `sorted()` called inside iterative code; repeated O(n log n) when sort-once suffices |
@@ -297,6 +317,46 @@ In Vertical Slice Architecture:
 - Shared service classes undermining slice independence
 - **Remedy:** Use events/messages for cross-slice communication, duplicate simple logic if needed
 
+### Top Ten Software Architecture Mistakes
+
+A set of architecture-level anti-patterns describing over- and under-engineering. The common thread: **architecture disconnected from real needs and reality.** The opposite extreme (too little architecture) is equally a smell.
+
+#### Over-Layered / Multitier Architecture
+"Layers on layers on layers." Adding tiers beyond what the problem needs:
+- Each layer just forwards calls to the next with no transformation or value
+- Simple read requires touching 6+ classes across 4 layers
+- **Remedy:** Collapse pass-through layers; keep only layers that carry real responsibility
+
+#### Over-Abstraction
+Abstraction piled on until the code is impossible to follow:
+- Excessive interfaces, generics, factories, and indirection for single implementations
+- You can't tell what actually runs without stepping through many hops
+- **Remedy:** Inline single-implementation abstractions; abstract only at real variation points (rule of three)
+
+#### Futuristic Architecture
+Solution built for imagined future requirements that no one can actually predict:
+- Extensibility points, plugin systems, config knobs nothing uses
+- Most speculative flexibility is wasted effort — closely related to Speculative Generality and YAGNI
+- **Remedy:** Build for today's known requirements; add flexibility when a real second case arrives
+
+#### Technology-Enthusiast Architecture
+New/shiny technology put into production because the architect liked it:
+- Unproven tech adopted without validating it fits the problem or scales
+- Chasing trends over stability
+- **Remedy:** Evaluate tech against actual requirements; prefer proven tools; prototype before committing
+
+#### Overkill Architecture
+A simple problem solved with a disproportionate amount of architecture and technology:
+- Microservices, event sourcing, k8s for a CRUD app with a handful of users
+- **Remedy:** Match architecture weight to problem size (KISS); start simple, evolve when justified
+
+#### Cloud / Visio Architecture
+"Architecture" that exists only in nice diagrams, disconnected from the code and runtime reality:
+- Diagrams don't match what's actually deployed; boxes and arrows with no code correspondence
+- **Remedy:** Keep architecture docs grounded in and verified against the real system
+
+> **Note on the opposite extreme:** total *lack* of architecture (no boundaries, no structure) is equally a smell — see [Big Ball of Mud](#big-ball-of-mud) and Missing Architecture. Both under- and over-engineering are failures.
+
 ### Coupling & Cohesion Smells
 
 #### Circular Dependencies
@@ -337,6 +397,31 @@ Same group of fields appearing together in multiple places:
 - `(street, city, zip)` appearing in 5 method signatures
 - **Remedy:** Extract into a value object
 
+#### Divergent Change
+One module/class is repeatedly changed for many *unrelated* reasons (the opposite of Shotgun Surgery):
+- "I always change these three methods for DB changes, and those two for UI changes" in the same class
+- **Remedy:** Split the class along its axes of change (Single Responsibility)
+
+#### Inappropriate Intimacy
+Two classes are too entangled with each other's internals:
+- Reaching into another class's private fields, tight bidirectional references
+- **Remedy:** Move methods/fields to the class they belong to, extract a shared class, or replace with delegation
+
+#### Message Chains
+Long navigation chains like `a.getB().getC().getD().doThing()`:
+- Client coupled to the whole object graph; violates the Law of Demeter
+- **Remedy:** Hide delegation — add a method on the first object that returns what the client needs
+
+#### Middle Man
+A class that delegates almost all of its work to another class:
+- Most methods just forward calls; adds indirection without value
+- **Remedy:** Remove the middle man and let clients talk to the real object (inline the delegation)
+
+#### Parallel Inheritance Hierarchies
+Every time you add a subclass to one hierarchy, you must add one to another:
+- `Shape`/`ShapeRenderer`, `Employee`/`EmployeePermission` growing in lockstep
+- **Remedy:** Merge hierarchies or make one hierarchy reference the other instead of mirroring it
+
 ### Code-Level Smells
 
 #### Long Method
@@ -373,11 +458,39 @@ Using primitives instead of domain types:
 - "TODO" comments accumulating without resolution
 - **Remedy:** Refactor to make code clear, delete dead code, track TODOs as issues
 
+#### Deep Nesting (Arrow Anti-Pattern)
+Loops and conditionals nested so deeply the code drifts rightward into an "arrow" shape:
+- `if { if { for { if { ... } } } }` — hard to trace which conditions hold at any point
+- Usually > 3 levels of indentation in one function
+- **Remedy:** Guard clauses / early returns, extract nested blocks into methods, invert conditions, replace conditional with polymorphism
+
 #### Dead Code
 - Unused imports, variables, functions
 - Unreachable branches
 - Commented-out code in version control
 - **Remedy:** Delete it (git history preserves it if needed)
+
+#### Data Class
+A class that is only fields plus getters/setters, with no meaningful behavior:
+- A "data bag" other classes reach into and manipulate from outside
+- Closely related to Anemic Domain Model at the class level
+- **Remedy:** Move the behavior that operates on the data into the class ("Tell, Don't Ask")
+
+#### Lazy Class
+A class/module that no longer does enough to justify its existence:
+- Left over after refactoring, or an abstraction that never grew
+- **Remedy:** Inline it into its caller or collapse the hierarchy
+
+#### Speculative Generality
+Abstractions, hooks, parameters, or generics added for hypothetical future needs:
+- Unused abstract base classes, unused parameters, "just in case" configuration
+- Violates YAGNI
+- **Remedy:** Remove unused abstraction; add it when a real second use case appears
+
+#### Temporary Field
+An instance field that is only set/used in certain circumstances and empty otherwise:
+- Fields populated only during one algorithm, confusing readers the rest of the time
+- **Remedy:** Extract the field + the methods that use it into their own class (Extract Class / introduce a Method Object)
 
 ### Testing Smells
 
@@ -498,6 +611,35 @@ Using a suboptimal data structure for the access pattern.
 - **DRY Violation:** Same knowledge repeated in multiple places
 - **KISS Violation:** Over-engineered solutions; premature abstractions
 - **YAGNI Violation:** Code for hypothetical future requirements; unused abstractions
+
+#### Object-Orientation Abusers (from Fowler / refactoring.guru)
+
+##### Switch Statements (Type-Code Conditionals)
+Repeated `switch`/if-else chains that branch on a type code or enum:
+- The same conditional structure duplicated in several places
+- Adding a new type forces editing every switch (OCP violation)
+- **Remedy:** Replace conditional with polymorphism (Strategy/State), or Replace Type Code with Subclasses
+
+##### Refused Bequest
+A subclass inherits methods/fields it doesn't need:
+- Overrides inherited methods to throw, no-op, or do something unrelated
+- Signals the inheritance relationship is wrong
+- **Remedy:** Push down unused members, or replace inheritance with delegation
+
+##### Alternative Classes with Different Interfaces
+Two classes perform the same role but expose differently-named methods:
+- `sort()` vs `arrange()`, `getUser()` vs `fetchUser()` for interchangeable classes
+- **Remedy:** Unify the interface (rename methods, extract a common superclass/interface)
+
+##### Incomplete Library Class
+A third-party/library class lacks methods you need and can't be modified:
+- Scattered helper functions or copy-paste wrappers around the library
+- **Remedy:** Introduce a Foreign Method or wrap it in an adapter/local extension class
+
+> Other refactoring.guru smells are documented in their thematic sections above:
+> **Divergent Change**, **Data Class**, **Lazy Class**, **Speculative Generality**,
+> **Temporary Field**, **Parallel Inheritance Hierarchies**, **Inappropriate Intimacy**,
+> **Message Chains**, and **Middle Man**.
 
 ---
 
