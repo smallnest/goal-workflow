@@ -88,6 +88,26 @@ if errors.Is(err, io.EOF) {
 }
 ```
 
+### Go 1.17+ — `//go:build` constraints (plusbuild)
+
+| Before | After |
+|---|---|
+| `// +build linux` + `//go:build linux` (both present) | keep only `//go:build linux` |
+
+```go
+// before
+//go:build linux && amd64
+// +build linux,amd64
+
+package foo
+// after
+//go:build linux && amd64
+
+package foo
+```
+
+The `plusbuild` modernizer removes obsolete `// +build` constraint lines once the equivalent `//go:build` line is present (the `//go:build` syntax landed in Go 1.17). Only strip the old line when a matching `//go:build` already exists — never drop the sole constraint.
+
 ### Go 1.17+ — `unsafe.Add` / `unsafe.Slice` (unsafefuncs)
 
 | Before | After |
@@ -459,6 +479,29 @@ for k, v := range m {
 ```
 
 Requires importing `"maps"`.
+
+### Go 1.22+ — `slices.Concat` (appendclipped)
+
+| Before | After |
+|---|---|
+| `append(append([]T(nil), s1...), s2...)` | `slices.Concat(s1, s2)` |
+| `append(slices.Clip(s1), s2...)` for a fresh result | `slices.Concat(s1, s2)` |
+
+```go
+// before
+all := append(append([]int(nil), a...), b...)
+// after
+all := slices.Concat(a, b)
+```
+
+```go
+// before — three-way concat
+merged := append(append(append([]string(nil), x...), y...), z...)
+// after
+merged := slices.Concat(x, y, z)
+```
+
+The `appendclipped` modernizer replaces nested `append` concatenation of multiple slices with `slices.Concat`, which allocates a fresh, correctly-sized result. `slices.Concat` was added in Go 1.22. Requires importing `"slices"`. Only apply when the pattern builds a new slice (starts from `[]T(nil)` or a clipped base) — not when it appends in place to an existing slice.
 
 ### Go 1.21+ — `sync.OnceFunc` / `sync.OnceValue`
 
@@ -953,5 +996,7 @@ gopls v0.22.0 added four notable passes covered above:
 | `atomictypes` | 1.19 | primitive `atomic.*` funcs → typed `atomic.Int32`/`Pointer[T]` wrappers |
 | `slicesbackward` | 1.23 | descending-index loops → `slices.Backward` iterator |
 | `embedlit` | 1.27 | redundant embedded-field literals → promoted-field init |
+
+Other modernizers in the same suite that this catalog covers: `minmax`, `efaceany`, `fmtappendf`, `stringscut`, `stringsseq`, `sortslice`/`slicescontains`, `mapsloop`, `stditerators`, `forvar`, `rangeint`, `testingcontext`, `bloop`, `waitgroup`, `newexpr`, `errorsastype`, `appendclipped` (→ `slices.Concat`), and `plusbuild` (→ drop obsolete `// +build`).
 
 To disable an over-eager pass (e.g. `slicesbackward` rewriting loops that mutate the slice), scope the run with `-fixes` or exclude that analyzer in your editor's gopls settings.
