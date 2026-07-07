@@ -88,6 +88,29 @@ if errors.Is(err, io.EOF) {
 }
 ```
 
+### Go 1.17+ — `unsafe.Add` / `unsafe.Slice` (unsafefuncs)
+
+| Before | After |
+|---|---|
+| `unsafe.Pointer(uintptr(ptr) + uintptr(n))` | `unsafe.Add(ptr, n)` |
+| `(*[n]T)(unsafe.Pointer(p))[:]` slice construction | `unsafe.Slice(p, n)` |
+
+```go
+// before — pointer arithmetic via uintptr
+p2 := unsafe.Pointer(uintptr(ptr) + uintptr(offset))
+// after
+p2 := unsafe.Add(ptr, offset)
+```
+
+```go
+// before — building a slice from a base pointer
+s := (*[1 << 30]byte)(unsafe.Pointer(p))[:n:n]
+// after
+s := unsafe.Slice(p, n)
+```
+
+The `unsafefuncs` modernizer (gopls v0.22.0) rewrites error-prone `uintptr` pointer math into `unsafe.Add` / `unsafe.Slice`, which the compiler and `go vet` understand as GC-safe.
+
 ### Go 1.18+ — `any`
 
 | Before | After |
@@ -146,11 +169,12 @@ buf = append(buf, fmt.Sprintf("x=%d", x)...)
 buf = fmt.Appendf(buf, "x=%d", x)
 ```
 
-### Go 1.19+ — Type-safe atomics
+### Go 1.19+ — Type-safe atomics (atomictypes)
 
 | Before | After |
 |---|---|
 | `atomic.StoreInt32(&v, 1)` / `atomic.LoadInt32(&v)` | `var v atomic.Int32; v.Store(1); v.Load()` |
+| `atomic.AddInt64(&v, 1)` | `var v atomic.Int64; v.Add(1)` |
 | `atomic.Value` + type assertion | `atomic.Pointer[T]` |
 
 ```go
@@ -176,6 +200,8 @@ var cache atomic.Pointer[Config]
 cache.Store(&Config{})
 cfg := cache.Load()
 ```
+
+The `atomictypes` modernizer (gopls v0.22.0, `AtomicTypesAnalyzer`) rewrites both the variable declaration and every call site. Typed wrappers (`atomic.Int32/Int64/Uint32/Uint64/Bool/Pointer[T]`) have identical performance but prevent accidental non-atomic access and fix 64-bit alignment crashes on 32-bit architectures.
 
 ### Go 1.20+ — `strings.Clone`
 
@@ -661,6 +687,37 @@ for part := range bytes.SplitSeq(data, sep) {
 }
 ```
 
+### Go 1.23+ — `slices.Backward` (slicesbackward)
+
+| Before | After |
+|---|---|
+| `for i := len(s) - 1; i >= 0; i-- { use(s[i]) }` | `for _, v := range slices.Backward(s) { use(v) }` |
+| reverse loop needing the index too | `for i, v := range slices.Backward(s) { ... }` |
+
+```go
+// before
+for i := len(items) - 1; i >= 0; i-- {
+    process(items[i])
+}
+// after
+for _, v := range slices.Backward(items) {
+    process(v)
+}
+```
+
+```go
+// before — index still needed
+for i := len(items) - 1; i >= 0; i-- {
+    fmt.Println(i, items[i])
+}
+// after
+for i, v := range slices.Backward(items) {
+    fmt.Println(i, v)
+}
+```
+
+The `slicesbackward` modernizer (gopls v0.22.0) replaces manual descending-index loops with the `slices.Backward` iterator. Requires importing `"slices"`. **Caveat:** the rewrite preserves exact semantics in normal cases, but do not apply it when the loop body mutates the slice length or the index is used for out-of-band arithmetic — those edge cases can become unsound.
+
 ### Go 1.24+ — `t.Context()` in tests
 
 | Before | After |
@@ -796,6 +853,37 @@ if pathErr, ok := errors.AsType[*os.PathError](err); ok {
 }
 ```
 
+### Go 1.27+ — Embedded field literals (embedlit)
+
+| Before | After |
+|---|---|
+| `T{U: U{x: 1}}` (redundant embedded-type specifier) | `T{x: 1}` |
+
+```go
+type Base struct {
+    ID   int
+    Name string
+}
+type User struct {
+    Base
+    Age int
+}
+
+// before
+u := User{
+    Base: Base{ID: 1, Name: "alice"},
+    Age:  30,
+}
+// after
+u := User{
+    ID:   1,
+    Name: "alice",
+    Age:  30,
+}
+```
+
+The `embedlit` modernizer (gopls v0.22.0, `EmbedLitAnalyzer`) strips redundant embedded-struct field-type specifiers from composite literals. Go 1.27 lets you initialize promoted fields directly without the nested literal. Only apply when the promoted field names don't collide with the outer struct's own fields.
+
 ## Operation Phases
 
 ### Phase 1: Detect
@@ -848,3 +936,22 @@ Skipped (requires higher Go version):
 - After all edits, run `goimports -w` on each modified file to clean up imports.
 - If `goimports` is not available, fall back to `gofmt -w`.
 - If the project has no `go.mod`, ask the user for the target Go version before proceeding.
+
+## Automated tooling (Go 1.27+)
+
+Many of these transformations are now shipped as official modernizers in `gopls`/`go fix`. On Go 1.27+ the whole set can be applied across a module with:
+
+```sh
+go fix ./...
+```
+
+gopls v0.22.0 added four notable passes covered above:
+
+| Modernizer | Min Go | Transformation |
+|---|---|---|
+| `unsafefuncs` | 1.17 | `uintptr` pointer math → `unsafe.Add` / `unsafe.Slice` |
+| `atomictypes` | 1.19 | primitive `atomic.*` funcs → typed `atomic.Int32`/`Pointer[T]` wrappers |
+| `slicesbackward` | 1.23 | descending-index loops → `slices.Backward` iterator |
+| `embedlit` | 1.27 | redundant embedded-field literals → promoted-field init |
+
+To disable an over-eager pass (e.g. `slicesbackward` rewriting loops that mutate the slice), scope the run with `-fixes` or exclude that analyzer in your editor's gopls settings.
