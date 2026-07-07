@@ -446,6 +446,45 @@ copy(dst, src)
 
 Requires importing `"slices"` and `"cmp"` (for `SortFunc`).
 
+### Go 1.21+ — `slices.Delete` / `slices.Insert`
+
+| Before | After |
+|---|---|
+| `append(s[:i], s[i+1:]...)` | `slices.Delete(s, i, i+1)` |
+| `append(s[:i:i], append([]T{x}, s[i:]...)...)` | `slices.Insert(s, i, x)` |
+
+```go
+// before — element removal (classic aliasing/leak footgun)
+s = append(s[:i], s[i+1:]...)
+// after
+s = slices.Delete(s, i, i+1)
+```
+
+```go
+// before — insert at index i
+s = append(s[:i], append([]T{v}, s[i:]...)...)
+// after
+s = slices.Insert(s, i, v)
+```
+
+`slices.Delete` zeroes the tail elements to avoid retaining pointers (the manual `append` form leaks). Requires importing `"slices"`.
+
+### Go 1.21+ — `slices.Equal` / `maps.Equal`
+
+| Before | After |
+|---|---|
+| `reflect.DeepEqual(a, b)` for comparable slices | `slices.Equal(a, b)` |
+| `reflect.DeepEqual(m1, m2)` for comparable maps | `maps.Equal(m1, m2)` |
+
+```go
+// before
+if reflect.DeepEqual(got, want) { ... }   // got, want are []string
+// after
+if slices.Equal(got, want) { ... }
+```
+
+Faster and type-safe, with no reflection. Only for element types that are directly comparable (use `slices.EqualFunc` / `maps.EqualFunc` otherwise). Requires importing `"slices"` or `"maps"`.
+
 ### Go 1.21+ — `maps` package
 
 | Before | After |
@@ -664,6 +703,60 @@ mux.HandleFunc("GET /api/{id}", func(w http.ResponseWriter, r *http.Request) {
 })
 ```
 
+### Go 1.22+ — `math/rand/v2`
+
+| Before | After |
+|---|---|
+| `rand.Intn(n)` | `rand.IntN(n)` |
+| `rand.Int63n(n)` / `rand.Int31n(n)` | `rand.Int64N(n)` / `rand.Int32N(n)` |
+| `rand.Seed(...)` + global funcs | drop `Seed`; use auto-seeded top-level funcs or `rand.N[T]` |
+
+```go
+// before
+import "math/rand"
+n := rand.Intn(100)
+// after
+import "math/rand/v2"
+n := rand.IntN(100)
+```
+
+```go
+// before — type-specific bound
+d := time.Duration(rand.Int63n(int64(max)))
+// after — generic N works for any integer type
+d := rand.N(max)
+```
+
+`math/rand/v2` (Go 1.22) drops the deprecated global `Seed` (top-level funcs are auto-seeded) and adds generic `rand.N[T]`. **Semantic migration:** the random stream differs from `math/rand`, so do not apply where reproducibility from a fixed seed matters. Flag as a suggestion, not auto-apply.
+
+### Go 1.23+ — Range over function (iterators)
+
+| Before | After |
+|---|---|
+| Custom `func Walk(yield func(T) bool)` callback traversal | `func Walk() iter.Seq[T]` returning an iterator |
+
+```go
+// before — callback-based iteration
+func (t *Tree) Each(fn func(v int)) {
+    for _, v := range t.values {
+        fn(v)
+    }
+}
+// caller: t.Each(func(v int) { use(v) })
+
+// after — standard iterator, usable with range
+func (t *Tree) All() iter.Seq[int] {
+    return func(yield func(int) bool) {
+        for _, v := range t.values {
+            if !yield(v) { return }
+        }
+    }
+}
+// caller: for v := range t.All() { use(v) }
+```
+
+Adopt the `iter.Seq[T]` / `iter.Seq2[K,V]` protocol (Go 1.23) so custom containers compose with `range`, `slices.Collect`, `maps.Keys`, etc. Requires importing `"iter"`. Flag as a suggestion — it reshapes the API surface.
+
 ### Go 1.23+ — Iterator helpers
 
 | Before | After |
@@ -779,6 +872,48 @@ func TestFetch(t *testing.T) {
     result := fetch(t.Context())
 }
 ```
+
+### Go 1.24+ — `strings.Lines` / `bytes.Lines`
+
+| Before | After |
+|---|---|
+| `bufio.Scanner` line loop over a string/buffer | `for line := range strings.Lines(s)` |
+
+```go
+// before
+sc := bufio.NewScanner(strings.NewReader(s))
+for sc.Scan() {
+    process(sc.Text())
+}
+// after
+for line := range strings.Lines(s) {
+    process(strings.TrimSuffix(line, "\n"))
+}
+```
+
+`strings.Lines` / `bytes.Lines` (Go 1.24) return line iterators — no Scanner setup, no default 64KB token-size limit. Note the yielded line **retains its trailing `\n`**, unlike `Scanner.Text()`; trim it if the old code relied on stripped lines. Only apply for in-memory strings/buffers, not streaming `io.Reader`s.
+
+### Go 1.24+ — `os.Root` (directory-scoped filesystem access)
+
+| Before | After |
+|---|---|
+| manual `filepath.Clean` + prefix check to block traversal | `root, _ := os.OpenRoot(dir); root.Open(name)` |
+
+```go
+// before — hand-rolled path-traversal guard
+p := filepath.Join(base, name)
+if !strings.HasPrefix(filepath.Clean(p), filepath.Clean(base)+string(os.PathSeparator)) {
+    return errUnsafePath
+}
+f, err := os.Open(p)
+// after — the OS enforces the boundary
+root, err := os.OpenRoot(base)
+if err != nil { return err }
+defer root.Close()
+f, err := root.Open(name) // symlinks/".." escaping base are rejected
+```
+
+`os.Root` (Go 1.24) confines all operations to a directory tree, rejecting `..` and symlink escapes at the syscall layer — far more robust than string prefix checks. **Security hardening:** flag as a strong suggestion wherever user-controlled paths are joined to a base directory.
 
 ### Go 1.24+ — `omitzero` struct tag
 
@@ -973,6 +1108,8 @@ Skipped (requires higher Go version):
 
 - Never apply transformations that change semantics in edge cases without the user's awareness.
 - Do not apply `omitzero` blindly—it changes JSON serialization behavior; flag it as a suggestion instead.
+- Treat semantic migrations as suggestions, not auto-applies: `math/rand/v2` (changes the random stream), `iter.Seq` iterators (reshapes the API), `os.Root` (behavior/error-path change). Point them out and let the user opt in.
+- When replacing a `bufio.Scanner` loop with `strings.Lines`/`bytes.Lines`, remember the yielded line keeps its trailing `\n`; add a `TrimSuffix` if the old code relied on `Scanner.Text()` semantics.
 - Do not apply `strings.SplitSeq` or `bytes.SplitSeq` when the loop body references the index or the full slice elsewhere.
 - Do not apply `strings.Builder` if the concatenation happens outside a loop (single `+=` is fine).
 - When a transformation requires a new import, ensure the import is added to the file.
