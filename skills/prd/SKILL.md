@@ -13,11 +13,11 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 ## The Job
 
 1. Receive a feature description from the user
-2. Ask 3-5 essential clarifying questions (with lettered options)
+2. Ask clarifying questions to cover key ambiguities — scale the count to complexity, not a fixed number (see Step 1)
 3. Generate a structured PRD based on answers
 4. **Present PRD to user for review** — ask "Please review the PRD. Let me know if any adjustments are needed, or reply OK to confirm."
 5. Apply any adjustments, then save to `tasks/prd-[feature-name].md`
-6. **Next steps** — suggest the user run `/prd-to-spec` for technical design (optional) and `/to-issues` to create implementable tickets
+6. **Suggest next steps** (see Step 3)
 
 **Important:** Do NOT start implementing. Just create the PRD.
 
@@ -25,7 +25,13 @@ Create detailed Product Requirements Documents that are clear, actionable, and s
 
 ## Step 1: Clarifying Questions
 
-Ask only critical questions where the initial prompt is ambiguous. Focus on:
+Ask only critical questions where the initial prompt is ambiguous. **Scale the number of questions to the feature's complexity — the goal is covering key ambiguities, not hitting a fixed count:**
+
+- **Simple, well-scoped feature:** 2-3 questions
+- **Typical feature:** 3-5 questions
+- **Complex feature** (multiple user roles, cross-system integration, significant ambiguity): 6-8 questions
+
+If a dimension is already unambiguous from the user's input, skip it — don't ask filler questions just to reach a number. Focus on:
 
 - **Problem/Goal:** What problem does this solve?
 - **Core Functionality:** What are the key actions?
@@ -89,9 +95,7 @@ Each story needs:
 - **Description:** "As a [user], I want [feature] so that [benefit]"
 - **Acceptance Criteria:** Verifiable checklist of what "done" means
 
-**Numbering rule:** US-001, US-002, US-003... (three digits, starting from 001). Each US should be independently implementable, ideally completable within one agent session.
-
-Each story should be small enough to implement in one focused session.
+**Numbering rule:** US-001, US-002, US-003... (three digits, starting from 001). Each US should be independently implementable and small enough to complete within one focused agent session.
 
 **Acceptance criteria self-check template:** Each criterion must satisfy at least one of the following, otherwise it is considered "vague" and must be rewritten:
 - Observable: describes a specific UI state or API response (e.g., "button shows confirmation dialog")
@@ -108,12 +112,12 @@ Each story should be small enough to implement in one focused session.
 - [ ] Specific verifiable criterion
 - [ ] Another criterion
 - [ ] Typecheck/lint passes
-- [ ] **[UI stories only]** Verify in browser using dev-browser skill
+- [ ] **[UI stories only]** Verify in a browser (e.g., via the `run` skill)
 ```
 
 **Important:** 
 - Acceptance criteria must be verifiable, not vague. "Works correctly" is bad. "Button shows confirmation dialog before deleting" is good.
-- **For any story with UI changes:** Always include "Verify in browser using dev-browser skill" as acceptance criteria. This ensures visual verification of frontend work.
+- **For any story with UI changes:** Always include "Verify in a browser" as acceptance criteria (e.g., via the `run` skill). This ensures visual verification of frontend work.
 
 ### 4. Functional Requirements
 Numbered list of specific functionalities:
@@ -205,7 +209,7 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Each task card shows colored priority badge (red=high, yellow=medium, gray=low)
 - [ ] Priority visible without hovering or clicking
 - [ ] Typecheck passes
-- [ ] Verify in browser using dev-browser skill
+- [ ] Verify in a browser (e.g., via the `run` skill)
 
 ### US-003: Add priority selector to task edit
 **Description:** As a user, I want to change a task's priority when editing it.
@@ -215,7 +219,7 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Shows current priority as selected
 - [ ] Saves immediately on selection change
 - [ ] Typecheck passes
-- [ ] Verify in browser using dev-browser skill
+- [ ] Verify in a browser (e.g., via the `run` skill)
 
 ### US-004: Filter tasks by priority
 **Description:** As a user, I want to filter the task list to see only high-priority items when I'm focused.
@@ -225,7 +229,7 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Filter persists in URL params
 - [ ] Empty state message when no tasks match filter
 - [ ] Typecheck passes
-- [ ] Verify in browser using dev-browser skill
+- [ ] Verify in a browser (e.g., via the `run` skill)
 
 ## Functional Requirements
 
