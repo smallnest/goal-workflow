@@ -524,8 +524,9 @@
         <li><a href="#step-smell">16. Bonus: /smell — Architecture Smell Detection</a></li>
         <li><a href="#step-loop-it">17. Bonus: /loop-it — Automated Issue Implementation Loop</a></li>
         <li><a href="#step-to-design">18. Bonus: /to-design — PRD to Design Document</a></li>
-        <li><a href="#platforms">19. Supported Platforms</a></li>
-        <li><a href="#faq">20. FAQ</a></li>
+        <li><a href="#step-graph">19. Bonus: /graph — Parallel Task-Graph Execution</a></li>
+        <li><a href="#platforms">20. Supported Platforms</a></li>
+        <li><a href="#faq">21. FAQ</a></li>
       </ul>
     </div>
 
@@ -722,6 +723,18 @@
             <li>Distinct from SPEC: a decision artifact, not a contract</li>
           </ul>
         </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot plum"></div>
+            <h4>/graph</h4>
+          </div>
+          <p>Parallel task-graph execution (DAG + supersteps)</p>
+          <ul>
+            <li>Task/PRD → DAG → layered into superstep waves</li>
+            <li>Independent nodes per wave implemented concurrently by subagents</li>
+            <li>Each node runs /goal→/review-it→/ship-it in its own worktree</li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -750,6 +763,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">smell</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">loop-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-design</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">graph</span>
 
 <span class="comment"># Global install (available for all projects)</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
@@ -766,7 +780,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code>, <code class="inline-code">/to-design</code> in Claude Code to directly invoke the corresponding skill.
+        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code>, <code class="inline-code">/to-design</code>, <code class="inline-code">/graph</code> in Claude Code to directly invoke the corresponding skill.
       </div>
     </div>
 
@@ -1730,20 +1744,95 @@
       </div>
     </div>
 
-    <!-- Section 19: Platforms -->
+    <!-- Section 19: /graph -->
+    <div class="section" id="step-graph">
+      <div class="section-title">
+        <div class="section-dot plum"></div>
+        <h3>19. Bonus: /graph — Parallel Task-Graph Execution</h3>
+      </div>
+      <p>
+        <code class="inline-code">/graph</code> turns a task (or PRD / SPEC / issue set) into a <strong>directed acyclic graph (DAG)</strong>, layers it by dependency into <strong>supersteps (waves)</strong>, then implements the independent nodes of each wave <strong>concurrently</strong>: one subagent per node runs the full <code class="inline-code">/goal</code> → <code class="inline-code">/review-it</code> → <code class="inline-code">/ship-it</code> pipeline inside its <strong>own git worktree</strong>, with a <strong>fan-in barrier</strong> between waves that integrates results and dynamically re-plans the next wave.
+      </p>
+
+      <div class="note">
+        <strong>How is it different from /loop-it?</strong> <code class="inline-code">/loop-it</code> is <strong>strictly sequential</strong> — one worktree, one issue at a time. <code class="inline-code">/graph</code> is its <strong>parallel counterpart</strong> — it fans out every independent node in a wave at once. Use <code class="inline-code">/graph</code> when the DAG has genuine parallelism (independent subsystems); use <code class="inline-code">/loop-it</code> when nodes heavily share files or serial safety matters.
+      </div>
+
+      <p>The design borrows from the trending idea of <strong>graph engineering</strong>, <strong>LangGraph</strong>'s StateGraph / Pregel-BSP superstep model, and Claude's dynamic-workflow orchestration.</p>
+
+      <h3>How to invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/graph</span> <span class="value">tasks/prd-url-shortener.md</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">parallel implement:</span> <span class="value">turn these issues into a task graph and run in parallel</span>
+<span class="cmd">build a graph:</span> <span class="value">fan out the DAG concurrently</span></code></pre>
+
+      <h3>Core concepts (from LangGraph / graph engineering)</h3>
+      <table>
+        <tr><th>Concept</th><th>Meaning</th></tr>
+        <tr><td>Node</td><td>One implementable unit of work (an issue / subtask)</td></tr>
+        <tr><td>Edge</td><td>A dependency: <code class="inline-code">B depends on A</code> → edge <code class="inline-code">A → B</code></td></tr>
+        <tr><td>Superstep / Wave</td><td>A set of nodes whose deps are all satisfied — run concurrently</td></tr>
+        <tr><td>Fan-out</td><td>Dispatch one subagent per node in the current wave</td></tr>
+        <tr><td>Fan-in (barrier)</td><td>Wait for <strong>all</strong> nodes in the wave before the next</td></tr>
+        <tr><td>State channel</td><td><code class="inline-code">.graph_state</code> — shared checkpoint between waves, resume source</td></tr>
+        <tr><td>Live tracker</td><td><code class="inline-code">graph.html</code> — Claude-style light-theme dashboard, re-rendered from <code class="inline-code">.graph_state</code> at every checkpoint</td></tr>
+        <tr><td>Dynamic re-plan</td><td>Revise the graph after a wave if new work/deps emerged</td></tr>
+      </table>
+
+      <h3>Workflow</h3>
+      <ul class="step-list">
+        <li><strong>Decompose into nodes</strong> — reuse <code class="inline-code">/to-issues</code> rules; each node has title, deps, acceptance criteria, type, and scope_hint (files it's expected to touch)</li>
+        <li><strong>Build the DAG &amp; validate</strong> — detect cycles (break by id), dangling deps, scope collisions</li>
+        <li><strong>Topological layering</strong> — Kahn's algorithm layers nodes into waves; nodes editing the same logic serialize to the next wave</li>
+        <li><strong>Render the graph &amp; confirm</strong> — emit the layered plan + a Mermaid diagram, wait for user confirmation before fan-out</li>
+        <li><strong>Execute wave by wave</strong> — fan-out (multiple subagent calls in one response = parallel) → fan-in barrier → integrate, update state, dynamically re-plan</li>
+      </ul>
+
+      <h3>Key features</h3>
+      <ul class="step-list">
+        <li><strong>Worktree isolation (mandatory)</strong> — each node owns a git worktree; parallel edits never clobber the working tree</li>
+        <li><strong>Fan-in barrier (mandatory)</strong> — wave N+1 cannot start before every node in wave N merges (BSP semantics)</li>
+        <li><strong>Scope-collision serialization</strong> — dep-free nodes editing the same logic split across waves; a shared "wiring file" (router/main) is exempt so it doesn't serialize the whole graph</li>
+        <li><strong>Dynamic re-plan</strong> — subagents report new work via a <code class="inline-code">NEW_WORK:</code> line; the barrier revises and re-layers the graph</li>
+        <li><strong>Failure blocks dependents</strong> — a failed node marks all its dependents blocked and skips them</li>
+        <li><strong>Checkpoint / resume</strong> — each wave writes <code class="inline-code">.graph_state</code>; a crash resumes at the wave boundary, and <code class="inline-code">graph.html</code> is re-rendered (open it in a browser — it auto-refreshes every 5s to track waves, node statuses, and progress live)</li>
+        <li><strong>Concurrency cap</strong> — default 3–4 parallel subagents to avoid rate limits and merge contention</li>
+      </ul>
+
+      <h3>Concurrent execution</h3>
+      <pre><code><span class="comment"># Per wave: fan-out → fan-in barrier</span>
+Wave 0 (parallel×3):  #1 db schema   #2 cache layer   #3 logging util
+Wave 1 (parallel×2):  #4 API (deps #1)   #5 CLI (deps #2)
+Wave 2 (parallel×1):  #6 integration (deps #4,#5)
+
+<span class="comment"># Each node, in its own worktree:</span>
+inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> → <span class="cmd">/ship-it</span></code></pre>
+
+      <h3>Pipeline integration</h3>
+      <pre><code><span class="cmd">/prd</span> → <span class="cmd">/prd-to-spec</span> → <span class="cmd">/to-issues</span> ┬→ <span class="cmd">/loop-it</span>  <span class="comment"># sequential: one node at a time</span>
+                                        └→ <span class="cmd">/graph</span>    <span class="comment"># parallel: whole wave at once</span></code></pre>
+
+      <div class="tip">
+        <strong>Tip:</strong> Add <code class="inline-code">.graph_state</code> and <code class="inline-code">graph.html</code> to <code class="inline-code">.gitignore</code>. Subagents run in parallel only when dispatched as multiple calls in a <strong>single response</strong> — splitting them across responses degrades to sequential.
+      </div>
+    </div>
+
+    <!-- Section 20: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>19. Supported Platforms</h3>
+        <h3>20. Supported Platforms</h3>
       </div>
       <p>Goal Workflow skills can be used across multiple AI Coding Agents:</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th></tr>
-        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (Built-in)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th><th>/graph</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (Built-in)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
       </table>
 
       <h3>Issue Creation Platforms</h3>
@@ -1759,7 +1848,7 @@
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>20. FAQ</h3>
+        <h3>21. FAQ</h3>
       </div>
 
       <h3>Q: Do I have to use all steps in order?</h3>

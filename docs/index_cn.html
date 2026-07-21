@@ -524,8 +524,9 @@
         <li><a href="#step-smell">16. Bonus: /smell — 架构坏味道检测</a></li>
         <li><a href="#step-loop-it">17. Bonus: /loop-it — 自动化 Issue 批量实现循环</a></li>
         <li><a href="#step-to-design">18. Bonus: /to-design — PRD 转设计文档</a></li>
-        <li><a href="#platforms">19. 支持的平台</a></li>
-        <li><a href="#faq">20. FAQ</a></li>
+        <li><a href="#step-graph">19. Bonus: /graph — 任务图并发实现</a></li>
+        <li><a href="#platforms">20. 支持的平台</a></li>
+        <li><a href="#faq">21. FAQ</a></li>
       </ul>
     </div>
 
@@ -722,6 +723,18 @@
             <li>区别于 SPEC：是决策文档而非实现契约</li>
           </ul>
         </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot plum"></div>
+            <h4>/graph</h4>
+          </div>
+          <p>任务图并发实现（DAG + 超步）</p>
+          <ul>
+            <li>任务/PRD → DAG → 分层为超步 wave</li>
+            <li>每波独立节点用 subagent 并发实现</li>
+            <li>每节点独立 worktree 跑 /goal→/review-it→/ship-it</li>
+          </ul>
+        </div>
       </div>
     </div>
 
@@ -750,6 +763,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">smell</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">loop-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-design</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">graph</span>
 
 <span class="comment"># 全局安装（所有项目可用）</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">-g</span>
@@ -766,7 +780,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/loop-it</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/insight-diagram</code>、<code class="inline-code">/smell</code>、<code class="inline-code">/to-design</code> 即可直接调用对应技能。
+        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/loop-it</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/insight-diagram</code>、<code class="inline-code">/smell</code>、<code class="inline-code">/to-design</code>、<code class="inline-code">/graph</code> 即可直接调用对应技能。
       </div>
     </div>
 
@@ -1730,20 +1744,95 @@
       </div>
     </div>
 
-    <!-- Section 19: Platforms -->
+    <!-- Section 19: /graph -->
+    <div class="section" id="step-graph">
+      <div class="section-title">
+        <div class="section-dot plum"></div>
+        <h3>19. Bonus: /graph — 任务图并发实现</h3>
+      </div>
+      <p>
+        <code class="inline-code">/graph</code> 把一个任务（或 PRD / SPEC / Issue 集合）转化为<strong>有向无环图（DAG）</strong>，按依赖关系分层为若干<strong>超步（wave）</strong>，然后对每一层中相互独立的节点<strong>并发实现</strong>：每个节点由一个 subagent 在<strong>独立的 git worktree</strong> 中完整跑一遍 <code class="inline-code">/goal</code> → <code class="inline-code">/review-it</code> → <code class="inline-code">/ship-it</code> 流水线，层与层之间用<strong>栅栏（fan-in barrier）</strong>汇聚结果并动态重规划下一层。
+      </p>
+
+      <div class="note">
+        <strong>它和 /loop-it 有什么区别？</strong><code class="inline-code">/loop-it</code> 是<strong>严格串行</strong>的——单个 worktree，一次处理一个 Issue；<code class="inline-code">/graph</code> 是它的<strong>并行版本</strong>——把同一层里所有独立节点一次性 fan-out 出去并发实现。当 DAG 中存在真正的并行度（相互独立的子系统）时用 <code class="inline-code">/graph</code>；当节点大量共享文件或必须串行保证安全时用 <code class="inline-code">/loop-it</code>。
+      </div>
+
+      <p>设计思想借鉴了当下热议的 <strong>graph engineering</strong>、<strong>LangGraph</strong> 的 StateGraph / Pregel-BSP 超步模型，以及 Claude dynamic workflow 的动态编排理念。</p>
+
+      <h3>如何调用</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/graph</span> <span class="value">tasks/prd-url-shortener.md</span>
+
+<span class="comment"># 或使用触发词</span>
+<span class="cmd">并发实现：</span><span class="value">把这些 issue 变成任务图并行实现</span>
+<span class="cmd">任务图：</span><span class="value">build a graph 并发跑</span></code></pre>
+
+      <h3>核心概念（借自 LangGraph / graph engineering）</h3>
+      <table>
+        <tr><th>概念</th><th>含义</th></tr>
+        <tr><td>节点 Node</td><td>一个可独立实现的工作单元（一个 issue / 子任务）</td></tr>
+        <tr><td>边 Edge</td><td>依赖关系：<code class="inline-code">B 依赖 A</code> → 边 <code class="inline-code">A → B</code></td></tr>
+        <tr><td>超步 / 波次 Wave</td><td>依赖已全部满足的一组节点——并发执行</td></tr>
+        <tr><td>Fan-out</td><td>为当前波次的每个节点派发一个 subagent</td></tr>
+        <tr><td>Fan-in（栅栏）</td><td>等待本波<strong>全部</strong>节点完成，再开始下一波</td></tr>
+        <tr><td>状态通道</td><td><code class="inline-code">.graph_state</code>——波次之间共享的检查点，可断点恢复</td></tr>
+        <tr><td>实时看板</td><td><code class="inline-code">graph.html</code>——Claude 浅色风格仪表盘，每次检查点从 <code class="inline-code">.graph_state</code> 重新渲染</td></tr>
+        <tr><td>动态重规划</td><td>一波结束后，若冒出新工作/新依赖则修订图</td></tr>
+      </table>
+
+      <h3>工作流程</h3>
+      <ul class="step-list">
+        <li><strong>拆解为节点</strong> — 复用 <code class="inline-code">/to-issues</code> 规则，每个节点含标题、依赖、验收条件、类型、scope_hint（预计触碰的文件）</li>
+        <li><strong>构建 DAG 并校验</strong> — 检测环（按 id 打破）、悬空依赖、scope 冲突</li>
+        <li><strong>拓扑分层</strong> — Kahn 算法分层为若干 wave；同波内改动同一逻辑的节点串行到下一波</li>
+        <li><strong>渲染图并确认</strong> — 输出分层计划 + Mermaid 图，等用户确认后才 fan-out</li>
+        <li><strong>逐波执行</strong> — fan-out（一个响应内派发多个 subagent = 并发）→ fan-in 栅栏 → 汇聚、更新状态、动态重规划</li>
+      </ul>
+
+      <h3>核心特性</h3>
+      <ul class="step-list">
+        <li><strong>Worktree 隔离（强制）</strong> — 每个节点独占一个 git worktree，并行编辑互不污染工作树</li>
+        <li><strong>Fan-in 栅栏（强制）</strong> — 上一波全部节点合入前，下一波不启动（BSP 语义）</li>
+        <li><strong>scope 冲突串行化</strong> — 无依赖但改同一逻辑的节点自动分到不同波次；共享的"接线文件"（router/main）例外，不因此串行全图</li>
+        <li><strong>动态重规划</strong> — subagent 通过 <code class="inline-code">NEW_WORK:</code> 行上报新工作，栅栏处修订图并重新分层</li>
+        <li><strong>失败阻塞下游</strong> — 某节点失败则其所有依赖节点标记 blocked 并跳过</li>
+        <li><strong>断点恢复</strong> — 每波写入 <code class="inline-code">.graph_state</code>，崩溃后按波边界恢复；同时重新渲染 <code class="inline-code">graph.html</code>（浏览器打开后每 5s 自动刷新，实时跟踪波次、节点状态与进度）</li>
+        <li><strong>并发上限</strong> — 默认 3–4 个并发 subagent，避免限流与合并冲突</li>
+      </ul>
+
+      <h3>并发执行图</h3>
+      <pre><code><span class="comment"># 每波：fan-out → fan-in 栅栏</span>
+Wave 0 (并发×3):  #1 建表   #2 缓存层   #3 日志工具
+Wave 1 (并发×2):  #4 API (依赖 #1)   #5 CLI (依赖 #2)
+Wave 2 (并发×1):  #6 集成 (依赖 #4,#5)
+
+<span class="comment"># 每个节点在自己的 worktree 内：</span>
+inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> → <span class="cmd">/ship-it</span></code></pre>
+
+      <h3>流水线集成</h3>
+      <pre><code><span class="cmd">/prd</span> → <span class="cmd">/prd-to-spec</span> → <span class="cmd">/to-issues</span> ┬→ <span class="cmd">/loop-it</span>  <span class="comment"># 串行：一次一个节点</span>
+                                        └→ <span class="cmd">/graph</span>    <span class="comment"># 并行：整波一起跑</span></code></pre>
+
+      <div class="tip">
+        <strong>提示：</strong>把 <code class="inline-code">.graph_state</code> 和 <code class="inline-code">graph.html</code> 加入 <code class="inline-code">.gitignore</code>。派发 subagent 必须在<strong>同一个响应</strong>内发出多个调用才是并发——分成多个响应会退化为串行。
+      </div>
+    </div>
+
+    <!-- Section 20: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>19. 支持的平台</h3>
+        <h3>20. 支持的平台</h3>
       </div>
       <p>Goal Workflow 的技能可在多个 AI Coding Agent 中使用：</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th></tr>
-        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th><th>/graph</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
       </table>
 
       <h3>Issue 创建平台</h3>
@@ -1759,7 +1848,7 @@
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>20. FAQ</h3>
+        <h3>21. FAQ</h3>
       </div>
 
       <h3>Q: 必须按顺序使用所有步骤吗？</h3>
