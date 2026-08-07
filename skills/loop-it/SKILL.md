@@ -1,6 +1,6 @@
 ---
 name: loop-it
-description: "Automated issue loop with checkpoint/resume: fetch open GitHub issues → dependency-aware topological sort → implement each issue end-to-end → review with /review-it → document with /note-it → ship with /ship-it → repeat. Persists state to .loop-state.json for crash recovery. Triggers on: loop-it, loop issues, auto implement, 批量实现, 循环实现, 实现所有issue, 恢复循环, resume loop."
+description: "Automated issue loop with checkpoint/resume: fetch open GitHub issues → dependency-aware topological sort → implement each issue end-to-end → review with /review-it → ship with /ship-it → repeat. Persists state to .loop-state.json for crash recovery. Triggers on: loop-it, loop issues, auto implement, 批量实现, 循环实现, 实现所有issue, 恢复循环, resume loop."
 user-invocable: true
 allowed-tools:
   - Bash(gh:*)
@@ -10,10 +10,10 @@ allowed-tools:
 
 # loop-it — 带检查点恢复的自动化 Issue 实现循环
 
-Fetch all open GitHub issues, resolve dependency order, implement each through the full pipeline (内联实现 → `/review-it` → `/note-it` → `/ship-it`), persist progress to state file, and resume from checkpoint on crash.
+Fetch all open GitHub issues, resolve dependency order, implement each through the full pipeline (内联实现 → `/review-it` → `/ship-it`), persist progress to state file, and resume from checkpoint on crash.
 
 > **⚠️ 关键前提：实现步骤由 agent 内联自主完成，不依赖任何外部 `/goal` 命令。**
-> 本环境中不存在可调用的 `goal` 命令或 skill。因此「实现 issue」这一步**必须由 agent 内联完成**：直接读取该 issue 的标题与正文（含其引用的 PRD/SPEC 与验收条件），自主完成"理解需求 → 写/改代码 → 跑测试与 lint → 满足全部验收条件"的闭环，持续工作直到该 issue 的验收条件全部满足且测试/构建通过。**不要**尝试用 Skill 工具调用 `goal`（会报 `goal is a UI command, not a skill`），也**不要**因为找不到 `/goal` 而中止循环。`/review-it`、`/note-it`、`/ship-it` 仍是真实 skill，经 Skill 工具调用。
+> 本环境中不存在可调用的 `goal` 命令或 skill。因此「实现 issue」这一步**必须由 agent 内联完成**：直接读取该 issue 的标题与正文（含其引用的 PRD/SPEC 与验收条件），自主完成"理解需求 → 写/改代码 → 跑测试与 lint → 满足全部验收条件"的闭环，持续工作直到该 issue 的验收条件全部满足且测试/构建通过。**不要**尝试用 Skill 工具调用 `goal`（会报 `goal is a UI command, not a skill`），也**不要**因为找不到 `/goal` 而中止循环。`/review-it`、`/ship-it` 仍是真实 skill，经 Skill 工具调用。**loop-it 循环中不调用 `/note-it`。**
 
 ---
 
@@ -40,8 +40,6 @@ Fetch all open GitHub issues, resolve dependency order, implement each through t
 |        |           失败 → 检查点, 下一个         |
 |        |                                      |
 |  /review-it → 有问题？→ 修复 → 重跑 review     |
-|        |                                      |
-|  /note-it (捕获实现笔记, best-effort)          |
 |        |                                      |
 |  /ship-it → 出错？→ 分类 → 恢复                |
 |        |                                      |
@@ -294,7 +292,7 @@ When blocked:
    Reason: dependency #{dep_number} not shipped ({status})
 ```
 
-Update state: `pending` → `skipped` or `pending` → `blocked`, write checkpoint, run **3h Branch Cleanup**, proceed to next issue.
+Update state: `pending` → `skipped` or `pending` → `blocked`, write checkpoint, run **3g Branch Cleanup**, proceed to next issue.
 
 ### 3c. Implement (内联自主实现)
 
@@ -325,7 +323,7 @@ Write checkpoint with `phase: "implement_done"`.
    Manual intervention required.
 ```
 
-Update state: `in_progress` → `failed`, write checkpoint, run **3h Branch Cleanup**, proceed to next issue.
+Update state: `in_progress` → `failed`, write checkpoint, run **3g Branch Cleanup**, proceed to next issue.
 
 ### 3d. Review with /review-it
 
@@ -351,31 +349,7 @@ Fix each accepted finding, re-run `/review-it`. Repeat until clean or max 2 revi
 
 Write checkpoint with `phase: "review_done"`.
 
-### 3e. Document with /note-it
-
-After review, before ship — capture implementation notes:
-
-```
-/note-it
-```
-
-This creates `docs/issue#XXXX.html` with design decisions, deviations, tradeoffs, and open questions.
-
-**On success:**
-
-```
-📝 Issue #{number} notes captured
-```
-
-**On failure** (can't determine issue number, etc.) — print warning but **do not block shipping**:
-
-```
-⚠️  /note-it failed for Issue #{number}: {reason}. Continuing to ship.
-```
-
-Write checkpoint with `phase: "note_done"`.
-
-### 3f. Ship with /ship-it
+### 3e. Ship with /ship-it
 
 ```
 /ship-it
@@ -395,15 +369,15 @@ This commits, pushes, creates PR, merges, and closes the issue.
 ⚠️  Issue #{number} ship failed: {error}. Manual merge required.
 ```
 
-Update state: `in_progress` → `failed`, `phase: "ship"`, write checkpoint, run **3h Branch Cleanup**, proceed to next issue.
+Update state: `in_progress` → `failed`, `phase: "ship"`, write checkpoint, run **3g Branch Cleanup**, proceed to next issue.
 
-### 3g. Checkpoint
+### 3f. Checkpoint
 
 After successful ship, update state: `in_progress` → `shipped`, set `completed_at`, write checkpoint.
 
 Print progress (see 进度可观测性).
 
-### 3h. Branch Cleanup
+### 3g. Branch Cleanup
 
 After each issue (shipped, skipped, or failed):
 
@@ -496,7 +470,6 @@ Every key step MUST print a log line with emoji prefix:
 | ✅ | Success |
 | ❌ | Failure |
 | 🔍 | Review |
-| 📝 | Notes (/note-it) |
 | 🚀 | Ship |
 | ⚠️ | Warning / retry |
 | 📊 | Progress / summary |
@@ -507,7 +480,6 @@ Every key step MUST print a log line with emoji prefix:
 
 - **Never force-push to main/master** — always use feature branches
 - **Never skip review** — always run `/review-it` before `/ship-it`
-- **Never skip notes** — always run `/note-it` before `/ship-it`（best-effort，不阻塞）
 - **Max retries per error class** — 参见错误分类与恢复表，不无限重试
 - **Max 2 review rounds** — don't over-polish
 - **Pause on CI failure** — log and continue, don't auto-override branch protection
@@ -539,7 +511,6 @@ Every key step MUST print a log line with emoji prefix:
 | User aborts mid-loop | 状态文件已包含最新检查点，下次运行可恢复 |
 | New issues created during loop | 不重新获取。完成当前批次后运行新 `/loop-it` |
 | Circular dependencies | 打印警告，按编号顺序打破循环 |
-| `/note-it` can't find issue number | 打印警告，跳过 /note-it，继续 /ship-it |
 | `.loop-state.json` is git-tracked | 警告用户添加到 .gitignore，继续 |
 | 误以为需要外部 `goal` 命令 | 本环境无此命令；「实现 issue」由 agent 内联完成（读 issue → 写代码 → 测试），不要中止循环 |
 
@@ -551,12 +522,11 @@ Every key step MUST print a log line with emoji prefix:
 /loop-it
   ├── 内联实现   ← implement each issue（agent 自主读 issue、写代码、测试；非外部命令）
   ├── /review-it  ← review code before shipping（skill）
-  ├── /note-it    ← capture implementation notes (best-effort)（skill）
   └── /ship-it    ← commit, PR, merge, close（skill）
 ```
 
 Part of the goal-workflow pipeline:
 
 ```
-/prd → /prd-to-spec → /to-issues → /loop-it (→ 内联实现 → /review-it → /note-it → /ship-it)×N
+/prd → /prd-to-spec → /to-issues → /loop-it (→ 内联实现 → /review-it → /ship-it)×N
 ```
