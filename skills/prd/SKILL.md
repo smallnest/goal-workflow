@@ -97,6 +97,8 @@ Each story needs:
 
 **Numbering rule:** US-001, US-002, US-003... (three digits, starting from 001). Each US should be independently implementable and small enough to complete within one focused agent session.
 
+**Mandatory E2E test story:** Every PRD MUST include one end-to-end (E2E) test user story as the **last** user story. It validates the complete feature flow across the whole stack — from user action through UI, API, and data layer — not an isolated unit. Its acceptance criteria describe the full happy-path journey a real user takes to accomplish the feature's core goal, plus at least one critical edge/failure path, all asserted through an automated E2E test (e.g., Playwright/Cypress for UI, or an API-level integration test for backend-only features). This story depends on all others and confirms the feature works as a whole.
+
 **Acceptance criteria self-check template:** Each criterion must satisfy at least one of the following, otherwise it is considered "vague" and must be rewritten:
 - Observable: describes a specific UI state or API response (e.g., "button shows confirmation dialog")
 - Testable: has clear input/output pairs (e.g., "entering an empty email shows a red warning")
@@ -113,6 +115,18 @@ Each story needs:
 - [ ] Another criterion
 - [ ] Typecheck/lint passes
 - [ ] **[UI stories only]** Verify in a browser (e.g., via the `run` skill)
+```
+
+**E2E story format:**
+```markdown
+### US-NNN: End-to-end test of [feature] flow
+**Description:** As a QA engineer, I want an automated end-to-end test covering the full [feature] journey so that we catch regressions across the entire stack.
+
+**Acceptance Criteria:**
+- [ ] Automated E2E test simulates the full happy path (user action → UI → API → data → visible result)
+- [ ] Covers at least one critical edge/failure path (e.g., invalid input, empty state, permission denied)
+- [ ] Test runs in CI and passes
+- [ ] Test is independent and repeatable (sets up and tears down its own data)
 ```
 
 **Important:** 
@@ -231,6 +245,16 @@ Add priority levels to tasks so users can focus on what matters most. Tasks can 
 - [ ] Typecheck passes
 - [ ] Verify in a browser (e.g., via the `run` skill)
 
+### US-005: End-to-end test of task priority flow
+**Description:** As a QA engineer, I want an automated end-to-end test covering the full priority journey so that we catch regressions across the entire stack.
+
+**Acceptance Criteria:**
+- [ ] E2E test creates a task, sets its priority via the edit modal, and asserts the badge color updates on the card
+- [ ] Test applies a priority filter and asserts only matching tasks remain visible
+- [ ] Covers edge case: filtering to a priority with no tasks shows the empty state message
+- [ ] Test runs in CI and passes
+- [ ] Test sets up and tears down its own task data
+
 ## Functional Requirements
 
 - FR-1: Add `priority` field to tasks table ('high' | 'medium' | 'low', default 'medium')
@@ -272,6 +296,7 @@ Before saving the PRD:
 - [ ] Asked clarifying questions with lettered options
 - [ ] Incorporated user's answers
 - [ ] User stories are small and specific
+- [ ] Included a mandatory end-to-end (E2E) test story as the last user story
 - [ ] Functional requirements are numbered and unambiguous
 - [ ] Non-goals section defines clear boundaries
 - [ ] Saved to `tasks/prd-[feature-name].md`
