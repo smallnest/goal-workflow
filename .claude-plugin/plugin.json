@@ -1,0 +1,40 @@
+{
+  "name": "goal-workflow-skills",
+  "version": "1.0.0",
+  "description": "An AI-driven development workflow — from PRD to shipped code, all within Claude Code.",
+  "author": {
+    "name": "smallnest",
+    "url": "https://github.com/smallnest"
+  },
+  "homepage": "https://github.com/smallnest/goal-workflow",
+  "repository": "https://github.com/smallnest/goal-workflow",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "prd",
+    "spec",
+    "issues",
+    "code-review",
+    "refactor",
+    "go"
+  ],
+  "skills": [
+    "./skills/prd",
+    "./skills/prd-to-spec",
+    "./skills/to-issues",
+    "./skills/loop-it",
+    "./skills/graph",
+    "./skills/review-it",
+    "./skills/ship-it",
+    "./skills/note-it",
+    "./skills/code-to-spec",
+    "./skills/to-design",
+    "./skills/refactor",
+    "./skills/modern-go",
+    "./skills/smell",
+    "./skills/insight-diagram",
+    "./skills/humanize-it",
+    "./skills/listenhub-tts",
+    "./skills/article-icons"
+  ]
+}

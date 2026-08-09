@@ -1,0 +1,25 @@
+{
+  "name": "goal-workflow",
+  "owner": {
+    "name": "smallnest",
+    "url": "https://github.com/smallnest"
+  },
+  "description": "An AI-driven development workflow — from PRD to shipped code, all within Claude Code.",
+  "plugins": [
+    {
+      "name": "goal-workflow-skills",
+      "source": "./",
+      "description": "PRD → SPEC → Issues → implement → review → ship, plus refactor, modernize, and diagram skills — an end-to-end AI development workflow for Claude Code.",
+      "category": "engineering",
+      "keywords": [
+        "workflow",
+        "prd",
+        "spec",
+        "issues",
+        "code-review",
+        "refactor",
+        "go"
+      ]
+    }
+  ]
+}
