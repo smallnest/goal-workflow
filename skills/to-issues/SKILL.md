@@ -1,6 +1,6 @@
 ---
 name: to-issues
-description: "Decompose a PRD and/or SPEC into implementable Issues and create them in your chosen platform (GitHub, Local, or Baidu iCafe). Use after /prd (and optionally /prd-to-spec) to turn requirements into actionable tickets. Triggers on: create issues, to-issues, 创建issue, 拆解issue, 生成卡片, 创建卡片, generate issues from PRD, issues from spec."
+description: "Decompose a PRD and/or SPEC into implementable Issues and create them in your chosen platform (GitHub or Local). Use after /prd (and optionally /prd-to-spec) to turn requirements into actionable tickets. Triggers on: create issues, to-issues, 创建issue, 拆解issue, 生成卡片, 创建卡片, generate issues from PRD, issues from spec."
 user-invocable: true
 ---
 
@@ -15,7 +15,7 @@ Decompose a PRD and/or technical SPEC into small, independent, implementable Iss
 1. **Locate input** — find a PRD or SPEC file (auto-detect or user-specified)
 2. **Decompose into Issues** — break User Stories into implementable tickets
 3. **Review with user** — present Issue list for approval and adjustment
-4. **Choose platform** — GitHub / Local / Baidu iCafe
+4. **Choose platform** — GitHub / Local
 5. **Create Issues** — create all tickets and print summary
 
 ---
@@ -97,7 +97,6 @@ Choose where to create these Issues:
 
 A. GitHub (via gh CLI)
 B. Local (save as .md files)
-C. Baidu iCafe (via icafe-cli)
 
 Your choice:
 ```
@@ -149,30 +148,6 @@ Where should I save the Issue files? (default: .autoresearch/issues)
    ```
 3. Report created file paths
 
-### Mode C: Baidu iCafe
-
-**Ask user:**
-```
-Please provide the iCafe space prefix code (--space):
-```
-
-Optionally ask:
-```
-Target branch for iCode CR? (default: master)
-```
-
-**Prerequisites:** `icafe-cli` installed and logged in.
-
-**Actions:**
-1. For each Issue, run:
-   ```bash
-   icafe-cli card create --space [SPACE] --title "[Title]" --description "[Description + Acceptance Criteria]" --cardtype "[Task/Bug/Story]"
-   ```
-   - Map Issue `type` to iCafe card type: `bug` → `Bug`, `ui`/`frontend` → `Story`, others → `Task`
-   - Map `priority`: high → `高`, medium → `中`, low → `低`
-2. If iCafe card creation fails for an Issue, log the error and continue with remaining Issues
-3. Report created card sequence numbers
-
 ---
 
 ## Step 5: Summary Report
@@ -183,15 +158,15 @@ After all Issues are created, print a summary:
 ✅ Issue creation complete!
 
 Source: [PRD/SEC path]
-Mode: [GitHub / Local / Baidu iCafe]
+Mode: [GitHub / Local]
 Issues created: N
 
 #  | Title                                    | Identifier
 ---|------------------------------------------|------------
-1  | Add priority field to database           | #42 (GitHub) / issue-001-*.md (Local) / #22210 (iCafe)
-2  | Display priority indicator               | #43 / issue-002-*.md / #22211
-3  | Add priority selector                    | #44 / issue-003-*.md / #22212
-4  | Filter tasks by priority                 | #45 / issue-004-*.md / #22213
+1  | Add priority field to database           | #42 (GitHub) / issue-001-*.md (Local)
+2  | Display priority indicator               | #43 / issue-002-*.md
+3  | Add priority selector                    | #44 / issue-003-*.md
+4  | Filter tasks by priority                 | #45 / issue-004-*.md
 
 💡 Tip: Now implement each Issue with /goal:
   /goal 42                    # GitHub mode
@@ -208,7 +183,6 @@ Issues created: N
 | PRD has no User Stories | Derive Issues from Functional Requirements instead |
 | SPEC has Issue Mapping (Section 10.2) | Use it as primary source, cross-reference with PRD |
 | `gh` CLI not authenticated for GitHub mode | Show error, suggest `gh auth login`, offer to switch to Local mode |
-| `icafe-cli` / `icode-cli` not installed for Baidu mode | Show error, suggest installation, offer to switch to Local mode |
 | Issue folder does not exist for Local mode | Auto-create the folder |
 | User declines Issue creation | Print the Issue list as a text summary, let user create manually later |
 

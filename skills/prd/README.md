@@ -19,7 +19,7 @@ The PRD skill is the first step in a three-stage pipeline:
 |-------|-------|---------|
 | 1. Requirements | `/prd` (this skill) | Define *what* to build |
 | 2. Technical design (optional) | `/prd-to-spec` | Define *how* to build it |
-| 3. Decomposition | `/to-issues` | Break into implementable tickets (GitHub / Local / Baidu iCafe) |
+| 3. Decomposition | `/to-issues` | Break into implementable tickets (GitHub / Local) |
 
 After a PRD is confirmed, run `/prd-to-spec` for complex features, then `/to-issues` — or go straight to `/to-issues`.
 

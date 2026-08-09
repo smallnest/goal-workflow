@@ -76,7 +76,7 @@ All waves done → final summary
 
 ## Step 1: Locate & Decompose Input
 
-Accept any of: a free-form task description, a PRD/SPEC file, or an existing issue set (GitHub / local `.md` / iCafe).
+Accept any of: a free-form task description, a PRD/SPEC file, or an existing issue set (GitHub / local `.md`).
 
 - **PRD/SPEC** → reuse `/to-issues` decomposition rules (one node per User Story; split large, merge tiny).
 - **Existing issues** → each issue is a node; parse dependencies from issue bodies (`Depends on: #3`, `Dependencies: #3, #5`).
