@@ -1,0 +1,217 @@
+<!doctype html>
+<!--
+  ============================================================================
+  设计文档 HTML 模板（house style）—— design-it skill 的核心资产
+  用法：复制本文件 → 改标题/TOC/各 <section> 内容 → 保存为 docs/<需求名>.html
+  规则见同目录 SKILL.md。务必保留 <style> 原样（这是"同一套 HTML"的来源）。
+  占位符：{{...}} 全部替换；<!-- REPEAT --> 标注可按需复制的块。
+  ============================================================================
+-->
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{PROJECT}} · {{FEATURE}} — 设计文档</title>
+<style>
+  :root{
+    --old:#b45309; --old-bg:#fef3c7; --old-line:#f59e0b;   /* 复用/老服务 */
+    --new:#1d4ed8; --new-bg:#dbeafe; --new-line:#3b82f6;   /* 本次新增 */
+    --infra:#047857; --infra-bg:#d1fae5;                    /* 存储 */
+    --ext:#475569; --ext-bg:#e2e8f0;                        /* 外部依赖 */
+    --mq:#7c3aed; --mq-bg:#f3e8ff;                          /* 消息队列 */
+    --ink:#0f172a; --muted:#64748b; --border:#e2e8f0; --bg:#f8fafc; --accent:#4f46e5;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;color:var(--ink);background:var(--bg);line-height:1.65;font-size:15px}
+  code{font-family:"SF Mono",ui-monospace,"JetBrains Mono",Menlo,Consolas,monospace;background:#eef2ff;color:#3730a3;padding:1px 6px;border-radius:4px;font-size:13px}
+  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+  main{max-width:1040px;margin:0 auto;padding:36px 40px 120px}
+  header.top{border-bottom:2px solid var(--border);padding-bottom:16px;margin-bottom:8px}
+  header.top h1{font-size:25px;margin:0 0 6px}
+  header.top .sub{color:var(--muted);font-size:13.5px}
+  section{margin-bottom:48px;scroll-margin-top:20px}
+  h2{font-size:22px;margin:34px 0 6px;padding-bottom:9px;border-bottom:2px solid var(--border)}
+  h3{font-size:17px;margin:26px 0 8px}
+  .lead{color:var(--muted);font-size:14px;margin:0 0 16px;border-left:3px solid var(--accent);padding:6px 14px;background:#fff}
+  p{margin:10px 0}
+  nav.toc{background:#fff;border:1px solid var(--border);border-radius:10px;padding:12px 18px;margin:14px 0;font-size:13.5px;columns:2}
+  nav.toc a{display:block;padding:2px 0}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:13.5px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+  th,td{border:1px solid var(--border);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:#f1f5f9;font-weight:600}
+  tr:nth-child(even) td{background:#fbfcfe}
+  td code,th code{background:#f1f5f9;padding:1px 5px;border-radius:4px;font-size:12.5px}
+  .note{background:#fff7ed;border:1px solid #fed7aa;border-left:4px solid var(--old);padding:10px 14px;border-radius:6px;margin:14px 0;font-size:13.5px}
+  .tip{background:#eff6ff;border:1px solid #bfdbfe;border-left:4px solid var(--new);padding:10px 14px;border-radius:6px;margin:14px 0;font-size:13.5px}
+  .warn{background:#fef2f2;border:1px solid #fecaca;border-left:4px solid #dc2626;padding:10px 14px;border-radius:6px;margin:14px 0;font-size:13.5px}
+  figure{margin:18px 0;background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px}
+  figure svg{display:block;width:100%;height:auto}
+  figcaption{font-size:12.5px;color:var(--muted);margin-top:8px;text-align:center}
+  .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;margin:8px 0 0}
+  .legend span{display:inline-flex;align-items:center;gap:6px}
+  .legend i{width:13px;height:13px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.15)}
+  .pill{display:inline-block;font-size:11px;font-weight:600;padding:1px 8px;border-radius:999px}
+  .pill.old{background:var(--old-bg);color:var(--old)} .pill.new{background:var(--new-bg);color:var(--new)}
+  .pill.infra{background:var(--infra-bg);color:var(--infra)} .pill.mq{background:var(--mq-bg);color:var(--mq)}
+  .pill.todo{background:#fef2f2;color:#dc2626;border:1px solid #fecaca}
+  .pill.prod{background:#faf5ff;color:#7c3aed;border:1px solid #e9d5ff}
+  .pill.tech{background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc}
+  .pill.done{background:#dcfce7;color:#15803d;border:1px solid #86efac}
+  /* 待确认清单容器（可选：橙色）*/
+  .todo-box{background:#fff7ed;border:2px solid #fdba74;border-radius:10px;padding:4px 18px 14px;margin:16px 0}
+  .todo-box h2{border:none;color:#c2410c}
+  tr.q-prod td:first-child{border-left:3px solid #7c3aed}
+  tr.q-tech td:first-child{border-left:3px solid #0e7490}
+  /* 已对齐结论容器（可选：绿色）*/
+  .done-box{background:#f0fdf4;border:2px solid #86efac;border-radius:10px;padding:4px 18px 14px;margin:16px 0}
+  .done-box h2{border:none;color:#15803d}
+  tr.a-prod td:first-child{border-left:3px solid #7c3aed}
+  tr.a-tech td:first-child{border-left:3px solid #0e7490}
+  svg text{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  .svg-t{font-size:12.5px;fill:var(--ink)} .svg-s{font-size:11px;fill:var(--muted)}
+  .svg-title{font-size:13px;font-weight:700}
+  /* ↓↓↓ 可选：产品视觉稿 mock（如 UI 弹窗）。不需要就整段删除。 */
+</style>
+</head>
+<body>
+<main>
+
+<header class="top">
+  <h1>{{PROJECT}} · {{FEATURE}} — 设计文档</h1>
+  <div class="sub"><strong>{{一句话定位：本页是什么、是否唯一维护版本}}</strong> · 源需求：{{链接/wiki}} · {{日期}}</div>
+</header>
+
+<!-- 目录：每个 <a href="#id"> 必须对应一个 <section id="id">，双向不缺（SKILL.md 的必检项） -->
+<nav class="toc">
+  <a href="#rules">1 · {{业务规则速览}}</a>
+  <a href="#overview">2 · {{组件架构总览}}</a>
+  <a href="#flow">3 · {{关键时序}}</a>
+  <a href="#data">4 · {{数据模型}}</a>
+  <a href="#contract">5 · {{接口/推送契约}}</a>
+  <a href="#changes">6 · {{新增/改造清单}}</a>
+  <a href="#resilience">7 · {{幂等与降级}}</a>
+  <a href="#aligned" style="color:#15803d;font-weight:700">✅ {{已对齐结论}}</a>
+  <a href="#testcases">8 · {{测试用例}}</a>
+  <a href="#codeindex">9 · {{相关代码索引}}</a>
+  <a href="#changelog">10 · {{变更记录}}</a>
+  <!-- REPEAT：按需增删条目 -->
+</nav>
+
+<!-- 图例：仅当文中有架构图/时序图时保留；颜色语义与 :root 变量一致 -->
+<div class="legend">
+  <span><i style="background:var(--new-bg);border-color:var(--new)"></i> 本次新增</span>
+  <span><i style="background:var(--old-bg);border-color:var(--old)"></i> 复用老服务</span>
+  <span><i style="background:var(--infra-bg);border-color:var(--infra)"></i> 存储</span>
+  <span><i style="background:var(--mq-bg);border-color:var(--mq)"></i> 消息队列</span>
+  <span><i style="background:var(--ext-bg);border-color:var(--ext)"></i> 外部依赖</span>
+</div>
+
+<!-- 已对齐结论：把跨团队/产品拍板的口径锁在最前面（可选但强烈建议） -->
+<section id="aligned" class="done-box">
+  <h2>✅ {{已对齐结论}}</h2>
+  <p class="lead">{{一段话总结锁定的核心模型；关键取值用 <code>…</code> 高亮}}。类别：<span class="pill prod">产品</span> / <span class="pill tech">跨团队</span>。</p>
+  <table>
+    <tr><th>#</th><th>议题</th><th>结论</th><th>类别</th></tr>
+    <tr class="a-prod"><td>1</td><td>{{议题}}</td><td>{{锁定结论}}</td><td><span class="pill prod">产品</span></td></tr>
+    <!-- REPEAT tr -->
+  </table>
+</section>
+
+<!-- ==================== 正文各节 ==================== -->
+
+<section id="rules">
+  <h2>1 · {{业务规则速览}}</h2>
+  <p class="lead">{{本节导语：一句话说清这节回答什么问题}}</p>
+  <table>
+    <tr><th>{{列}}</th><th>{{列}}</th></tr>
+    <tr><td>{{值}}</td><td>{{值}}</td></tr>
+  </table>
+  <div class="note"><strong>要点</strong>：{{补充说明/易错点}}</div>
+</section>
+
+<section id="overview">
+  <h2>2 · {{组件架构总览}}</h2>
+  <p class="lead">{{导语}}</p>
+  <!-- 架构/时序图：手绘 SVG。文字用 .svg-t/.svg-s/.svg-title；配色用 :root 变量。 -->
+  <figure>
+    <svg viewBox="0 0 800 200" role="img" aria-label="{{图说明}}">
+      <rect x="30" y="60" width="150" height="60" rx="8" fill="var(--new-bg)" stroke="var(--new)"/>
+      <text x="105" y="95" text-anchor="middle" class="svg-t">{{组件名}}</text>
+      <!-- REPEAT 节点 / 连线 -->
+    </svg>
+    <figcaption>{{图注}}</figcaption>
+  </figure>
+</section>
+
+<section id="flow">
+  <h2>3 · {{关键时序}}</h2>
+  <p class="lead">{{导语}}</p>
+  <!-- 代码/SQL/YAML：统一用下面这串 <pre> style。块内 < > & 必须转义为 &lt; &gt; &amp; -->
+  <pre style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:12.5px;line-height:1.6;white-space:pre">{{代码 / 伪代码 / SQL，已转义}}</pre>
+  <div class="tip"><strong>提示</strong>：{{正向补充}}</div>
+</section>
+
+<section id="data">
+  <h2>4 · {{数据模型}}</h2>
+  <p class="lead">{{导语}}</p>
+  <pre style="background:#f8fafc;border:1px solid var(--border);border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:12.5px;line-height:1.6;white-space:pre">{{DDL，已转义}}</pre>
+</section>
+
+<section id="contract">
+  <h2>5 · {{接口/推送契约}}</h2>
+  <p class="lead">{{导语}}</p>
+  <table>
+    <tr><th>字段</th><th>类型</th><th>说明</th></tr>
+    <tr><td><code>{{field}}</code></td><td>{{type}}</td><td>{{desc}}</td></tr>
+  </table>
+</section>
+
+<section id="changes">
+  <h2>6 · {{新增/改造清单}}</h2>
+  <p class="lead">{{导语}}</p>
+  <table>
+    <tr><th>项目</th><th>改动</th><th>类型</th></tr>
+    <tr><td><code>{{path}}</code></td><td>{{what}}</td><td><span class="pill new">新增</span></td></tr>
+  </table>
+</section>
+
+<section id="resilience">
+  <h2>7 · {{幂等与降级}}</h2>
+  <p class="lead">{{导语}}</p>
+  <div class="warn"><strong>风险</strong>：{{失败模式}} → <strong>缓解</strong>：{{措施}}</div>
+</section>
+
+<section id="testcases">
+  <h2>8 · {{测试用例}}</h2>
+  <table>
+    <tr><th>用例</th><th>前置</th><th>步骤</th><th>预期</th></tr>
+    <tr><td>TC-001</td><td>{{前置}}</td><td>{{步骤}}</td><td>{{预期}}</td></tr>
+  </table>
+</section>
+
+<section id="codeindex">
+  <h2>9 · {{相关代码索引}}</h2>
+  <p class="lead">{{导语：位点必须来自真实代码库，file:line 可点}}</p>
+  <table>
+    <tr><th>项目</th><th>路径</th><th>用途</th></tr>
+    <tr><td><code>{{repo}}</code></td><td><code>{{path:line}}</code></td><td>{{用途}}</td></tr>
+  </table>
+</section>
+
+<section id="changelog">
+  <h2>10 · {{变更记录}}</h2>
+  <div class="note"><strong>{{日期 · 版本}}</strong>：
+    <ul style="margin:8px 0 0 18px;line-height:1.8">
+      <li>{{变更点}}</li>
+    </ul>
+  </div>
+</section>
+
+<footer style="color:var(--muted);font-size:12.5px;margin-top:24px;border-top:1px solid var(--border);padding-top:14px">
+  {{一句话收尾：本页定位 + 关键锁定取值}}
+</footer>
+
+</main>
+</body>
+</html>
