@@ -93,12 +93,33 @@ gh pr merge --squash --delete-branch
 
 ### Step 5: 添加实现总结评论
 
-PR 合入后，始终在 Issue 上添加实现总结评论，方便后续直接从 Issue 回溯代码变更。
+PR 合入 / Issue 关闭时，始终在 Issue 上添加实现总结评论，方便后续直接从 Issue 回溯设计决策与代码变更。
+
+参考 `note-it` 的四类结构组织总结内容：**Design Decisions（设计决策）**、**Deviations（偏离）**、**Tradeoffs（权衡）**、**Open Questions（待确认）**。某一类无内容时写 `None` 并简要说明。
 
 ```bash
 gh issue comment {issue-number} --body "$(cat <<'EOF'
 ## 实现总结
-- **核心变更**：{从 PR body 提取的实现摘要}
+
+**核心变更**
+- {从 PR body Summary 提取的实现摘要，3-5 条 bullet}
+
+**实现亮点（Highlights）**
+- {值得强调的技术亮点：性能优化、优雅设计、复用抽象、关键测试覆盖等}，或 None
+
+**设计决策（Design Decisions）**
+- {spec 模糊/未定处所做的选择及理由}，或 None
+
+**偏离（Deviations）**
+- {有意偏离 spec 之处：spec 怎么说 → 实际怎么做 → 为什么}，或 None
+
+**权衡（Tradeoffs）**
+- {考虑过的备选方案及最终选择的原因}，或 None
+
+**待确认（Open Questions）**
+- {需用户确认的假设或后续跟进项}，或 None
+
+---
 - **PR**: #{pr-number}
 - **Commit**: {hash}
 EOF
@@ -107,8 +128,11 @@ EOF
 
 **关键规则：**
 - 无论是 auto-close 还是手动 close，都必须添加此评论
-- 评论内容从 PR body 的 Summary 部分提取，保持简洁（3-5 条 bullet）
+- 参考 `note-it` 的四类结构（设计决策 / 偏离 / 权衡 / 待确认）；某类无内容写 `None`
+- 「实现亮点」提炼本次实现最值得关注的技术点（性能、设计、复用、测试等），无则写 `None`
+- 核心变更从 PR body 的 Summary 部分提取，保持简洁（3-5 条 bullet）
 - 附加 PR 编号和 commit hash，方便直接跳转
+- 若已通过 `/note-it` 生成 `docs/issue#XXXX.html`，可直接复用其四类内容，并在末尾附上该文件链接
 
 ### Step 6: 手动关闭 Issue（仅当未自动关闭时）
 
@@ -165,11 +189,30 @@ EOF
 gh pr checks
 gh pr merge --squash --delete-branch
 
-# 添加实现总结评论
+# 添加实现总结评论（参考 note-it 四类结构）
 gh issue comment 42 --body "$(cat <<'EOF'
 ## 实现总结
-- **核心变更**：Define Case struct with YAML frontmatter + Markdown body
-- **核心变更**：Implement WriteCase/ReadCase/ListCases/UpdateCase
+
+**核心变更**
+- Define Case struct with YAML frontmatter + Markdown body
+- Implement WriteCase/ReadCase/ListCases/UpdateCase
+
+**实现亮点（Highlights）**
+- 单文件自包含存储，读写无需外部索引，测试覆盖率 100%
+
+**设计决策（Design Decisions）**
+- Markdown body 与 YAML frontmatter 分离存储，便于人工编辑与 diff
+
+**偏离（Deviations）**
+- None — 实现与 spec 一致
+
+**权衡（Tradeoffs）**
+- 选用 frontmatter 而非独立 JSON 元数据：单文件自包含，牺牲了少量解析性能
+
+**待确认（Open Questions）**
+- None
+
+---
 - **PR**: #43
 - **Commit**: abc1234
 EOF
