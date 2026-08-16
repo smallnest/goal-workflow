@@ -15,10 +15,10 @@ Analyze a codebase to find violations of software architecture principles, anti-
 ## The Job
 
 1. Understand the scope — ask what part of the project to analyze (full project, specific module, or recent changes)
-2. Scan the codebase using `find`, `grep`, and `Agent` (Explore subagent) to gather evidence
-3. Identify architectural smells and anti-patterns
+2. Scan the codebase using `find`, `grep`, and `Agent` (Explore subagent) to gather candidate signals and evidence
+3. Validate candidates against context, callers, history, workload, and measurements before confirming findings
 4. Generate a detailed markdown report saved to `tasks/smell-report-[timestamp].md`
-5. Present a summary of findings to the user
+5. Present a summary of confirmed findings and separate candidates to the user
 
 ---
 
@@ -55,6 +55,8 @@ Run these in parallel to gather evidence efficiently:
 7. **Complexity Scan:** Detect algorithmic complexity hotspots — nested loops, N+1 queries, repeated scans, sort-in-loop, expensive recomputation in render paths
 
 ### Key Heuristics
+
+Heuristics are **candidate signals, not findings**. A line-count, nesting, naming, or Big-O match must be validated against the code's responsibility, callers, change history, workload, and intentional constraints. Do not assign severity from a threshold alone.
 
 | Category | Smell | Detection Heuristic |
 |----------|-------|-------------------|
@@ -121,6 +123,41 @@ Run these in parallel to gather evidence efficiently:
 
 ## Step 3: Report Generation
 
+### Finding Identity and Evidence
+
+Process every candidate in three stages:
+
+1. **Candidate detection:** static patterns, file metrics, and dependency scans produce candidates only.
+2. **Context validation:** read the implementation and relevant callers; check change frequency, input size, runtime frequency, framework constraints, generated/vendor status, and existing mitigations.
+3. **Finding confirmation:** merge candidates with the same root cause, affected path, failure/change scenario, and remediation direction into one finding.
+
+Count findings by independent root cause, never by the number of principles they implicate. Use one **Primary principle** and optional **Related principles**. `SOLID` is an umbrella label; use `SRP`, `OCP`, or `DIP` as the primary label when the evidence supports a specific lens, without also creating a separate SOLID finding.
+
+### Canonical 11-Principle Matrix
+
+| Principle | Confirming evidence | Common false positive / constraint |
+|-----------|---------------------|------------------------------------|
+| **SOLID** | A design problem spans multiple SOLID lenses or no narrower lens is reliable | Do not duplicate a specific SRP/OCP/DIP finding |
+| **DRY** | The same business rule or knowledge must change in multiple places | Similar syntax that is expected to evolve independently |
+| **KISS** | Extra layers, indirection, or machinery add cost without observable leverage | A small abstraction that removes real complexity |
+| **YAGNI** | Unused extension points, parameters, adapters, or speculative requirements | A tested seam required by an existing boundary or change |
+| **SRP** | Multiple independent reasons to change, supported by responsibilities or change history | File size or method count alone |
+| **Open/Closed (OCP)** | Adding a known variant repeatedly modifies stable branching logic | One simple, local conditional |
+| **Dependency Inversion (DIP)** | High-level policy directly depends on concrete infrastructure, harming replacement or testing | Adding an interface for a single stable implementation |
+| **Composition** | Inheritance causes unwanted coupling, refused behavior, or inseparable variation axes | Replacing every valid inheritance relationship mechanically |
+| **Separation of Concerns** | Business policy, I/O, presentation, or persistence concerns leak across boundaries | A deliberately thin boundary adapter |
+| **Fail Fast** | Invalid input, state, or dependency propagates until a distant operation fails | Intentional aggregation, retry, or deferred validation semantics |
+| **Measure First** | A performance, scale, or optimization claim lacks a baseline or representative workload | Static complexity reported as a measured bottleneck |
+
+For each confirmed finding, record evidence strength (`Measured`, `Observed`, or `Inferred`) separately from confidence (`High`, `Medium`, or `Low/Candidate`). Evidence strength does not imply severity.
+
+### Severity Rubric
+
+- **Critical:** correctness, reliability, security, data consistency, or measured system-level impact; normally requires high confidence.
+- **Warning:** clear reach or repeated change/runtime cost with a concrete maintenance or runtime consequence.
+- **Suggestion:** local, low-frequency, or limited-impact improvement with evidence.
+- **Candidate requiring measurement:** static signal with unknown impact; exclude it from severity totals and put it in a separate report section.
+
 Generate the report in this structure:
 
 ```markdown
@@ -135,7 +172,7 @@ Generate the report in this structure:
 
 ## Executive Summary
 
-[2-3 paragraph summary: architectural style detected, overall health assessment, and top 3-5 critical issues]
+[2-3 paragraph summary of confirmed findings only: architectural style detected, overall health assessment, and top 3-5 critical issues. Mention candidates separately.]
 
 ---
 
@@ -165,6 +202,10 @@ Generate the report in this structure:
 
 [Minor improvements that would increase quality]
 
+### Candidates Requiring Measurement
+
+[Static candidates whose runtime impact, change frequency, or workload is not yet established. These do not count toward severity totals.]
+
 ---
 
 ## Detailed Findings
@@ -174,11 +215,17 @@ Generate the report in this structure:
 - **Category:** [Architecture/Coupling/Cohesion/Design/Code/Testing/Naming/Complexity]
 - **Severity:** 🔴 Critical / 🟡 Warning / 🔵 Suggestion
 - **Anti-Pattern:** [Name of anti-pattern]
-- **Location:** [file:line references]
-- **Principle Violated:** [SOLID/DRY/KISS/etc.]
+- **Location:** [file:line references and relevant callers]
+- **Confidence:** [High/Medium]
+- **Evidence strength:** [Measured/Observed/Inferred]
+- **Failure or change scenario:** [Concrete scenario]
+- **Primary principle:** [Most specific principle]
+- **Related principles:** [Explanatory only; do not count separately]
 - **Description:** [What was found and why it's a problem]
-- **Evidence:** [Code snippet or structure description]
-- **Recommendation:** [Specific fix, with refactoring approach]
+- **Evidence:** [Code, dependency, history, or measurement]
+- **Measured/observed impact:** [Reach, frequency, consequence, or baseline]
+- **Recommendation:** [Smallest justified refactoring]
+- **Verification:** [How to prove behavior and impact]
 
 ---
 
@@ -198,6 +245,8 @@ Generate the report in this structure:
 
 ## Smell Distribution
 
+Count only deduplicated confirmed findings by their primary category. Related principles and candidates do not affect these totals.
+
 | Category | Count | Critical | Warning | Suggestion |
 |----------|-------|----------|---------|------------|
 | Architecture | [N] | [N] | [N] | [N] |
@@ -212,6 +261,8 @@ Generate the report in this structure:
 ---
 
 ## Refactoring Roadmap
+
+Order work by impact, confidence, dependency sequence, and verification cost—not by principle count or smell name. Put only high-confidence, verifiable findings in Immediate Actions; for candidates, recommend the next measurement instead of a rewrite.
 
 ### Immediate Actions (This Sprint)
 1. [Actionable fix 1]
@@ -511,7 +562,14 @@ An instance field that is only set/used in certain circumstances and empty other
 
 ### Complexity Smells (Algorithmic Anti-Patterns)
 
-Complexity smells indicate code whose runtime grows inefficiently with input size. These are not mere "micro-optimizations" — they are algorithmic choices that cause real performance degradation at scale.
+A static complexity pattern is a candidate, not proof of a bottleneck. Apply **Measure First**:
+
+1. Establish actual input size, call frequency, I/O latency, and whether the path is hot.
+2. Prefer a profiler, representative benchmark, query log, trace, or explicit operation count.
+3. Promote the candidate to a finding only when the workload and impact justify it.
+4. Re-measure the same workload after a fix; without a baseline, do not claim a performance improvement.
+
+For every complexity candidate, state **what to measure**, **when it becomes a finding**, and **when not to flag it**. Keep the Big-O analysis and correctness checks below, but do not infer severity from syntax alone.
 
 #### Nested Loops (O(n^2) and Worse)
 Two or more loops nested inside each other, producing polynomial complexity.
@@ -600,17 +658,20 @@ Using a suboptimal data structure for the access pattern.
 
 ### Design Principle Violations
 
-#### SOLID Violations Checklist
-- **S (SRP):** Class/module has multiple reasons to change → God Object smell
-- **O (OCP):** switch/if-else chains on type codes → Strategy/Polymorphism needed
-- **L (LSP):** Subclass changes behavior of base class unexpectedly → Check pre/post conditions
-- **I (ISP):** Fat interfaces with methods clients don't use → Split interfaces
-- **D (DIP):** High-level modules depending on low-level details → Introduce abstractions
+Use the canonical matrix in Step 3 as the reporting contract. These design checks refine candidate detection; they do not create one finding per principle.
 
-#### Other Principle Violations
-- **DRY Violation:** Same knowledge repeated in multiple places
-- **KISS Violation:** Over-engineered solutions; premature abstractions
-- **YAGNI Violation:** Code for hypothetical future requirements; unused abstractions
+- **SOLID umbrella:** Use only when multiple SOLID concerns share one root cause or a narrower lens is not reliable.
+- **SRP:** Confirm independent reasons to change; size alone is insufficient.
+- **OCP:** Confirm repeated edits for a real variant; do not replace a simple local conditional with speculative polymorphism.
+- **LSP:** Subtypes must preserve the base contract's preconditions, postconditions, and invariants. Report as `SOLID/LSP`.
+- **ISP:** Confirm clients depend on methods they do not use. Report as `SOLID/ISP`.
+- **DIP:** Confirm high-level policy is coupled to concrete mechanism in a way that harms testing or replacement; a single implementation does not automatically justify an interface.
+- **DRY:** Deduplicate shared knowledge, not coincidentally similar syntax.
+- **KISS and YAGNI:** Reject abstractions whose future variation or leverage is not demonstrated.
+- **Composition:** Prefer it when inheritance exposes unwanted behavior or binds independent variation axes—not as a mechanical rule.
+- **Separation of Concerns:** Confirm policy, presentation, persistence, or I/O leakage across an intended boundary.
+- **Fail Fast:** Detect invalid state near its source while preserving established error, retry, transaction, and cleanup semantics.
+- **Measure First:** Lower unmeasured optimization claims to candidates instead of reporting a second "principle violation."
 
 #### Object-Orientation Abusers (from Fowler / refactoring.guru)
 

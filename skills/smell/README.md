@@ -6,10 +6,12 @@ Analyze a codebase to find violations of software architecture principles, anti-
 
 - Scans project structure for architectural anti-patterns (Big Ball of Mud, Distributed Monolith, etc.)
 - Detects coupling and cohesion issues (God Objects, circular dependencies, feature envy)
-- Identifies design principle violations (SOLID, DRY, KISS, YAGNI)
+- Evaluates confirmed issues through 11 principles: SOLID, DRY, KISS, YAGNI, SRP, Open/Closed, Dependency Inversion, Composition, Separation of Concerns, Fail Fast, and Measure First
+- Treats static rules as candidates, then validates context, evidence, impact, and confidence before reporting
+- Deduplicates one root cause into one finding, with one primary principle and explanatory related principles
 - Finds code-level smells (Long Method, Primitive Obsession, Magic Numbers)
 - Assesses testing health (missing tests, test-implementation coupling)
-- Outputs a structured markdown report with severity levels and refactoring roadmap
+- Outputs a structured markdown report with severity, evidence, confidence, verification, and refactoring roadmap
 
 ## Knowledge Base
 
@@ -18,7 +20,9 @@ Built on architectural knowledge from:
 - Big Ball of Mud (Foote & Yoder, 1997)
 - Clean Architecture, Onion Architecture, Hexagonal Architecture
 - Domain-Driven Design, CQRS, Event-Driven Architecture
-- SOLID, DRY, KISS, YAGNI, GRASP principles
+- SOLID (with explicit SRP/OCP/DIP lenses), DRY, KISS, YAGNI
+- Composition, Separation of Concerns, Fail Fast, Measure First
+- GRASP principles
 
 ## Usage
 

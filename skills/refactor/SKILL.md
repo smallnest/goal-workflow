@@ -60,6 +60,35 @@ Never mix refactoring with feature changes. Never refactor two unrelated things 
 
 ---
 
+## Refactoring Decision Rubric
+
+Principles guide judgment; they are not independent reasons to rewrite code. Before choosing a Fowler technique, record one decision card:
+
+| Field | Required answer |
+|-------|-----------------|
+| **Primary smell** | One root cause, not one entry per principle |
+| **Evidence** | Location, behavior, callers, change history, or measurement |
+| **Primary principle** | The most specific applicable principle |
+| **Related principles** | Explanatory labels only; do not count separately |
+| **Expected impact** | Observable reduction in change spread, cognitive load, duplicated knowledge, coupling, delayed failure, or measured runtime cost |
+| **Smallest refactoring** | The least invasive Fowler technique that addresses the root cause |
+| **Baseline / success condition** | How behavior preservation and the expected benefit will be verified |
+
+Use these four decision lenses:
+
+| Lens | Principles | Questions to answer |
+|------|------------|---------------------|
+| **Responsibility and dependencies** | SOLID, SRP, OCP, DIP, Separation of Concerns | Are reasons to change mixed? Does a real new variant repeatedly modify stable logic? Does high-level policy depend on concrete mechanism? Do concerns leak across a boundary? |
+| **Reuse and structure** | DRY, Composition | Is the same knowledge duplicated, or merely similar syntax? Would composition localize a real variation better than inheritance? |
+| **Simplicity and scope** | KISS, YAGNI | Is the proposed structure simpler for today's problem? Is every abstraction backed by an existing variation or boundary? |
+| **Runtime and feedback** | Fail Fast, Measure First | Can invalid state fail nearer its source without changing error semantics? What baseline proves the problem and the result? |
+
+`SOLID` is an umbrella. When evidence supports `SRP`, `OCP`, or `DIP`, use that specific lens and do not create a second SOLID issue. LSP and ISP may be labeled `SOLID/LSP` and `SOLID/ISP`. DRY means shared knowledge, not all similar code. Composition is preferred when inheritance creates real coupling, not by default. OCP and DIP never justify speculative layers that violate KISS or YAGNI.
+
+Numeric thresholds in this skill—line counts, parameter counts, method counts, and nesting depth—are **context-dependent candidate indicators**. Confirm mixed responsibilities, cognitive cost, repeated change, duplicated knowledge, or measured runtime impact before acting.
+
+---
+
 ## Code Smells Catalog
 
 Based on Fowler's taxonomy. Before refactoring, identify which smell is present.
@@ -68,10 +97,10 @@ Based on Fowler's taxonomy. Before refactoring, identify which smell is present.
 
 | Smell | Description | Primary Refactoring |
 |-------|-------------|-------------------|
-| **Long Method** | Method > 10-15 lines, doing multiple things | Extract Method, Replace Temp with Query |
-| **Large Class** | Class with too many fields/methods (God Object) | Extract Class, Extract Subclass |
+| **Long Method** | Candidate: method > 10-15 lines; confirm mixed responsibilities or cognitive cost | Extract Method, Replace Temp with Query |
+| **Large Class** | Candidate: many fields/methods; confirm independent reasons to change | Extract Class, Extract Subclass |
 | **Primitive Obsession** | Using primitives instead of small objects | Replace Data Value with Object, Replace Type Code with Class |
-| **Long Parameter List** | Method with > 3-4 parameters | Introduce Parameter Object, Preserve Whole Object |
+| **Long Parameter List** | Candidate: > 3-4 parameters; confirm a missing concept or recurring data clump | Introduce Parameter Object, Preserve Whole Object |
 | **Data Clumps** | Same group of data appearing together | Extract Class, Introduce Parameter Object |
 
 ### Object-Orientation Abusers
@@ -461,53 +490,64 @@ When a delegating class needs access to all of the delegate's behavior.
 ### Phase 1: Prepare
 
 1. **Write characterization tests** if they don't exist. These capture current behavior — they don't need to be elegant, just comprehensive enough to catch regressions.
-2. **Commit** current state. Start from a clean working tree.
-3. **Create a branch** for the refactoring. Keep it separate from feature work.
+2. **Record a baseline** for the claimed problem: representative behavior, change spread, relevant callers, or a benchmark/profile/query count for performance work. Without a performance baseline, describe a performance idea as a candidate, not a measured improvement.
+3. **Commit** current state. Start from a clean working tree.
+4. **Create a branch** for the refactoring. Keep it separate from feature work.
 
 ### Phase 2: Identify
 
-1. **Smell the code.** Use the smell catalog above to classify what's wrong.
-2. **Understand the code.** Read it thoroughly. You must understand what it does before changing it.
-3. **Choose the right refactoring.** Pick from the technique catalog. Know what the result looks like before you start.
+1. **Smell the code.** Use the smell catalog above to classify what's wrong, treating thresholds as candidate signals.
+2. **Understand the code.** Read it thoroughly, map relevant callers and dependencies, and identify the concrete failure or change scenario.
+3. **Choose a primary principle.** Attach related principles only as explanations; do not split one root cause into multiple findings.
+4. **Check counter-pressures.** Confirm that DRY will not create a false abstraction, that OCP/DIP are not speculative, that SRP will not create pass-through fragments, and that composition addresses real inheritance coupling.
+5. **Choose the right refactoring.** Pick the smallest technique from the catalog and define how the baseline and behavior will be checked.
 
 ### Phase 3: Refactor (Small Steps)
 
 For each step:
-1. **Make one small change.** One refactoring technique at a time.
+1. **Make one small change.** Address one verifiable part of the primary smell; do not bundle unrelated principle cleanups.
 2. **Compile.** The code should compile after every change.
 3. **Run tests.** All tests must pass. If they don't, you've changed behavior.
-4. **Commit.** Create a commit with a message like `refactor: extract validateEmail method`.
+4. **Check the seam.** A new interface, adapter, or indirection must remove real caller complexity or support an existing variation; otherwise keep the simpler design.
+5. **Commit.** Create a commit with a message like `refactor: extract validateEmail method`.
 
 Repeat until the smell is resolved.
 
 ### Phase 4: Verify
 
-1. **All tests pass.** Non-negotiable.
-2. **Manual check.** Briefly run the application or review the diff for unintended changes.
-3. **Performance.** Ensure no performance regression. Simple refactorings rarely cause them, but check.
+1. **Behavior.** All tests, type checks, compilation, and a manual smoke test pass.
+2. **Structure.** Compare dependency direction, relevant callers, duplicated knowledge, or change spread against the decision card.
+3. **Fail fast semantics.** If validation moved earlier, preserve error types/codes, aggregation, retry, transaction, and cleanup behavior.
+4. **Performance.** Re-run the same workload and environment when performance was part of the claim. Report the result and noise range; without a baseline, only report that no obvious regression was observed.
+5. **Diff review.** Check for unintended changes and confirm the success condition is met.
 
 ### Phase 5: Clean Up
 
 1. **Remove stale comments.** If a refactoring made a comment obvious, delete the comment.
 2. **Check for dead code.** After refactorings, unused code may emerge.
-3. **Final commit.** Summarize the refactoring sequence.
+3. **Remove speculative seams.** Delete single-implementation interfaces, pass-through modules, or unused extension points that add no current leverage.
+4. **Final commit.** Summarize the refactoring sequence.
 
 ---
 
 ## Refactoring Checklist
 
 ### Code Quality
-- [ ] Functions are small (< 20 lines preferred, < 50 lines max)
-- [ ] Each function does one thing (single responsibility)
-- [ ] No duplicated code (DRY)
+- [ ] One primary smell/root cause is being addressed; related principles are not counted as separate work
+- [ ] Evidence, expected impact, baseline, and success condition are recorded
+- [ ] Functions are appropriately sized for their context (line counts are candidate signals, not limits)
+- [ ] Each function does one thing when that improves responsibility boundaries (SRP)
+- [ ] No duplicated knowledge (DRY), without merging independently changing code
 - [ ] Names describe what, not how
 - [ ] No magic numbers or strings
 - [ ] Dead code removed
 
 ### Structure
-- [ ] Related code is grouped together
+- [ ] Related code is grouped together and concerns do not leak across intended boundaries
 - [ ] Module boundaries are clear
-- [ ] Dependencies flow in one direction (no cycles)
+- [ ] Dependencies flow in one direction (no cycles); DIP abstractions correspond to real boundaries
+- [ ] OCP/DIP changes do not introduce speculative layers that violate KISS/YAGNI
+- [ ] Composition is preferred only where it reduces real inheritance coupling
 - [ ] No circular dependencies
 
 ### Conditionals
@@ -525,8 +565,11 @@ Repeat until the smell is resolved.
 ### Testing
 - [ ] Refactored code is tested
 - [ ] Edge cases are covered
+- [ ] Invalid input/state fails near its source where appropriate (Fail Fast)
+- [ ] Error, retry, transaction, and cleanup semantics remain unchanged
 - [ ] All tests pass after each step
 - [ ] Characterization tests capture pre-refactoring behavior
+- [ ] Performance claims have comparable before/after measurements
 
 ---
 
