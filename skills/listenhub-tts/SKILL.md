@@ -27,6 +27,39 @@ metadata:
 - **认证:** `Authorization: Bearer $LISTENHUB_API_KEY`（从环境变量读取）
 - **前置检查:** 调用任何 API 前先确认 `LISTENHUB_API_KEY` 环境变量已设置，未设置则提示用户配置
 
+ListenHub 是默认后端，并支持下文所述的全部三种模式。短文本、单音色场景也可以由用户明确选择 Atlas Cloud 后端。
+
+## 可选后端：Atlas Cloud
+
+仓库内置 `scripts/atlas_tts.py`，通过 Atlas Cloud 的 `xai/tts-v1` 模型生成短文本语音。该脚本不改变默认后端，也不支持 ListenHub 的多角色或长文本模式。
+
+- **Base URL:** `https://api.atlascloud.ai/api/v1`
+- **认证:** `Authorization: Bearer $ATLASCLOUD_API_KEY`
+- **提交接口:** `POST /model/generateAudio`
+- **结果接口:** `GET /model/prediction/{id}`
+- **安全默认:** 不带 `--execute` 时只预览请求，不访问网络；付费 POST 只提交一次，失败时不自动重试
+
+先预览将要提交的模型参数和输出路径：
+
+```bash
+python3 skills/listenhub-tts/scripts/atlas_tts.py \
+  --text "你好，欢迎使用 Atlas Cloud。" \
+  --language zh \
+  --output output.mp3
+```
+
+用户确认后，显式执行并轮询结果：
+
+```bash
+python3 skills/listenhub-tts/scripts/atlas_tts.py \
+  --text "你好，欢迎使用 Atlas Cloud。" \
+  --language zh \
+  --output output.mp3 \
+  --execute
+```
+
+脚本默认使用 `eve` 音色、`mp3`、`24000` Hz、`128000` bit rate 和 `1.0` 倍语速。可通过 `--voice-id`、`--codec`、`--sample-rate`、`--bit-rate`、`--speed` 调整；文本上限为 15,000 字符。输出文件必须位于当前工作目录内，且脚本不会覆盖已有文件。
+
 ## 音色选择流程
 
 ### 用户已明确指定音色
