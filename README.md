@@ -28,6 +28,7 @@ npx skills add smallnest/goal-workflow
 | `/loop-it` | Batch-implement all open Issues with checkpoint/resume |
 | `/goal` | Implement an Issue end-to-end (Claude Code built-in) |
 | `/review-it` | Automated code review with iterative fixes |
+| `/understand` | Turn fresh (AI-generated) changes into an interactive review webpage |
 | `/ship-it` | Commit, PR, merge, and close the Issue |
 | `/note-it` | Capture implementation notes per Issue |
 | `/humanize-it` | Remove AI traces from documents |

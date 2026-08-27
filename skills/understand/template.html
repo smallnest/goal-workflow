@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Understand · Code Review</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css">
+<style>
+  :root {
+    --paper: #F5F4EE;
+    --panel: #FBFAF7;
+    --panel-2: #FFFFFF;
+    --ink: #1F1E1B;
+    --muted: #6B6862;
+    --faint: #98948B;
+    --accent: #CC785C;
+    --accent-soft: #F1E4DD;
+    --border: #E7E2D6;
+    --border-strong: #DAD4C6;
+    --add-bg: #EAF5EC;
+    --add-ln: #D5EBDA;
+    --add-mark: #3C9A54;
+    --del-bg: #FBEBEA;
+    --del-ln: #F3D5D2;
+    --del-mark: #C1544B;
+    --ctx-bg: transparent;
+    --code-font: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    --ui-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font-family: var(--ui-font); font-size: 14px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  header.top {
+    padding: 16px 22px; border-bottom: 1px solid var(--border);
+    background: var(--panel); display: flex; flex-direction: column; gap: 6px;
+  }
+  header.top .row1 { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  header.top h1 { font-size: 17px; margin: 0; font-weight: 650; letter-spacing: .2px; }
+  header.top .dot { color: var(--accent); }
+  header.top .meta { color: var(--muted); font-size: 12.5px; }
+  header.top .meta code { font-family: var(--code-font); background: var(--accent-soft); color: #92503b; padding: 1px 6px; border-radius: 5px; }
+  header.top .summary { color: var(--muted); font-size: 13px; max-width: 900px; }
+  .counts { display: inline-flex; gap: 10px; align-items: center; font-size: 12.5px; }
+  .counts .add { color: var(--add-mark); }
+  .counts .del { color: var(--del-mark); }
+  .counts .files { color: var(--muted); }
+
+  .layout { display: grid; grid-template-columns: var(--tree-w, 300px) 6px minmax(0, 1fr); height: calc(100% - 66px); }
+
+  /* ---- left: file tree ---- */
+  aside.tree {
+    background: var(--panel);
+    overflow: auto; padding: 10px 8px;
+  }
+
+  /* 可拖动分隔条：调整左侧文件树宽度 */
+  .tree-resizer {
+    position: relative; cursor: col-resize; background: var(--border);
+    transition: background .12s;
+  }
+  .tree-resizer::before {
+    content: ""; position: absolute; top: 0; bottom: 0; left: -3px; right: -3px;
+  }
+  .tree-resizer:hover, .tree-resizer.dragging { background: var(--accent); }
+  body.col-resizing { cursor: col-resize; user-select: none; }
+  .tree .tree-title { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--faint); padding: 4px 10px 8px; }
+  .node { user-select: none; }
+  .node .label {
+    display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 7px;
+    cursor: pointer; white-space: nowrap; font-size: 13px;
+  }
+  .node .label:hover { background: #efece2; }
+  .node.file.selected > .label { background: var(--accent-soft); color: #7c4534; font-weight: 550; }
+  .node .caret { width: 12px; text-align: center; color: var(--faint); font-size: 10px; transition: transform .12s; }
+  .node.collapsed > .children { display: none; }
+  .node.collapsed > .label .caret { transform: rotate(-90deg); }
+  .node .children { margin-left: 12px; border-left: 1px solid var(--border); padding-left: 4px; }
+  .node .ic { width: 15px; text-align: center; opacity: .8; }
+  .node .name { overflow: hidden; text-overflow: ellipsis; }
+  .badge { margin-left: auto; font-size: 10px; font-weight: 700; width: 16px; height: 16px; line-height: 16px; text-align: center; border-radius: 4px; }
+  .badge.A { background: var(--add-ln); color: var(--add-mark); }
+  .badge.M { background: #E7E9F3; color: #5460a8; }
+  .badge.D { background: var(--del-ln); color: var(--del-mark); }
+  .badge.R { background: #F1E7CF; color: #9a7d33; }
+  .filestat { margin-left: 6px; font-size: 10.5px; font-family: var(--code-font); color: var(--faint); }
+  .filestat .a { color: var(--add-mark); }
+  .filestat .d { color: var(--del-mark); }
+
+  /* ---- right: content ---- */
+  main.content { overflow: hidden; display: flex; flex-direction: column; min-width: 0; }
+  .filebar {
+    padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--panel-2);
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .filebar .path { font-family: var(--code-font); font-size: 13px; font-weight: 600; }
+  .filebar .path .dir { color: var(--muted); font-weight: 400; }
+  .filebar .status-pill { font-size: 11px; padding: 2px 9px; border-radius: 20px; font-weight: 600; }
+  .status-pill.A { background: var(--add-ln); color: var(--add-mark); }
+  .status-pill.M { background: #E7E9F3; color: #5460a8; }
+  .status-pill.D { background: var(--del-ln); color: var(--del-mark); }
+  .status-pill.R { background: #F1E7CF; color: #9a7d33; }
+
+  .diffwrap { display: grid; grid-template-columns: minmax(0,1fr) 340px; flex: 1; overflow: hidden; }
+  .diff { overflow: auto; padding-bottom: 40px; }
+
+  .hunk-header {
+    font-family: var(--code-font); font-size: 12px; color: #7d7a72;
+    background: #efece2; padding: 4px 12px; border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border); position: sticky; left: 0;
+  }
+  .hunk-header .ctxinfo { color: var(--faint); margin-left: 10px; }
+
+  .row { display: grid; grid-template-columns: 48px 48px 20px minmax(0,1fr); font-family: var(--code-font); font-size: 12.5px; line-height: 1.55; }
+  .row .ln { text-align: right; padding: 0 8px; color: var(--faint); user-select: none; border-right: 1px solid var(--border); background: var(--panel); font-size: 11.5px; }
+  .row .sign { text-align: center; user-select: none; color: var(--faint); }
+  .row .code { padding: 0 12px; white-space: pre; overflow: visible; tab-size: 4; }
+  .row .code code { font-family: var(--code-font); background: none; padding: 0; }
+  .row.add { background: var(--add-bg); }
+  .row.add .ln { background: var(--add-ln); color: #4b7d59; }
+  .row.add .sign { color: var(--add-mark); }
+  .row.del { background: var(--del-bg); }
+  .row.del .ln { background: var(--del-ln); color: #9a5852; }
+  .row.del .sign { color: var(--del-mark); }
+  .row.ctx { background: var(--ctx-bg); }
+  .row.ctx .code { color: #45433d; }
+  .row.hasnote .ln.new, .row.hasnote .ln.old { position: relative; }
+  .row.hasnote { box-shadow: inset 3px 0 0 var(--accent); }
+  .row.flash { animation: flash 1.3s ease-out; }
+  @keyframes flash { 0% { background: #FBEAD9; } 100% { } }
+  /* 悬停边栏卡片时，diff 里对应范围整段高亮，并在首/末行画出范围括号 */
+  .row.notehi { background: #FBEAD9 !important; box-shadow: inset 3px 0 0 var(--accent); }
+  .row.notehi .ln { background: #F6DCC4 !important; color: #92503b !important; }
+  .row.note-top { box-shadow: inset 3px 0 0 var(--accent), inset 0 2px 0 var(--accent); }
+  .row.note-bottom { box-shadow: inset 3px 0 0 var(--accent), inset 0 -2px 0 var(--accent); }
+  .row.note-top.note-bottom { box-shadow: inset 3px 0 0 var(--accent), inset 0 2px 0 var(--accent), inset 0 -2px 0 var(--accent); }
+
+  /* ---- notes rail ---- */
+  aside.notes { border-left: 1px solid var(--border); background: var(--panel); overflow: auto; padding: 14px 14px 40px; }
+  .notes .file-summary {
+    background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 13px; margin-bottom: 14px; font-size: 13px; color: #43413b;
+  }
+  .notes .file-summary .h { font-size: 11px; text-transform: uppercase; letter-spacing: .6px; color: var(--accent); font-weight: 700; margin-bottom: 6px; }
+  .notes .rail-title { font-size: 11px; text-transform: uppercase; letter-spacing: .8px; color: var(--faint); margin: 4px 2px 10px; }
+  .note-card {
+    background: var(--panel-2); border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 9px; padding: 11px 12px; margin-bottom: 11px; cursor: pointer; transition: box-shadow .12s, transform .12s;
+  }
+  .note-card:hover { box-shadow: 0 3px 12px rgba(120,90,60,.12); transform: translateY(-1px); }
+  .note-card .req-tag {
+    display: inline-block; font-size: 11px; font-weight: 600; color: #7c4534;
+    background: var(--accent-soft); border-radius: 6px; padding: 2px 8px; margin-bottom: 8px;
+  }
+  .note-card .req-tag.inferred { background: #EDEAE0; color: #7a766c; }
+  .note-card .range-badge {
+    display: inline-flex; align-items: center; gap: 6px; font-family: var(--code-font);
+    font-size: 11px; font-weight: 650; color: #7c4534; background: var(--accent-soft);
+    border: 1px solid var(--border-strong); border-radius: 6px; padding: 2px 8px; margin-bottom: 8px;
+  }
+  .note-card .range-badge .side { opacity: .65; font-weight: 500; }
+  .note-card .snippet {
+    margin: 2px 0 9px; border: 1px solid var(--border); border-left: 2px solid var(--accent);
+    border-radius: 7px; background: #FBFAF7; overflow: hidden;
+  }
+  .note-card .snippet pre {
+    margin: 0; padding: 8px 10px; overflow: auto; max-height: 168px;
+    font-family: var(--code-font); font-size: 11.5px; line-height: 1.55; white-space: pre; tab-size: 4;
+  }
+  .note-card .snippet pre code { font-family: var(--code-font); background: none; padding: 0; }
+  .note-card .snippet .more { padding: 3px 10px 6px; font-size: 10.5px; color: var(--faint); border-top: 1px dashed var(--border); }
+  .note-card .expl { font-size: 13px; color: #3d3b35; }
+  .note-card .expl code { font-family: var(--code-font); background: #efece2; padding: 1px 4px; border-radius: 4px; font-size: 12px; }
+  .note-card .anchor-ref { margin-top: 8px; font-size: 11px; font-family: var(--code-font); color: var(--faint); display: flex; align-items: center; gap: 6px; }
+  .note-card .anchor-ref .jump { color: var(--accent); font-family: var(--ui-font); }
+  .notes .empty { color: var(--faint); font-size: 12.5px; padding: 8px 2px; }
+
+  .empty-state { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--faint); }
+
+  @media (max-width: 1080px) {
+    .diffwrap { grid-template-columns: minmax(0,1fr); }
+    aside.notes { display: none; }
+    body.show-notes .diffwrap { grid-template-columns: minmax(0,1fr) 320px; }
+    body.show-notes aside.notes { display: block; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="row1">
+    <h1><span class="dot">◆</span> <span id="title">Understand</span></h1>
+    <span class="counts"><span class="files" id="c-files"></span> <span class="add" id="c-add"></span> <span class="del" id="c-del"></span></span>
+    <span class="meta">对比基线 <code id="base"></code> · <span id="gen"></span></span>
+  </div>
+  <div class="summary" id="summary"></div>
+</header>
+
+<div class="layout">
+  <aside class="tree">
+    <div class="tree-title">变更文件</div>
+    <div id="tree"></div>
+  </aside>
+  <div class="tree-resizer" id="treeResizer" title="拖动调整宽度"></div>
+  <main class="content">
+    <div class="filebar" id="filebar"></div>
+    <div class="diffwrap">
+      <div class="diff" id="diff"></div>
+      <aside class="notes" id="notes"></aside>
+    </div>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script id="payload" type="application/json">__UNDERSTAND_PAYLOAD__</script>
+<script>
+(function () {
+  "use strict";
+  var DATA = JSON.parse(document.getElementById("payload").textContent);
+  if (window.Prism && Prism.plugins && Prism.plugins.autoloader) {
+    Prism.plugins.autoloader.languages_path = "https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/";
+  }
+
+  document.getElementById("title").textContent = DATA.title || "Understand";
+  document.getElementById("base").textContent = DATA.base || "—";
+  document.getElementById("gen").textContent = DATA.generatedAt || "";
+  document.getElementById("summary").textContent = DATA.summary || "";
+  var totAdd = 0, totDel = 0;
+  DATA.files.forEach(function (f) { totAdd += f.additions || 0; totDel += f.deletions || 0; });
+  document.getElementById("c-files").textContent = DATA.files.length + " 个文件";
+  document.getElementById("c-add").textContent = "+" + totAdd;
+  document.getElementById("c-del").textContent = "−" + totDel;
+
+  // ---------- build file tree ----------
+  var root = { dirs: {}, files: [] };
+  DATA.files.forEach(function (f, idx) {
+    var parts = f.path.split("/");
+    var node = root;
+    for (var i = 0; i < parts.length - 1; i++) {
+      var d = parts[i];
+      node.dirs[d] = node.dirs[d] || { dirs: {}, files: [] };
+      node = node.dirs[d];
+    }
+    node.files.push({ name: parts[parts.length - 1], idx: idx, file: f });
+  });
+
+  var treeEl = document.getElementById("tree");
+  function statBadge(f) {
+    var b = document.createElement("span");
+    b.className = "badge " + f.status;
+    b.textContent = f.status;
+    return b;
+  }
+  function renderDir(node, container, prefix) {
+    Object.keys(node.dirs).sort().forEach(function (name) {
+      var dn = document.createElement("div");
+      dn.className = "node dir";
+      var label = document.createElement("div");
+      label.className = "label";
+      label.innerHTML = '<span class="caret">▾</span><span class="ic">📁</span><span class="name">' + esc(name) + '</span>';
+      label.addEventListener("click", function () { dn.classList.toggle("collapsed"); });
+      dn.appendChild(label);
+      var children = document.createElement("div");
+      children.className = "children";
+      dn.appendChild(children);
+      container.appendChild(dn);
+      renderDir(node.dirs[name], children, prefix + name + "/");
+    });
+    node.files.sort(function (a, b) { return a.name.localeCompare(b.name); }).forEach(function (fo) {
+      var fn = document.createElement("div");
+      fn.className = "node file";
+      fn.dataset.idx = fo.idx;
+      var label = document.createElement("div");
+      label.className = "label";
+      var stat = '<span class="filestat"><span class="a">+' + (fo.file.additions||0) + '</span> <span class="d">−' + (fo.file.deletions||0) + '</span></span>';
+      label.innerHTML = '<span class="caret" style="visibility:hidden">▾</span><span class="ic">📄</span><span class="name">' + esc(fo.name) + '</span>';
+      label.appendChild(statBadge(fo.file));
+      label.insertAdjacentHTML("beforeend", stat);
+      label.addEventListener("click", function () { selectFile(fo.idx); });
+      fn.appendChild(label);
+      container.appendChild(fn);
+    });
+  }
+  renderDir(root, treeEl, "");
+
+  // ---------- render diff for a file ----------
+  var filebar = document.getElementById("filebar");
+  var diffEl = document.getElementById("diff");
+  var notesEl = document.getElementById("notes");
+  var currentIdx = -1;
+
+  function selectFile(idx) {
+    currentIdx = idx;
+    var f = DATA.files[idx];
+    document.querySelectorAll(".node.file").forEach(function (n) {
+      n.classList.toggle("selected", n.dataset.idx == idx);
+    });
+    renderFilebar(f);
+    renderDiff(f);
+    renderNotes(f);
+  }
+
+  function renderFilebar(f) {
+    var parts = f.path.split("/");
+    var name = parts.pop();
+    var dir = parts.length ? parts.join("/") + "/" : "";
+    filebar.innerHTML = '<span class="status-pill ' + f.status + '">' + statusText(f.status) + '</span>' +
+      '<span class="path"><span class="dir">' + esc(dir) + '</span>' + esc(name) + '</span>' +
+      '<span class="filestat"><span class="a">+' + (f.additions||0) + '</span> <span class="d">−' + (f.deletions||0) + '</span></span>';
+  }
+
+  function renderDiff(f) {
+    diffEl.innerHTML = "";
+    if (f.binary) { diffEl.innerHTML = '<div class="empty-state">二进制文件，无法显示 diff</div>'; return; }
+    if (!f.hunks || !f.hunks.length) { diffEl.innerHTML = '<div class="empty-state">无文本变更</div>'; return; }
+    var lang = f.language && f.language !== "none" ? f.language : null;
+    // pre-compute which (side,lineNo) are anchored by a note
+    var anchors = buildAnchorIndex(f);
+    var frag = document.createDocumentFragment();
+    f.hunks.forEach(function (h) {
+      var hh = document.createElement("div");
+      hh.className = "hunk-header";
+      hh.innerHTML = esc(h.header.split("@@")[1] ? "@@" + h.header.split("@@")[1] + "@@" : h.header) +
+        (h.context ? '<span class="ctxinfo">' + esc(h.context) + '</span>' : "");
+      frag.appendChild(hh);
+      h.lines.forEach(function (ln) {
+        var row = document.createElement("div");
+        row.className = "row " + ln.type;
+        var noteId = anchors[ln.type === "del" ? ("o" + ln.oldNo) : ("n" + ln.newNo)];
+        if (noteId != null) { row.classList.add("hasnote"); row.dataset.note = noteId; }
+        if (ln.newNo != null) row.dataset.new = ln.newNo;
+        if (ln.oldNo != null) row.dataset.old = ln.oldNo;
+        var code = document.createElement("code");
+        if (lang) code.className = "language-" + lang;
+        code.textContent = ln.text;
+        var sign = ln.type === "add" ? "+" : ln.type === "del" ? "−" : "";
+        row.innerHTML =
+          '<span class="ln old">' + (ln.oldNo != null ? ln.oldNo : "") + '</span>' +
+          '<span class="ln new">' + (ln.newNo != null ? ln.newNo : "") + '</span>' +
+          '<span class="sign">' + sign + '</span>' +
+          '<span class="code"></span>';
+        row.querySelector(".code").appendChild(code);
+        frag.appendChild(row);
+      });
+    });
+    diffEl.appendChild(frag);
+    // 为每条注释的覆盖范围标出首/末行，形成范围括号
+    (f.annotations || []).forEach(function (a, i) {
+      var rows = diffEl.querySelectorAll('.row[data-note="' + i + '"]');
+      if (rows.length) {
+        rows[0].classList.add("note-top");
+        rows[rows.length - 1].classList.add("note-bottom");
+      }
+    });
+    if (window.Prism) { try { Prism.highlightAllUnder(diffEl); } catch (e) {} }
+  }
+
+  function buildAnchorIndex(f) {
+    var map = {};
+    (f.annotations || []).forEach(function (a, i) {
+      var side = a.side === "old" ? "o" : "n";
+      var s = a.start, e = a.end != null ? a.end : a.start;
+      for (var n = s; n <= e; n++) { if (map[side + n] == null) map[side + n] = i; }
+    });
+    return map;
+  }
+
+  function buildLineText(f) {
+    // (side,lineNo) → 该行文本，用于在边栏卡片里回显注释覆盖的代码
+    var m = { n: {}, o: {} };
+    (f.hunks || []).forEach(function (h) {
+      h.lines.forEach(function (ln) {
+        if (ln.newNo != null) m.n[ln.newNo] = ln.text;
+        if (ln.oldNo != null) m.o[ln.oldNo] = ln.text;
+      });
+    });
+    return m;
+  }
+
+  function snippetFor(lt, a, lang) {
+    var idx = a.side === "old" ? lt.o : lt.n;
+    var end = a.end != null ? a.end : a.start;
+    var texts = [];
+    for (var n = a.start; n <= end; n++) { if (idx[n] != null) texts.push(idx[n]); }
+    if (!texts.length) return null;               // 范围落在 hunk 之外（未变更且未展示）时不回显
+    var CAP = 8;
+    var more = texts.length > CAP ? texts.length - CAP : 0;
+    if (more) texts = texts.slice(0, CAP);
+    // 去掉共同前导缩进，让片段更紧凑
+    var indent = Infinity;
+    texts.forEach(function (t) { if (t.trim()) indent = Math.min(indent, t.match(/^\s*/)[0].length); });
+    if (isFinite(indent) && indent > 0) texts = texts.map(function (t) { return t.slice(indent); });
+    var cls = lang ? ' class="language-' + lang + '"' : "";
+    var pre = '<pre><code' + cls + '>' + esc(texts.join("\n")) + '</code></pre>';
+    var moreEl = more ? '<div class="more">… 还有 ' + more + ' 行</div>' : "";
+    return '<div class="snippet">' + pre + moreEl + '</div>';
+  }
+
+  function highlightNote(i, on) {
+    diffEl.querySelectorAll('.row[data-note="' + i + '"]').forEach(function (r) {
+      r.classList.toggle("notehi", on);
+    });
+  }
+
+  function renderNotes(f) {
+    notesEl.innerHTML = "";
+    if (f.summary) {
+      var s = document.createElement("div");
+      s.className = "file-summary";
+      s.innerHTML = '<div class="h">本文件变更</div>' + mdLite(f.summary);
+      notesEl.appendChild(s);
+    }
+    var title = document.createElement("div");
+    title.className = "rail-title";
+    title.textContent = "需求 · 代码解释";
+    notesEl.appendChild(title);
+    var anns = f.annotations || [];
+    if (!anns.length) {
+      var em = document.createElement("div");
+      em.className = "empty";
+      em.textContent = "本文件暂无逐段解释。";
+      notesEl.appendChild(em);
+      return;
+    }
+    var lt = buildLineText(f);
+    var lang = f.language && f.language !== "none" ? f.language : null;
+    anns.forEach(function (a, i) {
+      var card = document.createElement("div");
+      card.className = "note-card";
+      card.dataset.note = i;
+      var req = a.requirement ? '<div class="req-tag ' + (a.inferred ? "inferred" : "") + '">' + (a.inferred ? "推测意图 · " : "需求 · ") + esc(a.requirement) + '</div>' : "";
+      var range = a.end != null && a.end !== a.start ? (a.start + "–" + a.end) : ("" + a.start);
+      var sideLabel = a.side === "old" ? "旧" : "新";
+      var badge = '<div class="range-badge"><span class="side">' + sideLabel + '版</span> L' + range + '</div>';
+      var snip = snippetFor(lt, a, lang) || "";
+      card.innerHTML = req + badge + snip + '<div class="expl">' + mdLite(a.explanation || "") + '</div>' +
+        '<div class="anchor-ref">↳ ' + sideLabel + '行 L' + range + ' <span class="jump">定位 →</span></div>';
+      card.addEventListener("click", function () { jumpToNote(i); });
+      card.addEventListener("mouseenter", function () { highlightNote(i, true); });
+      card.addEventListener("mouseleave", function () { highlightNote(i, false); });
+      notesEl.appendChild(card);
+    });
+    if (window.Prism) { try { Prism.highlightAllUnder(notesEl); } catch (e) {} }
+  }
+
+  function jumpToNote(i) {
+    var rows = diffEl.querySelectorAll('.row[data-note="' + i + '"]');
+    if (!rows.length) return;
+    rows[0].scrollIntoView({ behavior: "smooth", block: "center" });
+    rows.forEach(function (r) { r.classList.remove("flash"); void r.offsetWidth; r.classList.add("flash"); });
+  }
+
+  // ---------- helpers ----------
+  function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function mdLite(s) {
+    return esc(s)
+      .replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+      .replace(/\n/g, "<br>");
+  }
+  function statusText(s) { return s === "A" ? "新增" : s === "D" ? "删除" : s === "R" ? "重命名" : "修改"; }
+
+  if (DATA.files.length) selectFile(0);
+  else { document.querySelector(".content").innerHTML = '<div class="empty-state">没有检测到变更。</div>'; }
+
+  // ---------- 左侧文件树宽度：拖动调整 + 记忆 ----------
+  (function () {
+    var layout = document.querySelector(".layout");
+    var resizer = document.getElementById("treeResizer");
+    if (!layout || !resizer) return;
+    var MIN = 180, MAX = 640, KEY = "understand.treeWidth";
+    var saved = null;
+    try { saved = parseInt(localStorage.getItem(KEY), 10); } catch (e) {}
+    if (saved && saved >= MIN && saved <= MAX) layout.style.setProperty("--tree-w", saved + "px");
+
+    var dragging = false;
+    function onMove(e) {
+      if (!dragging) return;
+      var x = (e.touches ? e.touches[0].clientX : e.clientX) - layout.getBoundingClientRect().left;
+      x = Math.max(MIN, Math.min(MAX, x));
+      layout.style.setProperty("--tree-w", x + "px");
+      if (e.cancelable) e.preventDefault();
+    }
+    function stop() {
+      if (!dragging) return;
+      dragging = false;
+      resizer.classList.remove("dragging");
+      document.body.classList.remove("col-resizing");
+      var cur = parseInt(getComputedStyle(layout).getPropertyValue("--tree-w"), 10);
+      try { if (cur) localStorage.setItem(KEY, cur); } catch (e) {}
+    }
+    function start(e) {
+      dragging = true;
+      resizer.classList.add("dragging");
+      document.body.classList.add("col-resizing");
+      if (e.cancelable) e.preventDefault();
+    }
+    resizer.addEventListener("mousedown", start);
+    resizer.addEventListener("touchstart", start, { passive: false });
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("mouseup", stop);
+    window.addEventListener("touchend", stop);
+    // 双击分隔条恢复默认宽度
+    resizer.addEventListener("dblclick", function () {
+      layout.style.setProperty("--tree-w", "300px");
+      try { localStorage.setItem(KEY, "300"); } catch (e) {}
+    });
+  })();
+})();
+</script>
+</body>
+</html>

@@ -525,8 +525,9 @@
         <li><a href="#step-loop-it">17. Bonus: /loop-it — 自动化 Issue 批量实现循环</a></li>
         <li><a href="#step-to-design">18. Bonus: /to-design — PRD 转设计文档</a></li>
         <li><a href="#step-graph">19. Bonus: /graph — 任务图并发实现</a></li>
-        <li><a href="#platforms">20. 支持的平台</a></li>
-        <li><a href="#faq">21. FAQ</a></li>
+        <li><a href="#step-understand">20. Bonus: /understand — 交互式变更审阅</a></li>
+        <li><a href="#platforms">21. 支持的平台</a></li>
+        <li><a href="#faq">22. FAQ</a></li>
       </ul>
     </div>
 
@@ -613,6 +614,18 @@
             <li>Commit 关联 Issue 编号</li>
             <li>Squash merge + delete branch</li>
             <li>添加实现总结并关闭卡片</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot coral"></div>
+            <h4>/understand</h4>
+          </div>
+          <p>交互式审阅新生成的（AI）改动</p>
+          <ul>
+            <li>把未提交 / 分支变更扫描成网页</li>
+            <li>文件树 + 语法高亮 diff + 逐段注释</li>
+            <li>每段配上对应单位需求与代码解释</li>
           </ul>
         </div>
         <div class="card">
@@ -753,6 +766,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">prd-to-spec</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-issues</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">review-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">understand</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">ship-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">humanize-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">insight-diagram</span>
@@ -780,7 +794,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/loop-it</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/insight-diagram</code>、<code class="inline-code">/smell</code>、<code class="inline-code">/to-design</code>、<code class="inline-code">/graph</code> 即可直接调用对应技能。
+        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/loop-it</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/insight-diagram</code>、<code class="inline-code">/smell</code>、<code class="inline-code">/to-design</code>、<code class="inline-code">/graph</code>、<code class="inline-code">/understand</code> 即可直接调用对应技能。
       </div>
     </div>
 
@@ -1819,11 +1833,54 @@ inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> �
       </div>
     </div>
 
-    <!-- Section 20: Platforms -->
+    <!-- Section 20: /understand -->
+    <div class="section" id="step-understand">
+      <div class="section-title">
+        <div class="section-dot coral"></div>
+        <h3>20. Bonus: /understand — 交互式变更审阅</h3>
+      </div>
+      <p>
+        <code class="inline-code">/understand</code> 把你刚生成的改动（通常是 AI 写的）变成一个单文件、可交互的审阅网页，帮你在审查或交付前真正吃透这次改了什么。它扫描仓库里未提交 / 分支变更，生成一个 Claude 浅色主题的两栏页面：左侧是按真实项目布局排列的变更文件树，右侧是所选文件的语法高亮 diff，并在右侧边栏逐段给出<strong>相关单位需求</strong>与<strong>代码解释</strong>。
+      </p>
+
+      <h3>如何调用</h3>
+      <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
+<span class="cmd">/understand</span>
+
+<span class="comment"># 或使用触发短语</span>
+<span class="cmd">review 这次改动：</span><span class="value">解释一下这批新生成的代码</span>
+<span class="cmd">解释代码：</span><span class="value">带我过一遍刚生成的变更</span></code></pre>
+
+      <h3>页面构成</h3>
+      <table>
+        <tr><th>区域</th><th>内容</th></tr>
+        <tr><td>左侧文件树</td><td>按真实项目结构列出变更文件，含每文件 +/− 行数与 A/M/D/R 状态。该栏<strong>宽度可拖动调整</strong>（双击分隔条恢复默认）。</td></tr>
+        <tr><td>右侧 diff</td><td>语法高亮 diff，增删与未变更代码明显区分，行号为文件真实行号。</td></tr>
+        <tr><td>右侧边栏</td><td>逐段卡片：对应单位需求（推测时标灰色「推测意图」）+ 大白话代码解释；点击可定位并高亮闪动对应代码行。</td></tr>
+      </table>
+
+      <h3>工作流程</h3>
+      <ul class="step-list">
+        <li>扫描变更：已提交(base..HEAD) + 已暂存 + 未暂存 + 未跟踪新文件，基线为与主分支的 merge-base</li>
+        <li>Agent 通读每处改动，再逐段撰写需求 + 解释注释</li>
+        <li>渲染出单文件 <code class="inline-code">.understand/report.html</code> 并在浏览器打开</li>
+      </ul>
+
+      <h3>定位</h3>
+      <p>
+        <code class="inline-code">/understand</code> 是 <code class="inline-code">/review-it</code> 的理解型搭档：<code class="inline-code">/review-it</code> 负责发现并修复问题，<code class="inline-code">/understand</code> 则帮你在决定采纳前，看清新生成代码背后的意图与理由。
+      </p>
+
+      <div class="tip">
+        <strong>Tip：</strong><code class="inline-code">.understand/</code> 是产物目录，建议加入 <code class="inline-code">.gitignore</code> 以免误提交。解释与需求始终以中文产出。
+      </div>
+    </div>
+
+    <!-- Section 21: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>20. 支持的平台</h3>
+        <h3>21. 支持的平台</h3>
       </div>
       <p>Goal Workflow 的技能可在多个 AI Coding Agent 中使用：</p>
 
@@ -1844,11 +1901,11 @@ inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> �
       </table>
     </div>
 
-    <!-- Section 20: FAQ -->
+    <!-- Section 22: FAQ -->
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>21. FAQ</h3>
+        <h3>22. FAQ</h3>
       </div>
 
       <h3>Q: 必须按顺序使用所有步骤吗？</h3>

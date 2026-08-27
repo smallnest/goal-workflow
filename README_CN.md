@@ -28,6 +28,7 @@ npx skills add smallnest/goal-workflow
 | `/loop-it` | 批量实现所有 Issue，支持检查点恢复 |
 | `/goal` | 端到端实现 Issue（Claude Code 内置） |
 | `/review-it` | 自动化代码审查与迭代修复 |
+| `/understand` | 将本次（AI）新生成的改动变成可交互的审阅网页 |
 | `/ship-it` | 提交、PR、合入、关闭 Issue |
 | `/note-it` | 为 Issue 记录实现笔记 |
 | `/humanize-it` | 文档去 AI 味改写 |

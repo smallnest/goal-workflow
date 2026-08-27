@@ -525,8 +525,9 @@
         <li><a href="#step-loop-it">17. Bonus: /loop-it — Automated Issue Implementation Loop</a></li>
         <li><a href="#step-to-design">18. Bonus: /to-design — PRD to Design Document</a></li>
         <li><a href="#step-graph">19. Bonus: /graph — Parallel Task-Graph Execution</a></li>
-        <li><a href="#platforms">20. Supported Platforms</a></li>
-        <li><a href="#faq">21. FAQ</a></li>
+        <li><a href="#step-understand">20. Bonus: /understand — Interactive Change Review</a></li>
+        <li><a href="#platforms">21. Supported Platforms</a></li>
+        <li><a href="#faq">22. FAQ</a></li>
       </ul>
     </div>
 
@@ -613,6 +614,18 @@
             <li>Commit linked to Issue number</li>
             <li>Squash merge + delete branch</li>
             <li>Add implementation summary and close card</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot coral"></div>
+            <h4>/understand</h4>
+          </div>
+          <p>Interactive review of fresh AI-generated changes</p>
+          <ul>
+            <li>Scan uncommitted / branch changes into a webpage</li>
+            <li>File tree + syntax-highlighted diff + per-segment notes</li>
+            <li>Each segment shows its requirement and a plain-language explanation</li>
           </ul>
         </div>
         <div class="card">
@@ -753,6 +766,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">prd-to-spec</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-issues</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">review-it</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">understand</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">ship-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">humanize-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">insight-diagram</span>
@@ -780,7 +794,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code>, <code class="inline-code">/to-design</code>, <code class="inline-code">/graph</code> in Claude Code to directly invoke the corresponding skill.
+        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code>, <code class="inline-code">/to-design</code>, <code class="inline-code">/graph</code>, <code class="inline-code">/understand</code> in Claude Code to directly invoke the corresponding skill.
       </div>
     </div>
 
@@ -1819,11 +1833,54 @@ inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> �
       </div>
     </div>
 
-    <!-- Section 20: Platforms -->
+    <!-- Section 20: /understand -->
+    <div class="section" id="step-understand">
+      <div class="section-title">
+        <div class="section-dot coral"></div>
+        <h3>20. Bonus: /understand — Interactive Change Review</h3>
+      </div>
+      <p>
+        <code class="inline-code">/understand</code> turns the changes you just generated (usually AI-written) into a single-file interactive review webpage, so you can actually understand what changed before reviewing or shipping it. It scans the repo's uncommitted / branch changes and builds a Claude-style light-themed two-column page: a project file tree on the left, and the selected file's syntax-highlighted diff on the right, with a side rail that pairs each code segment with its unit requirement and a plain-language explanation.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/understand</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Review changes: </span><span class="value">Explain what this batch of new code does</span>
+<span class="cmd">Understand code: </span><span class="value">Walk me through the freshly generated changes</span></code></pre>
+
+      <h3>What You Get</h3>
+      <table>
+        <tr><th>Area</th><th>Content</th></tr>
+        <tr><td>Left tree</td><td>Changed files laid out by real project structure; per-file +/− stats and A/M/D/R status. The column is <strong>drag-resizable</strong> (double-click the divider to reset).</td></tr>
+        <tr><td>Right diff</td><td>Syntax-highlighted diff with additions / deletions clearly distinguished from unchanged code, real file line numbers.</td></tr>
+        <tr><td>Side rail</td><td>Per-segment cards: the related unit requirement (or a grey "inferred intent" tag when guessed) plus a plain-language code explanation; click to jump and flash the matching lines.</td></tr>
+      </table>
+
+      <h3>How It Works</h3>
+      <ul class="step-list">
+        <li>Scan changes: committed (base..HEAD) + staged + unstaged + untracked files, baseline = merge-base with the main branch</li>
+        <li>The agent reads every change, then writes requirement + explanation annotations</li>
+        <li>Render a self-contained <code class="inline-code">.understand/report.html</code> and open it in the browser</li>
+      </ul>
+
+      <h3>Positioning</h3>
+      <p>
+        <code class="inline-code">/understand</code> is a comprehension companion to <code class="inline-code">/review-it</code>: where <code class="inline-code">/review-it</code> finds and fixes issues, <code class="inline-code">/understand</code> helps you see the intent and rationale behind freshly generated code before you commit to it.
+      </p>
+
+      <div class="tip">
+        <strong>Tip:</strong> <code class="inline-code">.understand/</code> is a generated artifact directory — add it to <code class="inline-code">.gitignore</code> so it isn't accidentally committed. Explanations and requirements are always produced in Chinese.
+      </div>
+    </div>
+
+    <!-- Section 21: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>20. Supported Platforms</h3>
+        <h3>21. Supported Platforms</h3>
       </div>
       <p>Goal Workflow skills can be used across multiple AI Coding Agents:</p>
 
@@ -1844,11 +1901,11 @@ inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> �
       </table>
     </div>
 
-    <!-- Section 20: FAQ -->
+    <!-- Section 22: FAQ -->
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>21. FAQ</h3>
+        <h3>22. FAQ</h3>
       </div>
 
       <h3>Q: Do I have to use all steps in order?</h3>
