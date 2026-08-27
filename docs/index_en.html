@@ -573,11 +573,11 @@
             <div class="card-dot coral"></div>
             <h4>/to-issues</h4>
           </div>
-          <p>Break PRD/SPEC into Issue cards</p>
+          <p>Break PRD/SPEC into vertical-slice Issues</p>
           <ul>
-            <li>User Stories → implementable Issues</li>
-            <li>Supports GitHub / Local / iCafe</li>
-            <li>Standalone — does not depend on /prd</li>
+            <li>Vertical slices (tracer bullets), not layers</li>
+            <li>Explicit blocking edges, blockers created first</li>
+            <li>Supports GitHub / Local, standalone</li>
           </ul>
         </div>
         <div class="card">
@@ -1074,8 +1074,12 @@
         <h3>6. Step 1.6: /to-issues — Break Down into Issues</h3>
       </div>
       <p>
-        <code class="inline-code">/to-issues</code> breaks down a PRD and/or SPEC into independently implementable Issues and creates them on your chosen platform. It can be used standalone — no need to run <code class="inline-code">/prd</code> first.
+        <code class="inline-code">/to-issues</code> breaks down a PRD and/or SPEC into <strong>vertically-sliced</strong>, independently implementable Issues and creates them on your chosen platform. It can be used standalone — no need to run <code class="inline-code">/prd</code> first.
       </p>
+
+      <div class="note">
+        <strong>Core principle: tracer bullets, not layers.</strong> Each Issue is a narrow but complete path through every layer it touches (schema + API + UI + tests), <em>demoable on its own</em> the moment it lands — not "a backend ticket and a frontend ticket." The test: <em>"what can I demo when this is done?"</em> If the answer is a layer, not a behaviour, re-slice it. If the whole change fits one context window, skip Issues and go straight to <code class="inline-code">/goal</code>.
+      </div>
 
       <h3>How to Invoke</h3>
       <pre><code><span class="comment"># Type directly in Claude Code</span>
@@ -1098,18 +1102,23 @@
       <h3>Creation Platforms</h3>
       <table>
         <tr><th>Platform</th><th>Tool</th><th>Description</th></tr>
-        <tr><td>GitHub</td><td><code class="inline-code">gh issue create</code></td><td>Requires gh CLI authentication</td></tr>
-        <tr><td>Local</td><td>Markdown files</td><td>Saved to <code class="inline-code">.autoresearch/issues/</code> or custom directory</td></tr>
-        <tr><td>Baidu iCafe</td><td><code class="inline-code">icafe-cli</code></td><td>Requires iCafe space parameters</td></tr>
+        <tr><td>GitHub</td><td><code class="inline-code">gh issue create</code></td><td>Native blocking edges <code class="inline-code">--blocked-by</code>, sub-issues <code class="inline-code">--parent</code> (gh v2.94+)</td></tr>
+        <tr><td>Local</td><td>Markdown files</td><td>One file per Issue, dependency-ordered, in a per-feature folder</td></tr>
       </table>
 
       <h3>Workflow</h3>
       <ul class="step-list">
         <li>Locate input files (auto-detect or manually specify PRD/SPEC)</li>
-        <li>Break down into Issue list; present for user review (can add, remove, edit, merge)</li>
-        <li>Select creation platform (GitHub / Local / Baidu iCafe)</li>
-        <li>Create one by one and output summary report</li>
+        <li>Find prefactoring ("make the change easy" groundwork) and order it first</li>
+        <li>Break down into vertical-slice Issues with a <em>demo path</em> and explicit <em>Blocked by</em> edges, numbered in dependency order</li>
+        <li>Quiz the user: granularity, blocking edges, and whether each demo path is a behaviour rather than a layer</li>
+        <li>Select creation platform (GitHub / Local)</li>
+        <li>Create blockers first, then output a summary report (including the ready-to-start frontier)</li>
       </ul>
+
+      <div class="note">
+        <strong>Falsifiable acceptance criteria:</strong> every criterion must be red (fail) at the base commit. Wide mechanical refactors (rename a column, retype a shared symbol) use the <code class="inline-code">expand → migrate → contract</code> sequence — the one exception to the vertical-slice rule.
+      </div>
 
       <div class="note">
         <strong>Note:</strong> <code class="inline-code">/to-issues</code> is the key bridge from requirements to implementation. It can be used independently — even if you didn't use <code class="inline-code">/prd</code> to generate a PRD, as long as you have a requirements document (or even pasted text), you can break it down into Issues.

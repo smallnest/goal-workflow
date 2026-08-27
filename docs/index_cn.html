@@ -573,11 +573,11 @@
             <div class="card-dot coral"></div>
             <h4>/to-issues</h4>
           </div>
-          <p>拆解 PRD/SPEC 为 Issue 卡片</p>
+          <p>拆解 PRD/SPEC 为垂直切片 Issue</p>
           <ul>
-            <li>User Stories → 可实施的 Issue</li>
-            <li>支持 GitHub / Local / iCafe</li>
-            <li>可独立使用，不依赖 /prd</li>
+            <li>垂直切片（tracer bullet），非按层拆分</li>
+            <li>显式依赖边 + 阻塞者优先创建</li>
+            <li>支持 GitHub / Local，可独立使用</li>
           </ul>
         </div>
         <div class="card">
@@ -1074,8 +1074,12 @@
         <h3>6. Step 1.6: /to-issues — 拆解 Issue 卡片</h3>
       </div>
       <p>
-        <code class="inline-code">/to-issues</code> 将 PRD 和/或 SPEC 拆解为可独立实施的 Issue，并创建到你选择的平台。可独立使用，不需要先运行 <code class="inline-code">/prd</code>。
+        <code class="inline-code">/to-issues</code> 将 PRD 和/或 SPEC 拆解为<strong>垂直切片</strong>的可独立实施 Issue，并创建到你选择的平台。可独立使用，不需要先运行 <code class="inline-code">/prd</code>。
       </p>
+
+      <div class="note">
+        <strong>核心原则：垂直切片，而非按层拆分。</strong>每个 Issue 是一条贯穿各层（schema + API + UI + 测试）的窄而完整的<em>可演示</em>路径，落地即可单独演示；而不是"后端一张卡、前端一张卡"。检验标准：<em>"完成后我能演示什么？"</em>——答案若是某一层而非一个行为，就要重新切。若整个改动放得下一个上下文窗口，则无需拆 Issue，直接 <code class="inline-code">/goal</code>。
+      </div>
 
       <h3>触发方式</h3>
       <pre><code><span class="comment"># 在 Claude Code 中直接输入</span>
@@ -1098,18 +1102,23 @@
       <h3>创建平台</h3>
       <table>
         <tr><th>平台</th><th>工具</th><th>说明</th></tr>
-        <tr><td>GitHub</td><td><code class="inline-code">gh issue create</code></td><td>需要 gh CLI 认证</td></tr>
-        <tr><td>Local</td><td>Markdown 文件</td><td>保存到 <code class="inline-code">.autoresearch/issues/</code> 或自定义目录</td></tr>
-        <tr><td>Baidu iCafe</td><td><code class="inline-code">icafe-cli</code></td><td>需要 iCafe 空间参数</td></tr>
+        <tr><td>GitHub</td><td><code class="inline-code">gh issue create</code></td><td>原生依赖边 <code class="inline-code">--blocked-by</code>、子 issue <code class="inline-code">--parent</code>（需 gh v2.94+）</td></tr>
+        <tr><td>Local</td><td>Markdown 文件</td><td>一 Issue 一文件、按依赖排序，存于 per-feature 目录</td></tr>
       </table>
 
       <h3>工作流程</h3>
       <ul class="step-list">
         <li>定位输入文件（自动检测或手动指定 PRD/SPEC）</li>
-        <li>拆解为 Issue 列表，展示供用户审阅（可增删改合并）</li>
-        <li>选择创建平台（GitHub / Local / Baidu iCafe）</li>
-        <li>逐条创建并输出汇总报告</li>
+        <li>先识别 prefactoring（"让改动变简单"的铺垫工作），排在最前</li>
+        <li>拆解为垂直切片 Issue，标注 <em>demo path</em> 与显式 <em>Blocked by</em> 依赖边，按依赖顺序编号</li>
+        <li>quiz 用户复核：粒度、依赖边、demo path 是否为行为而非某一层</li>
+        <li>选择创建平台（GitHub / Local）</li>
+        <li>阻塞者优先创建，逐条落地并输出汇总报告（含可立即开始的 frontier）</li>
       </ul>
+
+      <div class="note">
+        <strong>可证伪的验收标准：</strong>每条验收标准都要能在起始 commit 上为红（fail）。宽范围机械重构（重命名列、改共享类型）走 <code class="inline-code">expand → migrate → contract</code> 序列，作为垂直切片规则的唯一例外。
+      </div>
 
       <div class="note">
         <strong>Note：</strong><code class="inline-code">/to-issues</code> 是从需求到实现的关键桥梁。它可以独立使用——即使你没有用 <code class="inline-code">/prd</code> 生成 PRD，只要有一个需求文档（甚至直接粘贴），就能拆出 Issue。
