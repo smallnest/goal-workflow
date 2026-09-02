@@ -119,8 +119,9 @@
   .row { display: grid; grid-template-columns: 48px 48px 20px minmax(0,1fr); font-family: var(--code-font); font-size: 12.5px; line-height: 1.55; }
   .row .ln { text-align: right; padding: 0 8px; color: var(--faint); user-select: none; border-right: 1px solid var(--border); background: var(--panel); font-size: 11.5px; }
   .row .sign { text-align: center; user-select: none; color: var(--faint); }
-  .row .code { padding: 0 12px; white-space: pre; overflow: visible; tab-size: 4; }
-  .row .code code { font-family: var(--code-font); background: none; padding: 0; }
+  /* Use pre so syntax highlighting preserves leading whitespace in diff lines. */
+  .row .code { margin: 0; padding: 0 12px; white-space: pre; overflow: visible; tab-size: 4; background: transparent; }
+  .row .code code { font-family: var(--code-font); background: transparent; padding: 0; }
   .row.add { background: var(--add-bg); }
   .row.add .ln { background: var(--add-ln); color: #4b7d59; }
   .row.add .sign { color: var(--add-mark); }
@@ -343,7 +344,7 @@
           '<span class="ln old">' + (ln.oldNo != null ? ln.oldNo : "") + '</span>' +
           '<span class="ln new">' + (ln.newNo != null ? ln.newNo : "") + '</span>' +
           '<span class="sign">' + sign + '</span>' +
-          '<span class="code"></span>';
+          '<pre class="code"></pre>';
         row.querySelector(".code").appendChild(code);
         frag.appendChild(row);
       });
