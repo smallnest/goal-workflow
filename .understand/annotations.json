@@ -1,0 +1,20 @@
+{
+  "title": "修复 understand 网页 diff 代码缩进被折叠的问题",
+  "summary": "**问题**：understand 生成的审阅网页里,diff 代码行的行首缩进(tab/空格)全部丢失,所有代码都顶格显示。**根因**:Prism.js 的 CDN 主题带有 `:not(pre) > code[class*=\"language-\"] { white-space: normal }` 规则,而本模板把高亮代码放在 `<span class=\"code\">` 内而非 `<pre>` 内,于是命中该规则、行首空白被折叠。**修复**:在 `.row .code code` 上强制 `white-space: pre; tab-size: 4`,其选择器特异性高于 Prism 那条,可覆盖之。该修复与具体语言无关,对所有语言都生效。",
+  "files": [
+    {
+      "path": "skills/understand/template.html",
+      "summary": "给内联高亮 `<code>` 元素补上 `white-space: pre; tab-size: 4`,覆盖 Prism 主题对「非 `<pre>` 内 code」统一折叠空白的默认样式,恢复 diff 的行首缩进。",
+      "annotations": [
+        {
+          "side": "new",
+          "start": 123,
+          "end": 124,
+          "requirement": "diff 代码需保留原始缩进层级",
+          "explanation": "根因在 Prism 官方主题:它对不在 `<pre>` 里的 `code[class*=\"language-\"]` 设了 `white-space: normal`,会把行首 tab/空格折叠掉。本模板每行代码是 `<span class=\"code\"><code class=\"language-*\">…</code></span>`,**没有外层 `<pre>`**,正好命中该规则,所以缩进全丢。这里在 `<code>` 本身上强制 `white-space: pre` 恢复空白保留、`tab-size: 4` 让制表符按 4 空格宽度展示。选择器 `.row .code code` 特异性为 (0,2,1),高于 Prism 的 `:not(pre) > code[class*=…]` (0,1,2),因此能覆盖它。父级 `.row .code`(第 122 行)虽已有 `white-space: pre`,但 Prism 的规则直接作用在子 `<code>` 上,必须在 `<code>` 这一层显式声明才可靠生效。新增的注释行也在源码里说明了这个非直觉的坑。",
+          "inferred": false
+        }
+      ]
+    }
+  ]
+}
