@@ -179,6 +179,28 @@
   .note-card .expl code { font-family: var(--code-font); background: #efece2; padding: 1px 4px; border-radius: 4px; font-size: 12px; }
   .note-card .anchor-ref { margin-top: 8px; font-size: 11px; font-family: var(--code-font); color: var(--faint); display: flex; align-items: center; gap: 6px; }
   .note-card .anchor-ref .jump { color: var(--accent); font-family: var(--ui-font); }
+  /* 解释下方的两个视图按钮：伪代码 / 调用树（show-me 风格文本视图） */
+  .note-card .vis-btns { display: flex; gap: 6px; margin-top: 9px; }
+  .note-card .vis-btn {
+    font-family: var(--ui-font); font-size: 11px; font-weight: 600; color: #7a766c;
+    background: #EFECE2; border: 1px solid var(--border); border-radius: 6px;
+    padding: 2px 10px; cursor: pointer; transition: background .12s, color .12s, border-color .12s;
+  }
+  .note-card .vis-btn:hover { color: #7c4534; background: var(--accent-soft); border-color: var(--border-strong); }
+  .note-card .vis-btn.open { color: #fff; background: var(--accent); border-color: var(--accent); }
+  .note-card .vis-panel {
+    display: none; margin: 9px 0 0; border: 1px solid var(--border); border-left: 2px solid var(--accent);
+    border-radius: 7px; background: #FCFBF8; overflow: hidden;
+  }
+  .note-card .vis-panel.show { display: block; }
+  .note-card .vis-panel .vis-cap {
+    padding: 4px 10px 0; font-size: 10px; text-transform: uppercase; letter-spacing: .6px; color: var(--faint);
+  }
+  .note-card .vis-panel pre {
+    margin: 0; padding: 7px 11px 9px; overflow: auto; max-height: 320px;
+    font-family: var(--code-font); font-size: 11.5px; line-height: 1.6; white-space: pre; tab-size: 4;
+  }
+  .note-card .vis-panel pre code { font-family: var(--code-font); background: none; padding: 0; }
   .notes .empty { color: var(--faint); font-size: 12.5px; padding: 8px 2px; }
 
   .empty-state { display: flex; align-items: center; justify-content: center; height: 100%; color: var(--faint); }
@@ -439,8 +461,32 @@
       var sideLabel = a.side === "old" ? "旧" : "新";
       var badge = '<div class="range-badge"><span class="side">' + sideLabel + '版</span> L' + range + '</div>';
       var snip = snippetFor(lt, a, lang) || "";
+      // show-me 风格补充视图：伪代码 / 调用树（注释里给了对应字段才出现按钮）
+      var VIEWS = [
+        { key: "pseudocode", label: "伪代码", cap: "Pseudocode" },
+        { key: "callTree",   label: "调用树", cap: "Call tree" },
+      ];
+      var btnsHtml = "", panelsHtml = "";
+      VIEWS.forEach(function (v) {
+        var body = (a[v.key] || "").trim();
+        if (!body) return;
+        btnsHtml += '<button class="vis-btn" data-vis="' + v.key + '" title="' + v.cap + '">' + v.label + '</button>';
+        panelsHtml += '<div class="vis-panel" data-vis="' + v.key + '"><div class="vis-cap">' + v.cap + '</div><pre><code>' + esc(body) + '</code></pre></div>';
+      });
       card.innerHTML = req + badge + snip + '<div class="expl">' + mdLite(a.explanation || "") + '</div>' +
+        (btnsHtml ? '<div class="vis-btns">' + btnsHtml + '</div>' + panelsHtml : "") +
         '<div class="anchor-ref">↳ ' + sideLabel + '行 L' + range + ' <span class="jump">定位 →</span></div>';
+      // 同一卡片内两个视图互斥：展开一个收起另一个
+      card.querySelectorAll(".vis-btn").forEach(function (btn) {
+        btn.addEventListener("click", function (ev) {
+          ev.stopPropagation();   // 不触发卡片整体的「定位」跳转
+          var panel = card.querySelector('.vis-panel[data-vis="' + btn.dataset.vis + '"]');
+          var willOpen = !panel.classList.contains("show");
+          card.querySelectorAll(".vis-panel.show").forEach(function (p) { p.classList.remove("show"); });
+          card.querySelectorAll(".vis-btn.open").forEach(function (b) { b.classList.remove("open"); });
+          if (willOpen) { panel.classList.add("show"); btn.classList.add("open"); }
+        });
+      });
       card.addEventListener("click", function () { jumpToNote(i); });
       card.addEventListener("mouseenter", function () { highlightNote(i, true); });
       card.addEventListener("mouseleave", function () { highlightNote(i, false); });

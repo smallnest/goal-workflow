@@ -8,7 +8,7 @@ metadata:
 
 # understand
 
-把「本次（AI）新生成的代码变更」变成一个可交互的审阅网页：左侧按真实项目布局列出变更文件树，右侧显示所选文件的 diff（高亮、增删与未变更代码明显区分），并在右侧边栏逐段给出**相关单位需求**与**代码解释**。
+把「本次（AI）新生成的代码变更」变成一个可交互的审阅网页：左侧按真实项目布局列出变更文件树，右侧显示所选文件的 diff（高亮、增删与未变更代码明显区分），并在右侧边栏逐段给出**相关单位需求**与**代码解释**；解释下方可按需提供「伪代码」「调用树」两个展开式文本视图（参考 show-me skill 的呈现方式）。
 
 **始终用中文产出解释与需求。**
 
@@ -64,6 +64,8 @@ python3 "$SKILL_DIR/understand.py" scan
           "end": 53,
           "requirement": "expires_at 为 timestamptz，需正确编码",
           "explanation": "Vert.x PG 客户端不支持 `java.time.Instant`，改绑 `OffsetDateTime`（`atOffset(UTC)`），否则运行期报 coercion 错误。",
+          "pseudocode": "on(save)\n  if content is unchanged\n    return cached result\n  write new content\n  return fresh result",
+          "callTree": "submitForm\n  createSession\n    persistPrompt\n    launchAgent\n  navigateToSession",
           "inferred": false
         }
       ]
@@ -78,6 +80,10 @@ python3 "$SKILL_DIR/understand.py" scan
 - `start` / `end` — 该段代码的行号区间（`data.json` 里对应 side 的 `newNo`/`oldNo`；单行时 `end` 可省或等于 `start`）。行号是**文件真实行号**，不是 diff 里的序号。
 - `requirement` — 该段对应的单位需求（简短一句，作为标签展示）。可留空。
 - `explanation` — 代码解释：讲清**这段在干嘛、为什么这么写、有何风险/前提**。可用 `` `code` `` 和 `**bold**`。
+- `pseudocode` / `callTree` — **可选**的两种补充视图（参考 show-me skill），给了字段，该卡片解释下方才会出现「伪代码」「调用树」按钮，点击展开文本面板：
+  - `pseudocode` — 把这段的逻辑/算法写成**语言无关的伪代码**：两空格缩进表结构与分支，只保留关键判断、边界与数据流向，不照抄源码（不写变量声明、类型等噪音）。
+  - `callTree` — 这段代码**运行期的控制流调用树**：根节点是本段入口，两空格缩进表调用层级，只列真正会执行到的调用（必要处可带一句 `# 注释` 说明分支条件），不列未走过的分支。
+  - 这两个视图**不必每条注释都写**：只为算法较绕（多分支/状态机/缓存判定）或调用链较深（跨多层模块）的段落写；都不适用就两个都省略。
 - `inferred` — 需求为推测时置 `true`。
 
 注释密度：聚焦**关键/易错/体现需求**的段落（新增的核心逻辑、边界处理、并发/事务、类型坑、SQL 口径等），不必逐行；每个重要文件给 1~5 条即可。可参考项目记忆里的常见坑（如 Vert.x `Future.await()`、PG `= ANY` 数值数组、`timestamptz` 编码）来判断哪些点值得解释。
@@ -89,7 +95,7 @@ python3 "$SKILL_DIR/understand.py" render
 open .understand/report.html    # macOS；Linux 用 xdg-open
 ```
 
-`render` 会把 `data.json` + `annotations.json` 合并注入模板，产出 `.understand/report.html`（单文件，纯前端，Prism 走 CDN）。用浏览器打开即可：左树选文件 → 右侧看 diff → 边栏卡片点「定位 →」跳到对应代码行（会高亮闪一下）。左侧文件树栏可**拖动分隔条调整宽度**（宽度记忆在 localStorage，双击分隔条恢复默认）。
+`render` 会把 `data.json` + `annotations.json` 合并注入模板，产出 `.understand/report.html`（单文件，纯前端，Prism 走 CDN）。用浏览器打开即可：左树选文件 → 右侧看 diff → 边栏卡片点「定位 →」跳到对应代码行（会高亮闪一下）；若注释写了 `pseudocode`/`callTree`，卡片解释下方会出现「伪代码」「调用树」按钮，点击展开/收起（同卡片内两个视图互斥）。左侧文件树栏可**拖动分隔条调整宽度**（宽度记忆在 localStorage，双击分隔条恢复默认）。
 
 最后**用中文向用户简述**：改了几个文件、核心变更是什么、有哪些值得注意的点，并给出 `report.html` 路径。
 
