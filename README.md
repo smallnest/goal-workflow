@@ -24,8 +24,10 @@ npx skills add smallnest/goal-workflow
 |---------|-------------|
 | `/prd` | Generate PRD (requirements document) |
 | `/prd-to-spec` | Transform PRD into technical SPEC (optional) |
+| `/to-design` | Generate a design proposal from a PRD (Go-proposal style) |
 | `/to-issues` | Decompose PRD/SPEC into Issues and create tickets |
 | `/loop-it` | Batch-implement all open Issues with checkpoint/resume |
+| `/graph` | Turn a task/PRD into a dependency graph and implement nodes in parallel |
 | `/goal` | Implement an Issue end-to-end (Claude Code built-in) |
 | `/review-it` | Automated code review with iterative fixes |
 | `/understand` | Turn fresh (AI-generated) changes into an interactive review webpage |
@@ -33,8 +35,10 @@ npx skills add smallnest/goal-workflow
 | `/note-it` | Capture implementation notes per Issue |
 | `/walkthrough` | Phase-2 walkthrough: change summary, verification proof, visual evidence, review gate |
 | `/humanize-it` | Remove AI traces from documents |
+| `/article-icons` | Illustrate an article with inline SVG icons |
 | `/listenhub-tts` | Text-to-speech via ListenHub |
 | `/insight-diagram` | Generate UML and architecture diagrams |
+| `/design-it` | Turn a requirement into a self-contained HTML design document |
 | `/code-to-spec` | Reverse-engineer SPEC from existing projects |
 | `/refactor` | Expert code refactoring (Fowler catalog) |
 | `/modern-go` | Modernize Go code (35+ gofix-style rules) |

@@ -24,8 +24,10 @@ npx skills add smallnest/goal-workflow
 |------|------|
 | `/prd` | 生成 PRD 需求文档 |
 | `/prd-to-spec` | 将 PRD 转化为技术设计方案（可选） |
+| `/to-design` | 从 PRD 生成设计提案（Go proposal 风格） |
 | `/to-issues` | 将 PRD/SPEC 拆解为 Issue 并创建卡片 |
 | `/loop-it` | 批量实现所有 Issue，支持检查点恢复 |
+| `/graph` | 把任务/PRD 转成依赖图并并发实现各节点 |
 | `/goal` | 端到端实现 Issue（Claude Code 内置） |
 | `/review-it` | 自动化代码审查与迭代修复 |
 | `/understand` | 将本次（AI）新生成的改动变成可交互的审阅网页 |
@@ -33,8 +35,10 @@ npx skills add smallnest/goal-workflow
 | `/note-it` | 为 Issue 记录实现笔记 |
 | `/walkthrough` | Phase-2 走查文档：变更摘要、验证证据、可视化证明、评审门禁 |
 | `/humanize-it` | 文档去 AI 味改写 |
+| `/article-icons` | 为文章配内联 SVG 图标 |
 | `/listenhub-tts` | ListenHub 文本转语音 |
 | `/insight-diagram` | UML 与架构图生成 |
+| `/design-it` | 把需求转成自包含的 HTML 设计文档 |
 | `/code-to-spec` | 逆向生成项目规格文档 |
 | `/refactor` | 专家级代码重构（Fowler 目录） |
 | `/modern-go` | Go 代码现代化改造（35+ 条规则） |
