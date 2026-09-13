@@ -526,8 +526,9 @@
         <li><a href="#step-to-design">18. Bonus: /to-design — PRD 转设计文档</a></li>
         <li><a href="#step-graph">19. Bonus: /graph — 任务图并发实现</a></li>
         <li><a href="#step-understand">20. Bonus: /understand — 交互式变更审阅</a></li>
-        <li><a href="#platforms">21. 支持的平台</a></li>
-        <li><a href="#faq">22. FAQ</a></li>
+        <li><a href="#step-walkthrough">21. Bonus: /walkthrough — Phase-2 走查文档</a></li>
+        <li><a href="#platforms">22. 支持的平台</a></li>
+        <li><a href="#faq">23. FAQ</a></li>
       </ul>
     </div>
 
@@ -626,6 +627,18 @@
             <li>把未提交 / 分支变更扫描成网页</li>
             <li>文件树 + 语法高亮 diff + 逐段注释</li>
             <li>每段配上对应单位需求与代码解释</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot rose"></div>
+            <h4>/walkthrough</h4>
+          </div>
+          <p>验证完成后的 Phase-2 走查文档</p>
+          <ul>
+            <li>面向新读者的人类化变更摘要</li>
+            <li>带真实命令 / 测试输出的验证步骤</li>
+            <li>可视化证明 + 合入前评审门禁</li>
           </ul>
         </div>
         <div class="card">
@@ -767,6 +780,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-issues</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">review-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">understand</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">walkthrough</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">ship-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">humanize-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">insight-diagram</span>
@@ -794,7 +808,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/loop-it</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/insight-diagram</code>、<code class="inline-code">/smell</code>、<code class="inline-code">/to-design</code>、<code class="inline-code">/graph</code>、<code class="inline-code">/understand</code> 即可直接调用对应技能。
+        <strong>Tip：</strong>安装后在 Claude Code 中输入 <code class="inline-code">/prd</code>、<code class="inline-code">/prd-to-spec</code>、<code class="inline-code">/to-issues</code>、<code class="inline-code">/loop-it</code>、<code class="inline-code">/review-it</code>、<code class="inline-code">/ship-it</code>、<code class="inline-code">/refactor</code>、<code class="inline-code">/modern-go</code>、<code class="inline-code">/note-it</code>、<code class="inline-code">/code-to-spec</code>、<code class="inline-code">/humanize-it</code>、<code class="inline-code">/insight-diagram</code>、<code class="inline-code">/smell</code>、<code class="inline-code">/to-design</code>、<code class="inline-code">/graph</code>、<code class="inline-code">/understand</code>、<code class="inline-code">/walkthrough</code> 即可直接调用对应技能。
       </div>
     </div>
 
@@ -1885,20 +1899,65 @@ inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> �
       </div>
     </div>
 
-    <!-- Section 21: Platforms -->
+    <!-- Section 21: /walkthrough -->
+    <div class="section" id="step-walkthrough">
+      <div class="section-title">
+        <div class="section-dot rose"></div>
+        <h3>21. Bonus: /walkthrough — Phase-2 走查文档</h3>
+      </div>
+      <p>
+        <code class="inline-code">/walkthrough</code> 产出 Phase-2 走查文档（借鉴 Google Antigravity 的 walkthrough plan）：当实现与验证都完成后，它生成一个 Markdown 文件，让你快速掌握<strong>改了什么</strong>、<strong>什么已被验证可用</strong>，并在合入前用 Git 做一次<strong>暂存检查（staging-check）</strong>。默认保存到 <code class="inline-code">tasks/walkthrough-[feature].md</code>。
+      </p>
+
+      <h3>如何调用</h3>
+      <pre><code><span class="comment"># 直接在 Claude Code 中输入</span>
+<span class="cmd">/walkthrough</span>
+
+<span class="comment"># 或使用触发短语</span>
+<span class="cmd">Walkthrough: </span><span class="value">为这次改动生成 Phase-2 走查文档</span>
+<span class="cmd">生成走查文档</span></code></pre>
+
+      <h3>四个板块</h3>
+      <table>
+        <tr><th>板块</th><th>内容</th></tr>
+        <tr><td>变更摘要（Change Summary）</td><td>用人类语言高层描述本次重构、新增组件或页面，面向没看过代码的人。</td></tr>
+        <tr><td>验证步骤（Verification Steps）</td><td>成功跑通的终端命令与单元测试，以及自动化浏览器测试结果（打开应用、点击走查演示路径、逐场景通过/失败）。</td></tr>
+        <tr><td>可视化证明（Visual Proof）</td><td>浏览器测试中截取的截图或录屏，直接内嵌进文件（base64 data URI），随处可渲染。</td></tr>
+        <tr><td>评审门禁（Review Gate）</td><td>最终 <code class="inline-code">git status</code> / <code class="inline-code">git diff --stat</code>、一份可直接粘贴的 PR 描述，以及合入前逐项勾选的清单。</td></tr>
+      </table>
+
+      <h3>工作方式</h3>
+      <ul class="step-list">
+        <li>从分支 / Issue / tasks/ 中的 PRD 确定变更范围</li>
+        <li>通读 diff，写出变更摘要</li>
+        <li>跑测试与浏览器走查，记录真实输出与截图</li>
+        <li>保存 <code class="inline-code">tasks/walkthrough-[feature].md</code> 并呈现评审门禁</li>
+      </ul>
+
+      <h3>定位</h3>
+      <p>
+        <code class="inline-code">/walkthrough</code> 是 <code class="inline-code">/ship-it</code> 之前的最后一道检查点：<code class="inline-code">/goal</code> 负责实现、<code class="inline-code">/review-it</code> 负责修复，它负责沉淀「证据 + 评审门禁」，让合入成为一次有意的、分步的决策，而不是盲目的提交。
+      </p>
+
+      <div class="tip">
+        <strong>Tip：</strong>走查文档是快照——生成后若改动代码，请在交付前重新生成，确保证明与证据仍然真实。未验证的工作一律标注为未验证，绝不冒充已验证。
+      </div>
+    </div>
+
+    <!-- Section 22: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>21. 支持的平台</h3>
+        <h3>22. 支持的平台</h3>
       </div>
       <p>Goal Workflow 的技能可在多个 AI Coding Agent 中使用：</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th><th>/graph</th></tr>
-        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th><th>/graph</th><th>/understand</th><th>/walkthrough</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (内置)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
       </table>
 
       <h3>Issue 创建平台</h3>
@@ -1910,11 +1969,11 @@ inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> �
       </table>
     </div>
 
-    <!-- Section 22: FAQ -->
+    <!-- Section 23: FAQ -->
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>22. FAQ</h3>
+        <h3>23. FAQ</h3>
       </div>
 
       <h3>Q: 必须按顺序使用所有步骤吗？</h3>

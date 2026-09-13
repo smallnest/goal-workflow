@@ -28,6 +28,7 @@
     "./skills/understand",
     "./skills/ship-it",
     "./skills/note-it",
+    "./skills/walkthrough",
     "./skills/code-to-spec",
     "./skills/to-design",
     "./skills/refactor",

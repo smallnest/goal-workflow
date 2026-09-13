@@ -526,8 +526,9 @@
         <li><a href="#step-to-design">18. Bonus: /to-design — PRD to Design Document</a></li>
         <li><a href="#step-graph">19. Bonus: /graph — Parallel Task-Graph Execution</a></li>
         <li><a href="#step-understand">20. Bonus: /understand — Interactive Change Review</a></li>
-        <li><a href="#platforms">21. Supported Platforms</a></li>
-        <li><a href="#faq">22. FAQ</a></li>
+        <li><a href="#step-walkthrough">21. Bonus: /walkthrough — Phase-2 Walkthrough Plan</a></li>
+        <li><a href="#platforms">22. Supported Platforms</a></li>
+        <li><a href="#faq">23. FAQ</a></li>
       </ul>
     </div>
 
@@ -626,6 +627,18 @@
             <li>Scan uncommitted / branch changes into a webpage</li>
             <li>File tree + syntax-highlighted diff + per-segment notes</li>
             <li>Each segment shows its requirement and a plain-language explanation</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-dot rose"></div>
+            <h4>/walkthrough</h4>
+          </div>
+          <p>Phase-2 walkthrough plan after verification</p>
+          <ul>
+            <li>Change summary in human terms, not a diff dump</li>
+            <li>Verification steps with real command / test output</li>
+            <li>Visual proof + review gate before merging</li>
           </ul>
         </div>
         <div class="card">
@@ -767,6 +780,7 @@
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">to-issues</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">review-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">understand</span>
+<span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">walkthrough</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">ship-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">humanize-it</span>
 <span class="cmd">npx skills add smallnest/goal-workflow</span> <span class="flag">--skill</span> <span class="value">insight-diagram</span>
@@ -794,7 +808,7 @@
       </table>
 
       <div class="tip">
-        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code>, <code class="inline-code">/to-design</code>, <code class="inline-code">/graph</code>, <code class="inline-code">/understand</code> in Claude Code to directly invoke the corresponding skill.
+        <strong>Tip:</strong> After installation, type <code class="inline-code">/prd</code>, <code class="inline-code">/prd-to-spec</code>, <code class="inline-code">/to-issues</code>, <code class="inline-code">/loop-it</code>, <code class="inline-code">/review-it</code>, <code class="inline-code">/ship-it</code>, <code class="inline-code">/refactor</code>, <code class="inline-code">/modern-go</code>, <code class="inline-code">/note-it</code>, <code class="inline-code">/code-to-spec</code>, <code class="inline-code">/humanize-it</code>, <code class="inline-code">/insight-diagram</code>, <code class="inline-code">/smell</code>, <code class="inline-code">/to-design</code>, <code class="inline-code">/graph</code>, <code class="inline-code">/understand</code>, <code class="inline-code">/walkthrough</code> in Claude Code to directly invoke the corresponding skill.
       </div>
     </div>
 
@@ -1885,20 +1899,65 @@ inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> �
       </div>
     </div>
 
-    <!-- Section 21: Platforms -->
+    <!-- Section 21: /walkthrough -->
+    <div class="section" id="step-walkthrough">
+      <div class="section-title">
+        <div class="section-dot rose"></div>
+        <h3>21. Bonus: /walkthrough — Phase-2 Walkthrough Plan</h3>
+      </div>
+      <p>
+        <code class="inline-code">/walkthrough</code> produces the Phase-2 walkthrough artifact (modeled on Google Antigravity's walkthrough plan): once implementation and verification are complete, it writes a single Markdown file that lets you quickly catch up on what was changed and what is proven to work, and lets you do a staging-check with Git before merging. It is saved to <code class="inline-code">tasks/walkthrough-[feature].md</code> by default.
+      </p>
+
+      <h3>How to Invoke</h3>
+      <pre><code><span class="comment"># Type directly in Claude Code</span>
+<span class="cmd">/walkthrough</span>
+
+<span class="comment"># Or use trigger phrases</span>
+<span class="cmd">Walkthrough: </span><span class="value">Generate the Phase-2 walkthrough for this change</span>
+<span class="cmd">生成走查文档</span></code></pre>
+
+      <h3>The Four Sections</h3>
+      <table>
+        <tr><th>Section</th><th>Content</th></tr>
+        <tr><td>Change Summary</td><td>High-level description of the refactor / new components / pages created, written for a fresh reader.</td></tr>
+        <tr><td>Verification Steps</td><td>Terminal commands + unit tests that ran successfully, and automated browser testing outcomes (open the app, click through the demo path, pass/fail per scenario).</td></tr>
+        <tr><td>Visual Proof</td><td>Screenshots or screen recordings captured during browser testing, embedded directly in the file (base64 data URIs) so it renders anywhere.</td></tr>
+        <tr><td>Review Gate</td><td>Final <code class="inline-code">git status</code> / <code class="inline-code">git diff --stat</code>, a draft PR description, and a merge checklist for staging the change before merging.</td></tr>
+      </table>
+
+      <h3>How It Works</h3>
+      <ul class="step-list">
+        <li>Determine the change scope from the branch / Issue / tasks/ PRD</li>
+        <li>Read the diff and write the Change Summary</li>
+        <li>Run tests and browser walkthroughs, capture real output + screenshots</li>
+        <li>Save <code class="inline-code">tasks/walkthrough-[feature].md</code> and present the review gate</li>
+      </ul>
+
+      <h3>Positioning</h3>
+      <p>
+        <code class="inline-code">/walkthrough</code> is the final checkpoint before <code class="inline-code">/ship-it</code>: after <code class="inline-code">/goal</code> implements and <code class="inline-code">/review-it</code> fixes, it captures proof and a review gate so the merge is a deliberate, staged decision — not a blind one.
+      </p>
+
+      <div class="tip">
+        <strong>Tip:</strong> The walkthrough is a snapshot — if you change the code after generating it, regenerate it before shipping so the verification evidence stays truthful. Unverified work is always marked as unverified, never as proven.
+      </div>
+    </div>
+
+    <!-- Section 22: Platforms -->
     <div class="section" id="platforms">
       <div class="section-title">
         <div class="section-dot slate"></div>
-        <h3>21. Supported Platforms</h3>
+        <h3>22. Supported Platforms</h3>
       </div>
       <p>Goal Workflow skills can be used across multiple AI Coding Agents:</p>
 
       <table>
-        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th><th>/graph</th></tr>
-        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (Built-in)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
-        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><th>Agent</th><th>/prd</th><th>/prd-to-spec</th><th>/to-issues</th><th>/goal</th><th>/review-it</th><th>/note-it</th><th>/ship-it</th><th>/loop-it</th><th>/refactor</th><th>/modern-go</th><th>/code-to-spec</th><th>/smell</th><th>/humanize-it</th><th>/insight-diagram</th><th>/to-design</th><th>/graph</th><th>/understand</th><th>/walkthrough</th></tr>
+        <tr><td>Claude Code</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (Built-in)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>Codex</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003; (--goal)</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>OpenCode</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
+        <tr><td>DeepSeek TUI</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>—</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td><td>&#10003;</td></tr>
       </table>
 
       <h3>Issue Creation Platforms</h3>
@@ -1910,11 +1969,11 @@ inline <span class="cmd">/goal</span> → <span class="cmd">/review-it</span> �
       </table>
     </div>
 
-    <!-- Section 22: FAQ -->
+    <!-- Section 23: FAQ -->
     <div class="section" id="faq">
       <div class="section-title">
         <div class="section-dot terracotta"></div>
-        <h3>22. FAQ</h3>
+        <h3>23. FAQ</h3>
       </div>
 
       <h3>Q: Do I have to use all steps in order?</h3>

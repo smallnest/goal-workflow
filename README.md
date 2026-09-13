@@ -5,7 +5,7 @@ English | [简体中文](./README_CN.md)
 An AI-driven development workflow — from PRD to shipped code, all within Claude Code.
 
 ```
-/prd  →  /prd-to-spec (optional)  →  /to-issues  →  /loop-it (→ /goal → /review-it → /note-it → /ship-it)×N
+/prd  →  /prd-to-spec (optional)  →  /to-issues  →  /loop-it (→ /goal → /review-it → /note-it → /walkthrough → /ship-it)×N
 ```
 
 <p align="center">
@@ -31,6 +31,7 @@ npx skills add smallnest/goal-workflow
 | `/understand` | Turn fresh (AI-generated) changes into an interactive review webpage |
 | `/ship-it` | Commit, PR, merge, and close the Issue |
 | `/note-it` | Capture implementation notes per Issue |
+| `/walkthrough` | Phase-2 walkthrough: change summary, verification proof, visual evidence, review gate |
 | `/humanize-it` | Remove AI traces from documents |
 | `/listenhub-tts` | Text-to-speech via ListenHub |
 | `/insight-diagram` | Generate UML and architecture diagrams |

@@ -5,7 +5,7 @@
 一套 AI 驱动的研发工作流，从需求到代码交付，全程在 Claude Code 中完成。
 
 ```
-/prd  →  /prd-to-spec (可选)  →  /to-issues  →  /loop-it (→ /goal → /review-it → /note-it → /ship-it)×N
+/prd  →  /prd-to-spec (可选)  →  /to-issues  →  /loop-it (→ /goal → /review-it → /note-it → /walkthrough → /ship-it)×N
 ```
 
 <p align="center">
@@ -31,6 +31,7 @@ npx skills add smallnest/goal-workflow
 | `/understand` | 将本次（AI）新生成的改动变成可交互的审阅网页 |
 | `/ship-it` | 提交、PR、合入、关闭 Issue |
 | `/note-it` | 为 Issue 记录实现笔记 |
+| `/walkthrough` | Phase-2 走查文档：变更摘要、验证证据、可视化证明、评审门禁 |
 | `/humanize-it` | 文档去 AI 味改写 |
 | `/listenhub-tts` | ListenHub 文本转语音 |
 | `/insight-diagram` | UML 与架构图生成 |
