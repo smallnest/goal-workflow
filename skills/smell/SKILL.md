@@ -15,7 +15,7 @@ Analyze a codebase to find violations of software architecture principles, anti-
 ## The Job
 
 1. Understand the scope — ask what part of the project to analyze (full project, specific module, or recent changes)
-2. Scan the codebase using `find`, `grep`, and `Agent` (Explore subagent) to gather candidate signals and evidence
+2. Scan the codebase using `find`, `grep`, and `Agent` (Explore subagent) to gather candidate signals and evidence, loading the language profile (see [Language Profiles](#language-profiles)) when the project's language has one
 3. Validate candidates against context, callers, history, workload, and measurements before confirming findings
 4. Generate a detailed markdown report saved to `tasks/smell-report-[timestamp].md`
 5. Present a summary of confirmed findings and separate candidates to the user
@@ -53,6 +53,18 @@ Run these in parallel to gather evidence efficiently:
 5. **Testing Scan:** Check test coverage patterns, test file locations, test-to-code ratios
 6. **Naming & Clarity Scan:** Flag misleading names, overly generic names (Manager, Helper, Util), inconsistent naming conventions
 7. **Complexity Scan:** Detect algorithmic complexity hotspots — nested loops, N+1 queries, repeated scans, sort-in-loop, expensive recomputation in render paths
+
+### Language Profiles
+
+The heuristics below are language-agnostic. Identify the primary language(s) from the manifests (`go.mod`, `Cargo.toml`, `package.json`, `pyproject.toml`, `pom.xml`, ...) and load the matching profile before scanning.
+
+| Language | Profile | What it adds |
+|----------|---------|--------------|
+| Rust | [`references/rust.md`](references/rust.md) | Cargo-native evidence commands; ownership, borrowing, panic, `unsafe`, and async candidate signals; Rust-specific false-positive controls; extra report fields |
+
+Languages without a profile fall back to the generic heuristics; say so in the report when language-specific checks were limited.
+
+A profile refines candidate detection. It does not add categories, severity levels, or findings of its own: every profile signal still has to pass the Step 3 validation and map onto a canonical category.
 
 ### Key Heuristics
 
@@ -167,6 +179,7 @@ Generate the report in this structure:
 **Scope:** [scope description]
 **Date:** [date]
 **Analyzer:** smell skill (Ducc)
+**Language profile:** [e.g., Rust — edition, toolchain / generic heuristics only]
 
 ---
 
@@ -711,6 +724,7 @@ A third-party/library class lacks methods you need and can't be modified:
 | User doesn't specify scope | Default to recent changes (`git diff`) for repos > 200 files, full analysis otherwise |
 | Project has no clear architecture | Report "Big Ball of Mud" with evidence, recommend incremental refactoring |
 | Empty/monorepo project | Report that architecture analysis requires code; ask user to specify module |
+| Language has a profile (e.g., Rust) | Load the profile named in the [Language Profiles](#language-profiles) table, apply its false-positive controls, and record the profile plus any "not measured" dimensions in the report |
 | Language not supported | Report general structural observations; note language-specific checks are limited |
 | Report file path conflicts | Append `-2`, `-3`, etc. to filename |
 | User wants a quick check | Run only Critical-level scans, skip Code and Naming categories |
