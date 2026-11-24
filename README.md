@@ -42,7 +42,7 @@ npx skills add smallnest/goal-workflow
 | `/code-to-spec` | Reverse-engineer SPEC from existing projects |
 | `/refactor` | Expert code refactoring (Fowler catalog) |
 | `/modern-go` | Modernize Go code (35+ gofix-style rules) |
-| `/smell` | Detect architecture anti-patterns, code smells, and complexity hotspots |
+| `/smell` | Detect architecture anti-patterns, code smells, and complexity hotspots (Rust language profile) |
 
 ## Documentation
 

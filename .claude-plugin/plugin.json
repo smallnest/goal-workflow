@@ -16,7 +16,8 @@
     "issues",
     "code-review",
     "refactor",
-    "go"
+    "go",
+    "rust"
   ],
   "skills": [
     "./skills/prd",

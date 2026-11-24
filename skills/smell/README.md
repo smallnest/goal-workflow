@@ -12,6 +12,7 @@ Analyze a codebase to find violations of software architecture principles, anti-
 - Finds code-level smells (Long Method, Primitive Obsession, Magic Numbers)
 - Assesses testing health (missing tests, test-implementation coupling)
 - Outputs a structured markdown report with severity, evidence, confidence, verification, and refactoring roadmap
+- Ships a Rust language profile: Cargo-native evidence commands, ownership/borrowing/panic/async candidate signals, and Rust-specific false-positive controls
 
 ## Knowledge Base
 
@@ -40,4 +41,5 @@ Trigger with prompts like:
 ## Files
 
 - `SKILL.md` — Skill definition and comprehensive anti-pattern knowledge base
+- `references/rust.md` — Rust language profile (Cargo evidence commands, ownership/borrowing/panic/async signals, false-positive controls, report additions)
 - `test-prompts.json` — Test prompts for validation

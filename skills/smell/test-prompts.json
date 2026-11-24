@@ -70,5 +70,21 @@
   {
     "prompt": "Invalid configuration is accepted at startup and only fails deep inside the first request.",
     "description": "Fail Fast — report the delayed failure and preserve error, retry, transaction, and cleanup semantics in the recommendation"
+  },
+  {
+    "prompt": "Analyze this Rust workspace for ownership and error-handling smells",
+    "description": "Rust profile — load references/rust.md and report ownership, panic, and error candidates with the Rust false-positive controls"
+  },
+  {
+    "prompt": "Find unwrap() calls, clones inside loops, and blocking calls inside async functions in this crate",
+    "description": "Rust profile — panic, clone, and async detection with reachability evidence and not-measured dimensions"
+  },
+  {
+    "prompt": "分析这个 Rust 项目的坏味道，重点看 unsafe 和错误处理",
+    "description": "Chinese trigger with the Rust profile — unsafe contracts and typed error handling"
+  },
+  {
+    "prompt": "An Arc clone inside a cache and an unwrap() in a #[cfg(test)] helper are reported as Rust smells.",
+    "description": "Rust false-positive control — refcount bump and test-only panic are not findings"
   }
 ]

@@ -18,7 +18,8 @@
         "issues",
         "code-review",
         "refactor",
-        "go"
+        "go",
+        "rust"
       ]
     }
   ]
